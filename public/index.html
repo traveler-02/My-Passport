@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Passport — Digital Travel Compliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --green-deep:   #1a3a2a;
+  --green-mid:    #1f4a32;
+  --green-light:  #2a6044;
+  --gold:         #c9a84c;
+  --gold-light:   #e2c97e;
+  --gold-dim:     #8a6e2f;
+  --cream:        #f5f0e8;
+  --cream-dim:    #d4c9b0;
+  --ink:          #0d1f16;
+  --stamp-red:    #8b2020;
+  --font-serif:   'IM Fell English', Georgia, serif;
+  --font-sans:    'Inter', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ink);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background pattern — subtle guilloche */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,0.04) 39px, rgba(201,168,76,0.04) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,0.04) 39px, rgba(201,168,76,0.04) 40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── PASSPORT COVER ── */
+.passport-cover {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(160deg, var(--green-mid) 0%, var(--green-deep) 60%, #0f2a1e 100%);
+  border-radius: 10px 10px 10px 10px;
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,0.3),
+    0 4px 6px rgba(0,0,0,0.4),
+    0 20px 60px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(201,168,76,0.15);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Spine */
+.passport-cover::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 14px;
+  background: linear-gradient(90deg, #0b1f14 0%, var(--green-deep) 100%);
+  border-right: 1px solid rgba(201,168,76,0.2);
+}
+
+/* Gold border frame */
+.passport-cover::after {
+  content: '';
+  position: absolute;
+  inset: 12px 12px 12px 20px;
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.cover-inner {
+  padding: 2.5rem 2.5rem 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  min-height: 560px;
+  position: relative;
+}
+
+/* Guilloche rosette */
+.rosette {
+  width: 110px;
+  height: 110px;
+  margin: 1rem 0;
+  position: relative;
+  opacity: 0.9;
+}
+.rosette svg { width: 100%; height: 100%; }
+
+.cover-country {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  text-align: center;
+}
+.cover-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  color: var(--gold);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.cover-subtitle {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  color: var(--cream-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* ── LANG PICKER ── */
+.lang-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.lang-btn {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.2);
+  color: var(--cream-dim);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all 0.15s;
+}
+.lang-btn:hover, .lang-btn.active {
+  background: rgba(201,168,76,0.2);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+
+/* ── AUTH SECTION ── */
+.auth-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(201,168,76,0.2);
+}
+.auth-divider span {
+  font-size: 10px;
+  color: var(--gold-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 6px;
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-google:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--gold) 0%, #a8882a 100%);
+  border: none;
+  border-radius: 6px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(201,168,76,0.3);
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 6px;
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input-field::placeholder { color: rgba(201,168,76,0.35); }
+.input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,168,76,0.1); }
+
+.auth-toggle {
+  text-align: center;
+  font-size: 12px;
+  color: var(--cream-dim);
+  margin-top: 4px;
+}
+.auth-toggle a {
+  color: var(--gold);
+  cursor: pointer;
+  text-decoration: none;
+}
+.auth-toggle a:hover { text-decoration: underline; }
+
+.auth-error {
+  font-size: 12px;
+  color: #f87171;
+  text-align: center;
+  min-height: 16px;
+  padding: 0 4px;
+}
+
+/* ── COVER FOOTER ── */
+.cover-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 3rem;
+  right: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.cover-footer-text {
+  font-size: 9px;
+  color: rgba(201,168,76,0.4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+}
+
+/* MRZ strip at bottom */
+.mrz-strip {
+  width: 100%;
+  padding: 12px 3rem 12px 3rem;
+  background: rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(201,168,76,0.1);
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: rgba(201,168,76,0.25);
+  letter-spacing: 0.05em;
+  user-select: none;
+  line-height: 1.6;
+}
+
+/* ── Loading overlay ── */
+.loading-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(10,20,15,0.85);
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+.loading-overlay.active { display: flex; }
+.spinner {
+  width: 36px; height: 36px;
+  border: 2px solid rgba(201,168,76,0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 460px) {
+  .cover-inner { padding: 2rem 2rem 2rem 2.5rem; }
+  .mrz-strip { padding-left: 2.5rem; padding-right: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="passport-cover" id="passport-cover">
+  <div class="cover-inner">
+
+    <!-- Lang selector -->
+    <div class="lang-row" id="lang-row">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('it')">IT</button>
+      <button class="lang-btn" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" onclick="setLang('zh')">中文</button>
+      <button class="lang-btn" onclick="setLang('ja')">JA</button>
+      <button class="lang-btn" onclick="setLang('ar')">AR</button>
+      <button class="lang-btn" onclick="setLang('ru')">RU</button>
+    </div>
+
+    <p class="cover-country" data-t="org_name">International Travel Authority</p>
+
+    <!-- Rosette SVG -->
+    <div class="rosette">
+      <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#e2c97e" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#8a6e2f" stop-opacity="0.6"/>
+          </radialGradient>
+        </defs>
+        <!-- Outer ring -->
+        <circle cx="55" cy="55" r="48" fill="none" stroke="url(#rg)" stroke-width="1"/>
+        <circle cx="55" cy="55" r="44" fill="none" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>
+        <!-- Guilloche petals -->
+        <g stroke="url(#rg)" stroke-width="0.7" fill="none">
+          <ellipse cx="55" cy="55" rx="20" ry="42" transform="rotate(0 55 55)" opacity="0.6"/>
+          <ellipse cx="55" cy="55" rx="20" ry="42" transform="rotate(30 55 55)" opacity="0.6"/>
+          <ellipse cx="55" cy="55" rx="20" ry="42" transform="rotate(60 55 55)" opacity="0.6"/>
+          <ellipse cx="55" cy="55" rx="20" ry="42" transform="rotate(90 55 55)" opacity="0.6"/>
+          <ellipse cx="55" cy="55" rx="20" ry="42" transform="rotate(120 55 55)" opacity="0.6"/>
+          <ellipse cx="55" cy="55" rx="20" ry="42" transform="rotate(150 55 55)" opacity="0.6"/>
+        </g>
+        <!-- Globe lines -->
+        <circle cx="55" cy="55" r="30" fill="none" stroke="rgba(201,168,76,0.4)" stroke-width="0.8"/>
+        <ellipse cx="55" cy="55" rx="30" ry="12" fill="none" stroke="rgba(201,168,76,0.3)" stroke-width="0.6"/>
+        <ellipse cx="55" cy="55" rx="30" ry="22" fill="none" stroke="rgba(201,168,76,0.3)" stroke-width="0.6"/>
+        <line x1="55" y1="25" x2="55" y2="85" stroke="rgba(201,168,76,0.3)" stroke-width="0.6"/>
+        <line x1="25" y1="55" x2="85" y2="55" stroke="rgba(201,168,76,0.3)" stroke-width="0.6"/>
+        <!-- Center star -->
+        <polygon points="55,44 57.5,51.5 65,51.5 59,56.5 61.5,64 55,59 48.5,64 51,56.5 45,51.5 52.5,51.5" fill="url(#rg)" opacity="0.85"/>
+        <circle cx="55" cy="55" r="6" fill="none" stroke="url(#rg)" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <h1 class="cover-title" data-t="app_title">My Passport</h1>
+    <p class="cover-subtitle" data-t="app_subtitle">Digital Travel Compliance</p>
+
+    <!-- AUTH FORM -->
+    <div class="auth-section" id="auth-section">
+
+      <!-- Google Sign In -->
+      <button class="btn-google" onclick="signInGoogle()">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        <span data-t="btn_google">Continuar con Google</span>
+      </button>
+
+      <div class="auth-divider"><span data-t="or_text">o</span></div>
+
+      <!-- Email form -->
+      <div id="login-form">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <input class="input-field" id="email-input" type="email" data-t-ph="ph_email" placeholder="correo@ejemplo.com" autocomplete="email"/>
+          <input class="input-field" id="pass-input" type="password" data-t-ph="ph_pass" placeholder="Contraseña" autocomplete="current-password"/>
+          <div class="auth-error" id="auth-error"></div>
+          <button class="btn-primary" id="email-btn" onclick="signInEmail()" data-t="btn_signin">Entrar</button>
+        </div>
+        <div class="auth-toggle" style="margin-top:10px;">
+          <span data-t="no_account">¿No tienes cuenta?</span> <a onclick="toggleRegister()" data-t="register_link">Regístrate</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cover-footer">
+      <span class="cover-footer-text" data-t="footer_secure">Cifrado · Privado</span>
+      <span class="cover-footer-text">2025</span>
+    </div>
+
+  </div>
+
+  <!-- MRZ strip -->
+  <div class="mrz-strip" id="mrz">
+    P&lt;INTMY&lt;PASSPORT&lt;&lt;DIGITAL&lt;TRAVEL&lt;COMPLIANCE&lt;&lt;&lt;&lt;<br/>
+    MP000000&lt;0INT0101011M3101010&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4
+  </div>
+
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+  // ── REPLACE WITH YOUR FIREBASE CONFIG ──
+  const firebaseConfig = {
+  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
+  authDomain: "my-passport-211af.firebaseapp.com",
+  projectId: "my-passport-211af",
+  storageBucket: "my-passport-211af.firebasestorage.app",
+  messagingSenderId: "118053564604",
+  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  // Store auth globally
+  window._auth = auth;
+  window._provider = provider;
+  window._signInWithPopup = signInWithPopup;
+  window._signInEmail = signInWithEmailAndPassword;
+  window._createUser = createUserWithEmailAndPassword;
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      window.location.href = '/pages/dashboard.html';
+    }
+  });
+</script>
+
+<script>
+// ── TRANSLATIONS ──
+const T = {
+  es:{org_name:"Autoridad Internacional de Viajes",app_title:"My Passport",app_subtitle:"Cumplimiento Legal de Viaje",btn_google:"Continuar con Google",or_text:"o",ph_email:"correo@ejemplo.com",ph_pass:"Contraseña",btn_signin:"Entrar",no_account:"¿No tienes cuenta?",register_link:"Regístrate",footer_secure:"Cifrado · Privado"},
+  en:{org_name:"International Travel Authority",app_title:"My Passport",app_subtitle:"Digital Travel Compliance",btn_google:"Continue with Google",or_text:"or",ph_email:"email@example.com",ph_pass:"Password",btn_signin:"Sign in",no_account:"Don't have an account?",register_link:"Register",footer_secure:"Encrypted · Private"},
+  fr:{org_name:"Autorité Internationale de Voyage",app_title:"My Passport",app_subtitle:"Conformité Légale Voyage",btn_google:"Continuer avec Google",or_text:"ou",ph_email:"email@exemple.com",ph_pass:"Mot de passe",btn_signin:"Connexion",no_account:"Pas de compte ?",register_link:"S'inscrire",footer_secure:"Chiffré · Privé"},
+  de:{org_name:"Internationale Reisebehörde",app_title:"My Passport",app_subtitle:"Reise-Compliance",btn_google:"Mit Google fortfahren",or_text:"oder",ph_email:"email@beispiel.de",ph_pass:"Passwort",btn_signin:"Anmelden",no_account:"Kein Konto?",register_link:"Registrieren",footer_secure:"Verschlüsselt · Privat"},
+  it:{org_name:"Autorità Internazionale Viaggi",app_title:"My Passport",app_subtitle:"Conformità Legale Viaggi",btn_google:"Continua con Google",or_text:"o",ph_email:"email@esempio.it",ph_pass:"Password",btn_signin:"Accedi",no_account:"Non hai un account?",register_link:"Registrati",footer_secure:"Crittografato · Privato"},
+  pt:{org_name:"Autoridade Internacional de Viagens",app_title:"My Passport",app_subtitle:"Conformidade Legal de Viagem",btn_google:"Continuar com Google",or_text:"ou",ph_email:"email@exemplo.com",ph_pass:"Senha",btn_signin:"Entrar",no_account:"Não tem conta?",register_link:"Cadastre-se",footer_secure:"Criptografado · Privado"},
+  zh:{org_name:"国际旅行管理局",app_title:"My Passport",app_subtitle:"旅行合规助手",btn_google:"使用 Google 登录",or_text:"或",ph_email:"邮箱@示例.com",ph_pass:"密码",btn_signin:"登录",no_account:"没有账号？",register_link:"注册",footer_secure:"加密 · 私密"},
+  ja:{org_name:"国際旅行当局",app_title:"My Passport",app_subtitle:"デジタル旅行コンプライアンス",btn_google:"Googleで続ける",or_text:"または",ph_email:"メール@例.com",ph_pass:"パスワード",btn_signin:"サインイン",no_account:"アカウントをお持ちでないですか？",register_link:"登録する",footer_secure:"暗号化・プライベート"},
+  ar:{org_name:"هيئة السفر الدولية",app_title:"My Passport",app_subtitle:"الامتثال القانوني للسفر",btn_google:"المتابعة مع Google",or_text:"أو",ph_email:"البريد@مثال.com",ph_pass:"كلمة المرور",btn_signin:"دخول",no_account:"ليس لديك حساب؟",register_link:"سجّل",footer_secure:"مشفّر · خاص"},
+  ru:{org_name:"Международный орган путешествий",app_title:"My Passport",app_subtitle:"Правовое соответствие в поездках",btn_google:"Войти через Google",or_text:"или",ph_email:"email@пример.ru",ph_pass:"Пароль",btn_signin:"Войти",no_account:"Нет аккаунта?",register_link:"Зарегистрироваться",footer_secure:"Зашифровано · Приватно"}
+};
+
+let lang = 'es';
+let isRegister = false;
+
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.body.style.direction = (l === 'ar') ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-t]').forEach(el => {
+    if (T[l] && T[l][el.dataset.t]) el.textContent = T[l][el.dataset.t];
+  });
+  document.querySelectorAll('[data-t-ph]').forEach(el => {
+    if (T[l] && T[l][el.dataset.tPh]) el.placeholder = T[l][el.dataset.tPh];
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  const btns = document.querySelectorAll('.lang-btn');
+  const codes = ['es','en','fr','de','it','pt','zh','ja','ar','ru'];
+  const idx = codes.indexOf(l);
+  if (btns[idx]) btns[idx].classList.add('active');
+  localStorage.setItem('mp_lang', l);
+}
+
+function toggleRegister() {
+  isRegister = !isRegister;
+  const btn = document.getElementById('email-btn');
+  const toggle = document.querySelector('.auth-toggle');
+  if (isRegister) {
+    btn.setAttribute('data-t','btn_register');
+    btn.textContent = lang === 'es' ? 'Crear cuenta' : 'Create account';
+    btn.onclick = registerEmail;
+    toggle.innerHTML = `<span>¿Ya tienes cuenta?</span> <a onclick="toggleRegister()">Iniciar sesión</a>`;
+  } else {
+    btn.setAttribute('data-t','btn_signin');
+    btn.textContent = T[lang].btn_signin;
+    btn.onclick = signInEmail;
+    toggle.innerHTML = `<span data-t="no_account">${T[lang].no_account}</span> <a onclick="toggleRegister()" data-t="register_link">${T[lang].register_link}</a>`;
+  }
+}
+
+function showLoading(v) {
+  document.getElementById('loading-overlay').classList.toggle('active', v);
+}
+
+function showError(msg) {
+  document.getElementById('auth-error').textContent = msg;
+}
+
+window.signInGoogle = async function() {
+  if (!window._auth) return;
+  showLoading(true);
+  try {
+    await window._signInWithPopup(window._auth, window._provider);
+  } catch(e) {
+    showLoading(false);
+    showError(e.message);
+  }
+};
+
+window.signInEmail = async function() {
+  if (!window._auth) return;
+  const email = document.getElementById('email-input').value;
+  const pass = document.getElementById('pass-input').value;
+  if (!email || !pass) return showError('Complete todos los campos.');
+  showLoading(true);
+  try {
+    await window._signInEmail(window._auth, email, pass);
+  } catch(e) {
+    showLoading(false);
+    showError(e.code === 'auth/wrong-password' ? 'Contraseña incorrecta.' : e.message);
+  }
+};
+
+window.registerEmail = async function() {
+  if (!window._auth) return;
+  const email = document.getElementById('email-input').value;
+  const pass = document.getElementById('pass-input').value;
+  if (!email || !pass) return showError('Complete todos los campos.');
+  if (pass.length < 6) return showError('Mínimo 6 caracteres.');
+  showLoading(true);
+  try {
+    await window._createUser(window._auth, email, pass);
+  } catch(e) {
+    showLoading(false);
+    showError(e.message);
+  }
+};
+
+// Restore lang
+const saved = localStorage.getItem('mp_lang');
+if (saved) setLang(saved);
+</script>
+</body>
+</html>

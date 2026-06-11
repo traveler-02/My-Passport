@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Passport — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--green-deep:#1a3a2a;--green-mid:#1f4a32;--gold:#c9a84c;--gold-light:#e2c97e;--gold-dim:#8a6e2f;--cream:#f5f0e8;--cream-dim:#d4c9b0;--ink:#0d1f16;--stamp-red:#8b2020;--danger:#ef4444;--danger-bg:rgba(239,68,68,0.1);--warn:#f59e0b;--warn-bg:rgba(245,158,11,0.1);--ok:#10b981;--ok-bg:rgba(16,185,129,0.1);--info:#3b82f6;--info-bg:rgba(59,130,246,0.1);--font-serif:'IM Fell English',Georgia,serif;--font-sans:'Inter',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--ink);color:var(--cream);font-family:var(--font-sans);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(201,168,76,0.03) 39px,rgba(201,168,76,0.03) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(201,168,76,0.03) 39px,rgba(201,168,76,0.03) 40px);pointer-events:none;z-index:0;}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(13,31,22,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,0.15);padding:0 1.5rem;}
+.nav-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-serif);font-size:18px;color:var(--gold);text-decoration:none;}
+.nav-logo-badge{width:28px;height:28px;background:var(--gold);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.nav-logo-badge svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.lang-sel{background:transparent;border:1px solid rgba(201,168,76,0.2);color:var(--cream-dim);font-size:12px;padding:4px 8px;border-radius:4px;cursor:pointer;outline:none;}
+.nav-avatar{width:28px;height:28px;border-radius:50%;background:var(--green-mid);border:1px solid rgba(201,168,76,0.3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);font-weight:600;}
+.nav-avatar img{width:100%;height:100%;object-fit:cover;}
+.nav-email{font-size:12px;color:var(--cream-dim);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn-signout{background:transparent;border:1px solid rgba(201,168,76,0.2);color:var(--cream-dim);font-size:12px;padding:4px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+.btn-signout:hover{border-color:var(--gold);color:var(--gold);}
+
+.shell{max-width:1100px;margin:0 auto;padding:1.5rem;position:relative;z-index:1;}
+.page-grid{display:grid;grid-template-columns:260px 1fr;gap:1.25rem;align-items:start;}
+@media(max-width:780px){.page-grid{grid-template-columns:1fr;}}
+
+/* PASSPORT BOOK */
+.passport-book{background:linear-gradient(160deg,var(--green-mid) 0%,var(--green-deep) 60%,#0f2a1e 100%);border:1px solid rgba(201,168,76,0.25);border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(201,168,76,0.1);position:relative;}
+.passport-book::before{content:'';position:absolute;left:0;top:0;bottom:0;width:10px;background:linear-gradient(90deg,#0b1f14 0%,var(--green-deep) 100%);border-right:1px solid rgba(201,168,76,0.15);z-index:1;}
+.passport-book::after{content:'';position:absolute;inset:10px 10px 10px 16px;border:1px solid rgba(201,168,76,0.15);border-radius:3px;pointer-events:none;z-index:1;}
+.pb-inner{padding:1.25rem 1.25rem 1rem 1.5rem;position:relative;}
+.stamp{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:2px solid var(--stamp-red);transform:rotate(-12deg);position:absolute;top:14px;right:16px;opacity:0.5;z-index:2;}
+.stamp span{font-family:var(--font-serif);font-size:7px;text-transform:uppercase;color:var(--stamp-red);letter-spacing:0.06em;text-align:center;line-height:1.3;}
+.pb-photo-area{display:flex;gap:10px;align-items:flex-start;margin-bottom:1rem;}
+.pb-photo{width:68px;height:86px;background:rgba(0,0,0,0.35);border:1px solid rgba(201,168,76,0.2);border-radius:2px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.pb-photo svg{width:30px;height:30px;stroke:rgba(201,168,76,0.25);fill:none;stroke-width:1.5;}
+.pb-photo img{width:100%;height:100%;object-fit:cover;}
+.pb-name-block{flex:1;padding-top:4px;}
+.pb-label{font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold-dim);}
+.pb-value{font-family:var(--font-serif);font-size:14px;color:var(--cream);line-height:1.2;margin-bottom:7px;word-break:break-all;}
+.pb-value.sm{font-size:12px;}
+.pb-divider{height:1px;background:rgba(201,168,76,0.12);margin:8px 0;}
+.pb-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,0.12);margin:0 -1.25rem 0 -1.5rem;padding:0 1.5rem;}
+.pb-tab{padding:7px 10px;font-size:11px;color:var(--gold-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;font-weight:500;letter-spacing:0.03em;}
+.pb-tab:hover{color:var(--gold-light);}
+.pb-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.pb-tab-content{display:none;padding-top:10px;}
+.pb-tab-content.active{display:block;}
+.pb-row{margin-bottom:9px;}
+.pb-edit-btn{width:100%;margin-top:6px;padding:7px;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.18);border-radius:5px;color:var(--gold);font-size:11px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;font-family:var(--font-sans);}
+.pb-edit-btn:hover{background:rgba(201,168,76,0.14);border-color:var(--gold);}
+.pb-edit-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.pb-mrz{padding:8px 10px 8px 16px;background:rgba(0,0,0,0.25);border-top:1px solid rgba(201,168,76,0.08);font-family:'Courier New',monospace;font-size:7px;color:rgba(201,168,76,0.2);letter-spacing:0.03em;line-height:1.7;user-select:none;}
+
+/* MAIN */
+.main-panel{display:flex;flex-direction:column;gap:1.25rem;}
+.panel-card{background:linear-gradient(160deg,rgba(31,74,50,0.35) 0%,rgba(26,58,42,0.55) 100%);border:1px solid rgba(201,168,76,0.14);border-radius:8px;overflow:hidden;}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid rgba(201,168,76,0.1);}
+.panel-title{font-family:var(--font-serif);font-size:15px;color:var(--gold-light);display:flex;align-items:center;gap:8px;}
+.panel-title svg{width:15px;height:15px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.panel-body{padding:14px 16px;}
+.panel-action{font-size:12px;color:var(--gold);cursor:pointer;background:none;border:none;font-family:var(--font-sans);transition:opacity 0.15s;}
+.panel-action:hover{opacity:0.7;}
+
+/* TRIPS */
+.trip-card{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(201,168,76,0.07);}
+.trip-card:last-child{border-bottom:none;}
+.trip-flag{font-size:24px;flex-shrink:0;width:32px;text-align:center;}
+.trip-info{flex:1;}
+.trip-dest{font-size:13px;font-weight:600;color:var(--cream);}
+.trip-dates{font-size:11px;color:var(--cream-dim);margin-top:2px;}
+.trip-btn{padding:4px 12px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.22);border-radius:4px;color:var(--gold);font-size:11px;cursor:pointer;white-space:nowrap;transition:all 0.15s;font-family:var(--font-sans);}
+.trip-btn:hover{background:rgba(201,168,76,0.2);border-color:var(--gold);}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:1.75rem 1rem;}
+.empty-state svg{width:36px;height:36px;stroke:rgba(201,168,76,0.18);fill:none;stroke-width:1.5;margin-bottom:0.75rem;}
+.empty-state p{font-size:13px;color:var(--cream-dim);line-height:1.5;margin-bottom:1rem;}
+.btn-add{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:linear-gradient(135deg,var(--gold) 0%,#a8882a 100%);border:none;border-radius:6px;color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:var(--font-sans);}
+.btn-add:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,168,76,0.22);}
+.btn-add svg{width:13px;height:13px;stroke:var(--ink);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+/* CHECKLIST */
+.check-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,0.07);align-items:flex-start;}
+.check-item:last-child{border-bottom:none;}
+.ci-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ci-icon svg{width:13px;height:13px;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.ci-icon.danger{background:var(--danger-bg);}
+.ci-icon.danger svg{stroke:var(--danger);}
+.ci-icon.warn{background:var(--warn-bg);}
+.ci-icon.warn svg{stroke:var(--warn);}
+.ci-icon.ok{background:var(--ok-bg);}
+.ci-icon.ok svg{stroke:var(--ok);}
+.ci-icon.info{background:var(--info-bg);}
+.ci-icon.info svg{stroke:var(--info);}
+.ci-title{font-size:13px;font-weight:600;color:var(--cream);margin-bottom:3px;}
+.ci-desc{font-size:12px;color:var(--cream-dim);line-height:1.5;}
+.ci-src{font-size:10px;color:var(--gold);margin-top:4px;opacity:0.75;}
+
+/* LOADING */
+.loading-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:2rem;}
+.spinner{width:28px;height:28px;border:2px solid rgba(201,168,76,0.15);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-card p{font-size:13px;color:var(--cream-dim);}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:linear-gradient(160deg,var(--green-mid) 0%,var(--green-deep) 100%);border:1px solid rgba(201,168,76,0.22);border-radius:10px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(201,168,76,0.12);}
+.modal-title{font-family:var(--font-serif);font-size:17px;color:var(--gold);}
+.modal-close{background:none;border:none;color:var(--cream-dim);font-size:20px;cursor:pointer;line-height:1;padding:4px;}
+.modal-close:hover{color:var(--cream);}
+.modal-body{padding:18px;}
+.modal-footer{padding:12px 18px;border-top:1px solid rgba(201,168,76,0.12);display:flex;justify-content:flex-end;gap:8px;}
+
+.form-group{margin-bottom:12px;}
+.form-label{display:block;font-size:10px;font-weight:600;color:var(--gold-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;}
+.form-input,.form-select{width:100%;padding:8px 11px;background:rgba(0,0,0,0.3);border:1px solid rgba(201,168,76,0.18);border-radius:5px;color:var(--cream);font-family:var(--font-sans);font-size:13px;outline:none;transition:border-color 0.15s;}
+.form-input::placeholder{color:rgba(201,168,76,0.28);}
+.form-input:focus,.form-select:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,0.08);}
+.form-select option{background:var(--green-deep);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:480px){.grid2{grid-template-columns:1fr;}}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:5px;padding:7px;background:rgba(0,0,0,0.3);border:1px solid rgba(201,168,76,0.18);border-radius:5px;min-height:38px;cursor:text;}
+.tags-wrap:focus-within{border-color:var(--gold);}
+.f-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.22);color:var(--gold);font-size:11px;padding:2px 8px;border-radius:20px;}
+.f-tag button{background:none;border:none;color:rgba(201,168,76,0.5);cursor:pointer;font-size:14px;line-height:1;padding:0;}
+.f-tag button:hover{color:var(--gold);}
+.tag-in{border:none;outline:none;background:transparent;color:var(--cream);font-size:12px;min-width:100px;flex:1;}
+.form-hint{font-size:10px;color:rgba(201,168,76,0.35);margin-top:3px;}
+.btn-save{padding:9px 22px;background:linear-gradient(135deg,var(--gold) 0%,#a8882a 100%);border:none;border-radius:5px;color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-sans);transition:all 0.2s;}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(201,168,76,0.22);}
+.btn-cancel{padding:9px 14px;background:transparent;border:1px solid rgba(201,168,76,0.18);border-radius:5px;color:var(--cream-dim);font-size:13px;cursor:pointer;font-family:var(--font-sans);transition:all 0.15s;}
+.btn-cancel:hover{border-color:var(--gold);color:var(--gold);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="/index.html">
+      <div class="nav-logo-badge">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      My Passport
+    </a>
+    <div class="nav-right">
+      <select class="lang-sel" id="lang-sel" onchange="setLang(this.value)">
+        <option value="es">🇪🇸 ES</option><option value="en">🇺🇸 EN</option>
+        <option value="fr">🇫🇷 FR</option><option value="de">🇩🇪 DE</option>
+        <option value="it">🇮🇹 IT</option><option value="pt">🇧🇷 PT</option>
+        <option value="zh">🇨🇳 中文</option><option value="ja">🇯🇵 JA</option>
+        <option value="ar">🇸🇦 AR</option><option value="ru">🇷🇺 RU</option>
+      </select>
+      <div class="nav-avatar" id="nav-avatar">?</div>
+      <span class="nav-email" id="nav-email"></span>
+      <button class="btn-signout" onclick="doSignOut()" data-t="btn_signout">Salir</button>
+    </div>
+  </div>
+</nav>
+
+<div class="shell">
+  <div class="page-grid">
+
+    <!-- PASSPORT SIDEBAR -->
+    <div>
+      <div class="passport-book">
+        <div class="pb-inner">
+          <div class="stamp"><span data-t="stamp_text">VÁLIDO</span></div>
+          <div class="pb-photo-area">
+            <div class="pb-photo" id="pb-photo">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="pb-name-block">
+              <div class="pb-label" data-t="lbl_surname">Apellido</div>
+              <div class="pb-value" id="pb-surname">—</div>
+              <div class="pb-label" data-t="lbl_given">Nombres</div>
+              <div class="pb-value" id="pb-given">—</div>
+            </div>
+          </div>
+          <div class="pb-divider"></div>
+          <div class="pb-tabs">
+            <div class="pb-tab active" onclick="showTab('info')" data-t="tab_info">Info</div>
+            <div class="pb-tab" onclick="showTab('health')" data-t="tab_health">Salud</div>
+            <div class="pb-tab" onclick="showTab('visas')" data-t="tab_visas">Visas</div>
+          </div>
+          <div class="pb-tab-content active" id="tab-info">
+            <div class="pb-row"><div class="pb-label" data-t="lbl_nationality">Nacionalidad</div><div class="pb-value sm" id="pb-nat">—</div></div>
+            <div class="pb-row"><div class="pb-label" data-t="lbl_passport_no">N° Pasaporte</div><div class="pb-value sm" id="pb-passno">—</div></div>
+            <div class="pb-row"><div class="pb-label" data-t="lbl_expiry">Vencimiento</div><div class="pb-value sm" id="pb-expiry">—</div></div>
+            <div class="pb-row"><div class="pb-label" data-t="lbl_dob">Nacimiento</div><div class="pb-value sm" id="pb-dob">—</div></div>
+            <button class="pb-edit-btn" onclick="openModal('profile')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span data-t="edit_profile">Editar perfil</span></button>
+          </div>
+          <div class="pb-tab-content" id="tab-health">
+            <div class="pb-row"><div class="pb-label" data-t="lbl_vaccines">Vacunas</div><div class="pb-value sm" style="font-size:11px;color:var(--cream-dim)" id="pb-vaccines">—</div></div>
+            <div class="pb-row"><div class="pb-label" data-t="lbl_meds">Medicamentos</div><div class="pb-value sm" style="font-size:11px;color:var(--cream-dim)" id="pb-meds">—</div></div>
+            <button class="pb-edit-btn" onclick="openModal('health')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span data-t="edit_health">Editar salud</span></button>
+          </div>
+          <div class="pb-tab-content" id="tab-visas">
+            <div class="pb-row"><div class="pb-label" data-t="lbl_residences">Residencias / Visas</div><div class="pb-value sm" style="font-size:11px;color:var(--cream-dim)" id="pb-residences">—</div></div>
+            <button class="pb-edit-btn" onclick="openModal('visas')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span data-t="edit_visas">Editar visas</span></button>
+          </div>
+        </div>
+        <div class="pb-mrz" id="pb-mrz">P&lt;???&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br/>?????????&lt;?INT0101011M3101010&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4</div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-panel">
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.09 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .99h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            <span data-t="panel_trips">Mis viajes</span>
+          </div>
+          <button class="panel-action" onclick="openModal('trip')" data-t="add_trip">+ Agregar viaje</button>
+        </div>
+        <div class="panel-body" id="trips-body">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+            <p data-t="no_trips">Todavía no tienes viajes.<br/>Agrega tu itinerario y genera tu checklist legal.</p>
+            <button class="btn-add" onclick="openModal('trip')">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span data-t="add_first_trip">Agregar primer viaje</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            <span data-t="panel_checklist">Checklist legal</span>
+          </div>
+          <button class="panel-action" onclick="generateChecklist()" data-t="btn_generate">Generar</button>
+        </div>
+        <div class="panel-body" id="checklist-body">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <p data-t="no_checklist">Selecciona un viaje y pulsa<br/>'Generar' para ver tu checklist legal.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-profile">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" data-t="modal_profile_title">Datos del pasaporte</div><button class="modal-close" onclick="closeModal('profile')">×</button></div>
+    <div class="modal-body">
+      <div class="grid2">
+        <div class="form-group"><label class="form-label" data-t="lbl_surname">Apellido</label><input class="form-input" id="inp-surname" type="text" placeholder="GARCIA"/></div>
+        <div class="form-group"><label class="form-label" data-t="lbl_given">Nombres</label><input class="form-input" id="inp-given" type="text" placeholder="JUAN PABLO"/></div>
+      </div>
+      <div class="grid2">
+        <div class="form-group">
+          <label class="form-label" data-t="lbl_nationality">Nacionalidad</label>
+          <select class="form-select" id="inp-nat">
+            <option value="">— Seleccionar —</option>
+            <option>🇨🇴 Colombiano/a</option><option>🇻🇪 Venezolano/a</option><option>🇪🇨 Ecuatoriano/a</option>
+            <option>🇵🇪 Peruano/a</option><option>🇲🇽 Mexicano/a</option><option>🇦🇷 Argentino/a</option>
+            <option>🇧🇷 Brasileño/a</option><option>🇨🇱 Chileno/a</option><option>🇪🇸 Español/a</option>
+            <option>🇺🇸 Estadounidense</option><option>🇫🇷 Francés/a</option><option>🇩🇪 Alemán/a</option>
+            <option>🇮🇹 Italiano/a</option><option>🇨🇳 Chino/a</option><option>🇯🇵 Japonés/a</option>
+            <option>🇮🇳 Indio/a</option><option>🇷🇺 Ruso/a</option><option>🇹🇷 Turco/a</option>
+            <option>🇸🇦 Árabe (Golfo)</option><option>🇿🇦 Sudafricano/a</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label" data-t="lbl_passport_no">N° Pasaporte</label><input class="form-input" id="inp-passno" type="text" placeholder="AB123456"/></div>
+      </div>
+      <div class="grid2">
+        <div class="form-group"><label class="form-label" data-t="lbl_dob">Fecha de nacimiento</label><input class="form-input" id="inp-dob" type="date"/></div>
+        <div class="form-group"><label class="form-label" data-t="lbl_expiry">Vencimiento</label><input class="form-input" id="inp-expiry" type="date"/></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_email_alerts">Email para alertas</label>
+        <input class="form-input" id="inp-alert-email" type="email" placeholder="tu@email.com"/>
+        <p class="form-hint" data-t="hint_alerts">Recibirás alertas si cambia una ley antes de tu vuelo.</p>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('profile')" data-t="btn_cancel">Cancelar</button><button class="btn-save" onclick="saveProfile()" data-t="btn_save">Guardar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-health">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" data-t="modal_health_title">Salud y medicamentos</div><button class="modal-close" onclick="closeModal('health')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_vaccines">Vacunas</label>
+        <div class="tags-wrap" id="tags-vaccines" onclick="document.getElementById('inp-vaccines').focus()">
+          <input type="text" class="tag-in" id="inp-vaccines" placeholder="Fiebre amarilla, Hepatitis A…"/>
+        </div>
+        <p class="form-hint" data-t="hint_tags">Escribe y presiona Enter</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_meds">Medicamentos crónicos</label>
+        <div class="tags-wrap" id="tags-meds" onclick="document.getElementById('inp-meds').focus()">
+          <input type="text" class="tag-in" id="inp-meds" placeholder="Ritalin, Tramadol, insulina…"/>
+        </div>
+        <p class="form-hint" data-t="hint_meds_ctrl">Los medicamentos controlados se verifican para cada destino.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_blood">Tipo de sangre</label>
+        <select class="form-select" id="inp-blood">
+          <option value="">— Opcional —</option>
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('health')" data-t="btn_cancel">Cancelar</button><button class="btn-save" onclick="saveHealth()" data-t="btn_save">Guardar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-visas">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" data-t="modal_visas_title">Residencias y visas activas</div><button class="modal-close" onclick="closeModal('visas')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_residences">Países donde tienes residencia o visa activa</label>
+        <div class="tags-wrap" id="tags-residences" onclick="document.getElementById('inp-res').focus()">
+          <input type="text" class="tag-in" id="inp-res" placeholder="España (residente), USA (B1/B2)…"/>
+        </div>
+        <p class="form-hint" data-t="hint_res">Puede permitirte tránsito sin visa en ciertos países.</p>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('visas')" data-t="btn_cancel">Cancelar</button><button class="btn-save" onclick="saveVisas()" data-t="btn_save">Guardar</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-trip">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" data-t="modal_trip_title">Nuevo viaje</div><button class="modal-close" onclick="closeModal('trip')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_dest">Destino</label>
+        <select class="form-select" id="inp-dest">
+          <option value="">— Seleccionar —</option>
+          <option>🇯🇵 Japón</option><option>🇸🇬 Singapur</option><option>🇺🇸 Estados Unidos</option>
+          <option>🇬🇧 Reino Unido</option><option>🇪🇺 Zona Schengen</option><option>🇨🇦 Canadá</option>
+          <option>🇦🇺 Australia</option><option>🇦🇪 Emiratos Árabes</option><option>🇹🇷 Turquía</option>
+          <option>🇨🇳 China</option><option>🇮🇳 India</option><option>🇹🇭 Tailandia</option>
+          <option>🇲🇽 México</option><option>🇧🇷 Brasil</option><option>🇿🇦 Sudáfrica</option>
+          <option>🇷🇺 Rusia</option><option>🇸🇦 Arabia Saudita</option><option>🇮🇱 Israel</option>
+          <option>🇳🇿 Nueva Zelanda</option><option>🇮🇩 Indonesia</option><option>🇻🇳 Vietnam</option>
+          <option>🇲🇦 Marruecos</option><option>🇪🇬 Egipto</option><option>🇰🇷 Corea del Sur</option>
+          <option>🇨🇴 Colombia</option><option>🇦🇷 Argentina</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_layover">Escala (si aplica)</label>
+        <select class="form-select" id="inp-lay">
+          <option value="sin escala">— Sin escala —</option>
+          <option>🇬🇧 Reino Unido</option><option>🇺🇸 Estados Unidos</option><option>🇫🇷 Francia</option>
+          <option>🇩🇪 Alemania</option><option>🇳🇱 Países Bajos</option><option>🇹🇷 Turquía</option>
+          <option>🇶🇦 Qatar</option><option>🇦🇪 Emiratos Árabes</option><option>🇸🇬 Singapur</option><option>🇨🇦 Canadá</option>
+        </select>
+      </div>
+      <div class="grid2">
+        <div class="form-group"><label class="form-label" data-t="lbl_depart">Fecha de salida</label><input class="form-input" id="inp-depart" type="date"/></div>
+        <div class="form-group"><label class="form-label" data-t="lbl_return">Fecha de regreso</label><input class="form-input" id="inp-return" type="date"/></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-t="lbl_purpose">Motivo</label>
+        <select class="form-select" id="inp-purpose">
+          <option value="turismo">Turismo</option><option value="negocios">Negocios</option>
+          <option value="estudio">Estudio</option><option value="trabajo">Trabajo</option>
+          <option value="tránsito">Solo tránsito</option><option value="familia">Familia</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('trip')" data-t="btn_cancel">Cancelar</button><button class="btn-save" onclick="saveTrip()" data-t="btn_save_trip">Guardar viaje</button></div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+const firebaseConfig = {
+  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
+  authDomain: "my-passport-211af.firebaseapp.com",
+  projectId: "my-passport-211af",
+  storageBucket: "my-passport-211af.firebasestorage.app",
+  messagingSenderId: "118053564604",
+  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+window._auth=auth;window._db=db;window._doc=doc;window._getDoc=getDoc;
+window._setDoc=setDoc;window._collection=collection;window._addDoc=addDoc;window._getDocs=getDocs;
+window._fbSignOut=fbSignOut;
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='/index.html';return;}
+  window._uid=user.uid;
+  const av=document.getElementById('nav-avatar');
+  if(user.photoURL){av.innerHTML=`<img src="${user.photoURL}" alt="av"/>`;}
+  else{av.textContent=(user.displayName||user.email||'?')[0].toUpperCase();}
+  document.getElementById('nav-email').textContent=user.displayName||user.email;
+  await loadProfile();await loadTrips();
+});
+</script>
+
+<script>
+const T={
+  es:{btn_signout:"Salir",stamp_text:"VÁLIDO",lbl_surname:"Apellido",lbl_given:"Nombres",lbl_nationality:"Nacionalidad",lbl_passport_no:"N° Pasaporte",lbl_expiry:"Vencimiento",lbl_dob:"Nacimiento",tab_info:"Info",tab_health:"Salud",tab_visas:"Visas",lbl_vaccines:"Vacunas",lbl_meds:"Medicamentos",lbl_residences:"Residencias / Visas",edit_profile:"Editar perfil",edit_health:"Editar salud",edit_visas:"Editar visas",panel_trips:"Mis viajes",add_trip:"+ Agregar viaje",no_trips:"Todavía no tienes viajes.\nAgrega tu itinerario.",add_first_trip:"Agregar primer viaje",panel_checklist:"Checklist legal",btn_generate:"Generar",no_checklist:"Selecciona un viaje y pulsa\n'Generar'.",modal_profile_title:"Datos del pasaporte",lbl_email_alerts:"Email para alertas",hint_alerts:"Recibirás alertas si cambia una ley antes de tu vuelo.",lbl_blood:"Tipo de sangre",modal_health_title:"Salud y medicamentos",hint_tags:"Escribe y presiona Enter",hint_meds_ctrl:"Los medicamentos controlados se verifican para cada destino.",modal_visas_title:"Residencias y visas activas",hint_res:"Puede permitirte tránsito sin visa.",modal_trip_title:"Nuevo viaje",lbl_dest:"Destino",lbl_layover:"Escala",lbl_depart:"Salida",lbl_return:"Regreso",lbl_purpose:"Motivo",btn_cancel:"Cancelar",btn_save:"Guardar",btn_save_trip:"Guardar viaje",loading_checklist:"Consultando fuentes oficiales…",risk_ok:"Sin problemas",risk_caution:"Precaución",risk_danger:"Alto riesgo",disclaimer:"Información orientativa. Verifica siempre con la embajada oficial."},
+  en:{btn_signout:"Sign out",stamp_text:"VALID",lbl_surname:"Surname",lbl_given:"Given names",lbl_nationality:"Nationality",lbl_passport_no:"Passport No.",lbl_expiry:"Expiry",lbl_dob:"Date of birth",tab_info:"Info",tab_health:"Health",tab_visas:"Visas",lbl_vaccines:"Vaccines",lbl_meds:"Medications",lbl_residences:"Residences / Visas",edit_profile:"Edit profile",edit_health:"Edit health",edit_visas:"Edit visas",panel_trips:"My trips",add_trip:"+ Add trip",no_trips:"No trips yet.\nAdd your itinerary to generate your legal checklist.",add_first_trip:"Add first trip",panel_checklist:"Legal checklist",btn_generate:"Generate",no_checklist:"Select a trip and press\n'Generate'.",modal_profile_title:"Passport data",lbl_email_alerts:"Alert email",hint_alerts:"You'll receive alerts if a law changes before your flight.",lbl_blood:"Blood type",modal_health_title:"Health & medications",hint_tags:"Type and press Enter",hint_meds_ctrl:"Controlled medications are verified for each destination.",modal_visas_title:"Residences & active visas",hint_res:"May allow transit without visa.",modal_trip_title:"New trip",lbl_dest:"Destination",lbl_layover:"Layover",lbl_depart:"Departure",lbl_return:"Return",lbl_purpose:"Purpose",btn_cancel:"Cancel",btn_save:"Save",btn_save_trip:"Save trip",loading_checklist:"Consulting official sources…",risk_ok:"No issues",risk_caution:"Caution",risk_danger:"High risk",disclaimer:"Guidance only. Always verify with the official embassy."},
+  fr:{btn_signout:"Déconnexion",stamp_text:"VALIDE",lbl_surname:"Nom",lbl_given:"Prénoms",lbl_nationality:"Nationalité",lbl_passport_no:"N° Passeport",lbl_expiry:"Expiration",lbl_dob:"Date de naissance",tab_info:"Info",tab_health:"Santé",tab_visas:"Visas",lbl_vaccines:"Vaccins",lbl_meds:"Médicaments",lbl_residences:"Résidences / Visas",edit_profile:"Modifier",edit_health:"Modifier santé",edit_visas:"Modifier visas",panel_trips:"Mes voyages",add_trip:"+ Ajouter",no_trips:"Aucun voyage.\nAjoutez votre itinéraire.",add_first_trip:"Ajouter un voyage",panel_checklist:"Checklist légale",btn_generate:"Générer",no_checklist:"Sélectionnez un voyage et\nappuyez sur 'Générer'.",modal_profile_title:"Données passeport",lbl_email_alerts:"Email alertes",hint_alerts:"Alertes si une loi change avant votre vol.",lbl_blood:"Groupe sanguin",modal_health_title:"Santé et médicaments",hint_tags:"Tapez et appuyez sur Entrée",hint_meds_ctrl:"Médicaments contrôlés vérifiés pour chaque destination.",modal_visas_title:"Résidences et visas",hint_res:"Peut permettre le transit sans visa.",modal_trip_title:"Nouveau voyage",lbl_dest:"Destination",lbl_layover:"Escale",lbl_depart:"Départ",lbl_return:"Retour",lbl_purpose:"Motif",btn_cancel:"Annuler",btn_save:"Sauvegarder",btn_save_trip:"Sauvegarder",loading_checklist:"Consultation des sources…",risk_ok:"Pas de problème",risk_caution:"Prudence",risk_danger:"Risque élevé",disclaimer:"Indicatif seulement. Vérifiez auprès de l'ambassade."},
+  de:{btn_signout:"Abmelden",stamp_text:"GÜLTIG",lbl_surname:"Nachname",lbl_given:"Vornamen",lbl_nationality:"Staatsangehörigkeit",lbl_passport_no:"Pass-Nr.",lbl_expiry:"Ablaufdatum",lbl_dob:"Geburtsdatum",tab_info:"Info",tab_health:"Gesundheit",tab_visas:"Visa",lbl_vaccines:"Impfungen",lbl_meds:"Medikamente",lbl_residences:"Aufenthalt / Visa",edit_profile:"Profil bearbeiten",edit_health:"Gesundheit",edit_visas:"Visa bearbeiten",panel_trips:"Meine Reisen",add_trip:"+ Reise hinzufügen",no_trips:"Noch keine Reisen.\nReiseroute hinzufügen.",add_first_trip:"Erste Reise",panel_checklist:"Checkliste",btn_generate:"Erstellen",no_checklist:"Reise auswählen und\n'Erstellen' klicken.",modal_profile_title:"Reisepassdaten",lbl_email_alerts:"Benachrichtigungs-E-Mail",hint_alerts:"Benachrichtigung bei Gesetzesänderungen.",lbl_blood:"Blutgruppe",modal_health_title:"Gesundheit",hint_tags:"Eingeben und Enter",hint_meds_ctrl:"Rezeptpflichtige Medikamente werden geprüft.",modal_visas_title:"Aufenthalte & Visa",hint_res:"Kann Transit ermöglichen.",modal_trip_title:"Neue Reise",lbl_dest:"Ziel",lbl_layover:"Zwischenstopp",lbl_depart:"Abflug",lbl_return:"Rückkehr",lbl_purpose:"Zweck",btn_cancel:"Abbrechen",btn_save:"Speichern",btn_save_trip:"Reise speichern",loading_checklist:"Quellen werden abgefragt…",risk_ok:"Keine Probleme",risk_caution:"Vorsicht",risk_danger:"Hohes Risiko",disclaimer:"Nur Orientierung. Bitte bei der Botschaft prüfen."},
+  it:{btn_signout:"Esci",stamp_text:"VALIDO",lbl_surname:"Cognome",lbl_given:"Nomi",lbl_nationality:"Nazionalità",lbl_passport_no:"N° Passaporto",lbl_expiry:"Scadenza",lbl_dob:"Data di nascita",tab_info:"Info",tab_health:"Salute",tab_visas:"Visti",lbl_vaccines:"Vaccini",lbl_meds:"Farmaci",lbl_residences:"Residenze / Visti",edit_profile:"Modifica",edit_health:"Modifica salute",edit_visas:"Modifica visti",panel_trips:"Viaggi",add_trip:"+ Aggiungi",no_trips:"Nessun viaggio.\nAggiungi il tuo itinerario.",add_first_trip:"Aggiungi viaggio",panel_checklist:"Checklist legale",btn_generate:"Genera",no_checklist:"Seleziona un viaggio e\npremi 'Genera'.",modal_profile_title:"Dati passaporto",lbl_email_alerts:"Email avvisi",hint_alerts:"Avvisi se una legge cambia prima del volo.",lbl_blood:"Gruppo sanguigno",modal_health_title:"Salute e farmaci",hint_tags:"Scrivi e premi Invio",hint_meds_ctrl:"Farmaci controllati verificati per destinazione.",modal_visas_title:"Residenze e visti",hint_res:"Può consentire transito senza visto.",modal_trip_title:"Nuovo viaggio",lbl_dest:"Destinazione",lbl_layover:"Scalo",lbl_depart:"Partenza",lbl_return:"Ritorno",lbl_purpose:"Scopo",btn_cancel:"Annulla",btn_save:"Salva",btn_save_trip:"Salva viaggio",loading_checklist:"Consultazione fonti…",risk_ok:"Nessun problema",risk_caution:"Attenzione",risk_danger:"Alto rischio",disclaimer:"Solo orientativo. Verifica con l'ambasciata."},
+  pt:{btn_signout:"Sair",stamp_text:"VÁLIDO",lbl_surname:"Sobrenome",lbl_given:"Nomes",lbl_nationality:"Nacionalidade",lbl_passport_no:"N° Passaporte",lbl_expiry:"Validade",lbl_dob:"Data de nascimento",tab_info:"Info",tab_health:"Saúde",tab_visas:"Vistos",lbl_vaccines:"Vacinas",lbl_meds:"Medicamentos",lbl_residences:"Residências / Vistos",edit_profile:"Editar",edit_health:"Editar saúde",edit_visas:"Editar vistos",panel_trips:"Viagens",add_trip:"+ Adicionar",no_trips:"Sem viagens.\nAdicione seu itinerário.",add_first_trip:"Adicionar viagem",panel_checklist:"Checklist legal",btn_generate:"Gerar",no_checklist:"Selecione uma viagem e\npressione 'Gerar'.",modal_profile_title:"Dados do passaporte",lbl_email_alerts:"Email alertas",hint_alerts:"Alertas se uma lei mudar antes do voo.",lbl_blood:"Tipo sanguíneo",modal_health_title:"Saúde e medicamentos",hint_tags:"Digite e pressione Enter",hint_meds_ctrl:"Medicamentos controlados verificados por destino.",modal_visas_title:"Residências e vistos",hint_res:"Pode permitir trânsito sem visto.",modal_trip_title:"Nova viagem",lbl_dest:"Destino",lbl_layover:"Escala",lbl_depart:"Saída",lbl_return:"Retorno",lbl_purpose:"Motivo",btn_cancel:"Cancelar",btn_save:"Salvar",btn_save_trip:"Salvar viagem",loading_checklist:"Consultando fontes…",risk_ok:"Sem problemas",risk_caution:"Cuidado",risk_danger:"Alto risco",disclaimer:"Apenas orientativo. Verifique com a embaixada."},
+  zh:{btn_signout:"退出",stamp_text:"有效",lbl_surname:"姓",lbl_given:"名",lbl_nationality:"国籍",lbl_passport_no:"护照号",lbl_expiry:"有效期",lbl_dob:"出生日期",tab_info:"信息",tab_health:"健康",tab_visas:"签证",lbl_vaccines:"疫苗",lbl_meds:"药物",lbl_residences:"居住/签证",edit_profile:"编辑资料",edit_health:"编辑健康",edit_visas:"编辑签证",panel_trips:"我的行程",add_trip:"+ 添加",no_trips:"暂无行程。\n请添加行程。",add_first_trip:"添加行程",panel_checklist:"法律清单",btn_generate:"生成",no_checklist:"选择行程并点击\n'生成'。",modal_profile_title:"护照信息",lbl_email_alerts:"提醒邮箱",hint_alerts:"法律变更时收到提醒。",lbl_blood:"血型",modal_health_title:"健康与药物",hint_tags:"输入后按Enter",hint_meds_ctrl:"管制药物将针对每个目的地验证。",modal_visas_title:"居住与有效签证",hint_res:"可能允许免签过境。",modal_trip_title:"新行程",lbl_dest:"目的地",lbl_layover:"中转",lbl_depart:"出发",lbl_return:"返回",lbl_purpose:"目的",btn_cancel:"取消",btn_save:"保存",btn_save_trip:"保存行程",loading_checklist:"查询官方资料…",risk_ok:"无重大问题",risk_caution:"注意",risk_danger:"高风险",disclaimer:"仅供参考。请向官方大使馆核实。"},
+  ja:{btn_signout:"ログアウト",stamp_text:"有効",lbl_surname:"姓",lbl_given:"名",lbl_nationality:"国籍",lbl_passport_no:"パスポート番号",lbl_expiry:"有効期限",lbl_dob:"生年月日",tab_info:"情報",tab_health:"健康",tab_visas:"ビザ",lbl_vaccines:"ワクチン",lbl_meds:"薬",lbl_residences:"在留 / ビザ",edit_profile:"編集",edit_health:"健康編集",edit_visas:"ビザ編集",panel_trips:"旅行一覧",add_trip:"+ 追加",no_trips:"旅行はありません。\n旅程を追加してください。",add_first_trip:"旅行を追加",panel_checklist:"法的チェックリスト",btn_generate:"生成",no_checklist:"旅行を選択して\n'生成'を押してください。",modal_profile_title:"パスポート情報",lbl_email_alerts:"アラートメール",hint_alerts:"法律変更時に通知。",lbl_blood:"血液型",modal_health_title:"健康・薬",hint_tags:"入力してEnterを押す",hint_meds_ctrl:"規制薬物は各目的地で確認。",modal_visas_title:"在留・有効ビザ",hint_res:"ビザなし通過が可能な場合あり。",modal_trip_title:"新しい旅行",lbl_dest:"目的地",lbl_layover:"乗り継ぎ",lbl_depart:"出発",lbl_return:"帰国",lbl_purpose:"目的",btn_cancel:"キャンセル",btn_save:"保存",btn_save_trip:"旅行を保存",loading_checklist:"確認中…",risk_ok:"問題なし",risk_caution:"注意",risk_danger:"高リスク",disclaimer:"参考のみ。大使館で確認してください。"},
+  ar:{btn_signout:"خروج",stamp_text:"ساري",lbl_surname:"اللقب",lbl_given:"الأسماء",lbl_nationality:"الجنسية",lbl_passport_no:"رقم الجواز",lbl_expiry:"الانتهاء",lbl_dob:"الميلاد",tab_info:"معلومات",tab_health:"صحة",tab_visas:"تأشيرات",lbl_vaccines:"لقاحات",lbl_meds:"أدوية",lbl_residences:"إقامات / تأشيرات",edit_profile:"تعديل",edit_health:"تعديل الصحة",edit_visas:"تعديل التأشيرات",panel_trips:"رحلاتي",add_trip:"+ إضافة",no_trips:"لا رحلات بعد.\nأضف مسارك.",add_first_trip:"إضافة رحلة",panel_checklist:"قائمة التحقق",btn_generate:"إنشاء",no_checklist:"اختر رحلة واضغط\n'إنشاء'.",modal_profile_title:"بيانات الجواز",lbl_email_alerts:"البريد للتنبيهات",hint_alerts:"تنبيهات عند تغيير القوانين.",lbl_blood:"فصيلة الدم",modal_health_title:"الصحة والأدوية",hint_tags:"اكتب واضغط Enter",hint_meds_ctrl:"الأدوية الخاضعة للرقابة تُتحقق لكل وجهة.",modal_visas_title:"الإقامات والتأشيرات",hint_res:"قد يسمح بالعبور بدون تأشيرة.",modal_trip_title:"رحلة جديدة",lbl_dest:"الوجهة",lbl_layover:"التوقف",lbl_depart:"المغادرة",lbl_return:"العودة",lbl_purpose:"الغرض",btn_cancel:"إلغاء",btn_save:"حفظ",btn_save_trip:"حفظ الرحلة",loading_checklist:"استشارة المصادر…",risk_ok:"لا مشاكل",risk_caution:"احتياط",risk_danger:"خطر",disclaimer:"للإرشاد فقط. تحقق مع السفارة."},
+  ru:{btn_signout:"Выйти",stamp_text:"ДЕЙСТВИТ.",lbl_surname:"Фамилия",lbl_given:"Имена",lbl_nationality:"Гражданство",lbl_passport_no:"№ Паспорта",lbl_expiry:"Срок действия",lbl_dob:"Дата рождения",tab_info:"Инфо",tab_health:"Здоровье",tab_visas:"Визы",lbl_vaccines:"Прививки",lbl_meds:"Лекарства",lbl_residences:"Проживание / Визы",edit_profile:"Изменить",edit_health:"Здоровье",edit_visas:"Визы",panel_trips:"Поездки",add_trip:"+ Добавить",no_trips:"Нет поездок.\nДобавьте маршрут.",add_first_trip:"Добавить поездку",panel_checklist:"Чек-лист",btn_generate:"Создать",no_checklist:"Выберите поездку и нажмите\n'Создать'.",modal_profile_title:"Данные паспорта",lbl_email_alerts:"Email уведомлений",hint_alerts:"Уведомление при изменении законов.",lbl_blood:"Группа крови",modal_health_title:"Здоровье и лекарства",hint_tags:"Введите и нажмите Enter",hint_meds_ctrl:"Рецептурные препараты проверяются.",modal_visas_title:"Проживание и визы",hint_res:"Может разрешить транзит.",modal_trip_title:"Новая поездка",lbl_dest:"Направление",lbl_layover:"Пересадка",lbl_depart:"Отправление",lbl_return:"Возвращение",lbl_purpose:"Цель",btn_cancel:"Отмена",btn_save:"Сохранить",btn_save_trip:"Сохранить",loading_checklist:"Запрос источников…",risk_ok:"Нет проблем",risk_caution:"Осторожность",risk_danger:"Высокий риск",disclaimer:"Справочно. Проверяйте в посольстве."}
+};
+
+const ICONS={
+  danger:`<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  warn:`<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  ok:`<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+  info:`<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`
+};
+
+let lang=localStorage.getItem('mp_lang')||'es';
+let profile={},health={vaccines:[],meds:[]},visas={residences:[]},trips=[],selectedTrip=null;
+const tagState={vaccines:[],meds:[],residences:[]};
+
+function tr(k){return(T[lang]&&T[lang][k])||(T.es[k])||k;}
+
+function setLang(l){
+  lang=l;document.documentElement.lang=l;
+  document.body.style.direction=l==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-t]').forEach(el=>{if(T[l]&&T[l][el.dataset.t])el.textContent=T[l][el.dataset.t];});
+  localStorage.setItem('mp_lang',l);
+  document.getElementById('lang-sel').value=l;
+}
+
+function showTab(tab){
+  document.querySelectorAll('.pb-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pb-tab-content').forEach(c=>c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function openModal(name){
+  if(name==='profile'){
+    document.getElementById('inp-surname').value=profile.surname||'';
+    document.getElementById('inp-given').value=profile.given||'';
+    document.getElementById('inp-nat').value=profile.nationality||'';
+    document.getElementById('inp-passno').value=profile.passno||'';
+    document.getElementById('inp-dob').value=profile.dob||'';
+    document.getElementById('inp-expiry').value=profile.expiry||'';
+    document.getElementById('inp-alert-email').value=profile.alertEmail||'';
+  }
+  if(name==='health'){rebuildTags('vaccines',health.vaccines||[]);rebuildTags('meds',health.meds||[]);document.getElementById('inp-blood').value=health.blood||'';}
+  if(name==='visas'){rebuildTags('residences',visas.residences||[]);}
+  document.getElementById('modal-'+name).classList.add('open');
+}
+function closeModal(name){document.getElementById('modal-'+name).classList.remove('open');}
+
+function rebuildTags(field,items){
+  tagState[field]=[...items];
+  const inputId=field==='vaccines'?'inp-vaccines':field==='meds'?'inp-meds':'inp-res';
+  const wrap=document.getElementById('tags-'+field);
+  wrap.querySelectorAll('.f-tag').forEach(t=>t.remove());
+  items.forEach(item=>{
+    const t=document.createElement('div');t.className='f-tag';t.dataset.val=item;
+    t.innerHTML=`${item} <button onclick="removeTag('${field}','${item.replace(/'/g,"\\'")}')">×</button>`;
+    wrap.insertBefore(t,document.getElementById(inputId));
+  });
+}
+function addTag(field,name){
+  if(!name||tagState[field].includes(name))return;
+  tagState[field].push(name);
+  const inputId=field==='vaccines'?'inp-vaccines':field==='meds'?'inp-meds':'inp-res';
+  const wrap=document.getElementById('tags-'+field);
+  const inp=document.getElementById(inputId);
+  const t=document.createElement('div');t.className='f-tag';t.dataset.val=name;
+  t.innerHTML=`${name} <button onclick="removeTag('${field}','${name.replace(/'/g,"\\'")}')">×</button>`;
+  wrap.insertBefore(t,inp);
+}
+function removeTag(field,name){
+  tagState[field]=tagState[field].filter(x=>x!==name);
+  document.querySelector(`#tags-${field} .f-tag[data-val="${name}"]`)?.remove();
+}
+[['inp-vaccines','vaccines'],['inp-meds','meds'],['inp-res','residences']].forEach(([id,field])=>{
+  document.getElementById(id)?.addEventListener('keydown',function(e){
+    if((e.key==='Enter'||e.key===',')&&this.value.trim()){e.preventDefault();addTag(field,this.value.trim());this.value='';}
+  });
+});
+
+async function saveProfile(){
+  profile={surname:document.getElementById('inp-surname').value,given:document.getElementById('inp-given').value,nationality:document.getElementById('inp-nat').value,passno:document.getElementById('inp-passno').value,dob:document.getElementById('inp-dob').value,expiry:document.getElementById('inp-expiry').value,alertEmail:document.getElementById('inp-alert-email').value};
+  await persist('profile',profile);renderPassport();closeModal('profile');
+}
+async function saveHealth(){
+  health={vaccines:[...tagState.vaccines],meds:[...tagState.meds],blood:document.getElementById('inp-blood').value};
+  await persist('health',health);renderHealth();closeModal('health');
+}
+async function saveVisas(){
+  visas={residences:[...tagState.residences]};
+  await persist('visas',visas);renderVisas();closeModal('visas');
+}
+async function saveTrip(){
+  const dest=document.getElementById('inp-dest').value;
+  if(!dest)return;
+  const trip={destination:dest,layover:document.getElementById('inp-lay').value,depart:document.getElementById('inp-depart').value,return:document.getElementById('inp-return').value,purpose:document.getElementById('inp-purpose').value,createdAt:Date.now()};
+  if(!window._uid)return;
+  const ref=await window._addDoc(window._collection(window._db,'users',window._uid,'trips'),trip);
+  trip.id=ref.id;trips.push(trip);renderTrips();closeModal('trip');
+}
+
+async function persist(sub,data){
+  if(!window._uid)return;
+  await window._setDoc(window._doc(window._db,'users',window._uid,sub,'data'),data);
+}
+async function loadProfile(){
+  if(!window._uid)return;
+  const s=await window._getDoc(window._doc(window._db,'users',window._uid,'profile','data'));
+  if(s.exists())profile=s.data();
+  const h=await window._getDoc(window._doc(window._db,'users',window._uid,'health','data'));
+  if(h.exists())health=h.data();
+  const v=await window._getDoc(window._doc(window._db,'users',window._uid,'visas','data'));
+  if(v.exists())visas=v.data();
+  renderPassport();renderHealth();renderVisas();
+}
+async function loadTrips(){
+  if(!window._uid)return;
+  const s=await window._getDocs(window._collection(window._db,'users',window._uid,'trips'));
+  trips=[];s.forEach(d=>trips.push({...d.data(),id:d.id}));
+  trips.sort((a,b)=>b.createdAt-a.createdAt);renderTrips();
+}
+
+function renderPassport(){
+  document.getElementById('pb-surname').textContent=(profile.surname||'—').toUpperCase();
+  document.getElementById('pb-given').textContent=(profile.given||'—').toUpperCase();
+  document.getElementById('pb-nat').textContent=profile.nationality||'—';
+  document.getElementById('pb-passno').textContent=profile.passno||'—';
+  document.getElementById('pb-expiry').textContent=profile.expiry||'—';
+  document.getElementById('pb-dob').textContent=profile.dob||'—';
+  const sn=(profile.surname||'???').toUpperCase().replace(/\s/g,'<');
+  const gn=(profile.given||'???').toUpperCase().replace(/\s/g,'<');
+  const nat=(profile.nationality||'INT').replace(/[^A-Z]/gi,'').substring(0,3).toUpperCase()||'INT';
+  document.getElementById('pb-mrz').innerHTML=`P&lt;${nat}${sn}&lt;&lt;${gn}&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br/>${(profile.passno||'?????????').replace(/\s/g,'')}&lt;0${nat}${(profile.dob||'0101011').replace(/-/g,'').substring(2)}&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4`;
+}
+function renderHealth(){
+  document.getElementById('pb-vaccines').textContent=(health.vaccines||[]).join(', ')||'—';
+  document.getElementById('pb-meds').textContent=(health.meds||[]).join(', ')||'—';
+}
+function renderVisas(){
+  document.getElementById('pb-residences').textContent=(visas.residences||[]).join(', ')||'—';
+}
+
+const FLAGS={'Japón':'🇯🇵','Singapur':'🇸🇬','Estados Unidos':'🇺🇸','Reino Unido':'🇬🇧','Schengen':'🇪🇺','Canadá':'🇨🇦','Australia':'🇦🇺','Emiratos':'🇦🇪','Turquía':'🇹🇷','China':'🇨🇳','India':'🇮🇳','Tailandia':'🇹🇭','México':'🇲🇽','Brasil':'🇧🇷','Sudáfrica':'🇿🇦','Rusia':'🇷🇺','Arabia':'🇸🇦','Israel':'🇮🇱','Nueva Zelanda':'🇳🇿','Indonesia':'🇮🇩','Vietnam':'🇻🇳','Marruecos':'🇲🇦','Egipto':'🇪🇬','Corea':'🇰🇷','Colombia':'🇨🇴','Argentina':'🇦🇷'};
+function getFlag(dest){return Object.entries(FLAGS).find(([k])=>dest.includes(k))?.[1]||'✈️';}
+
+function renderTrips(){
+  const body=document.getElementById('trips-body');
+  if(!trips.length){
+    body.innerHTML=`<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg><p>${tr('no_trips').replace('\n','<br/>')}</p><button class="btn-add" onclick="openModal('trip')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>${tr('add_first_trip')}</span></button></div>`;
+    return;
+  }
+  body.innerHTML=trips.map(t=>`<div class="trip-card"><div class="trip-flag">${getFlag(t.destination)}</div><div class="trip-info"><div class="trip-dest">${t.destination}</div><div class="trip-dates">${t.depart||'—'} → ${t.return||'—'} · ${t.purpose}</div></div><button class="trip-btn" onclick="selectTrip('${t.id}')">${tr('btn_generate')}</button></div>`).join('');
+}
+
+function selectTrip(id){selectedTrip=trips.find(t=>t.id===id);if(selectedTrip)generateChecklist();}
+
+async function generateChecklist(){
+  if(!selectedTrip){return;}
+  const body=document.getElementById('checklist-body');
+  body.innerHTML=`<div class="loading-card"><div class="spinner"></div><p>${tr('loading_checklist')}</p></div>`;
+  const nat=profile.nationality||'desconocida';
+  const medsStr=(health.meds||[]).join(', ')||'ninguno';
+  const vaxStr=(health.vaccines||[]).join(', ')||'ninguna';
+  const resStr=(visas.residences||[]).join(', ')||'ninguna';
+  const lay=(!selectedTrip.layover||selectedTrip.layover==='sin escala')?'sin escala':`escala en ${selectedTrip.layover}`;
+  const prompt=`Eres experto en regulaciones de viaje internacional. Usa tu conocimiento de IATA Timatic, Sherpa, iVisa, CDC, INCB, embajadas oficiales y OMC.\n\nPERFIL:\n- Nacionalidad: ${nat}\n- Pasaporte: ${profile.passno||'desconocido'}, vence: ${profile.expiry||'desconocido'}\n- Residencias/visas: ${resStr}\n- Vacunas: ${vaxStr}\n- Medicamentos: ${medsStr}\n- Destino: ${selectedTrip.destination}\n- ${lay}\n- Motivo: ${selectedTrip.purpose}\n- Fechas: ${selectedTrip.depart||'?'} al ${selectedTrip.return||'?'}\n- Idioma: ${lang}\n\nResponde SOLO JSON válido (sin markdown):\n{"risk_level":"ok"|"caution"|"danger","summary":"...","route":"...","items":[{"type":"danger"|"warn"|"ok"|"info","title":"...","description":"...","source":"Fuente: ..."}]}\n\n6-9 items por criticidad. Muy específico. Todo en idioma: ${lang}.`;
+  try{
+    const res=await fetch('/.netlify/functions/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    const parsed=await res.json();
+    if(parsed.error)throw new Error(parsed.error);
+    const riskMap={ok:tr('risk_ok'),caution:tr('risk_caution'),danger:tr('risk_danger')};
+    const riskColor=parsed.risk_level==='ok'?'ok':parsed.risk_level==='danger'?'danger':'warn';
+    const items=(parsed.items||[]).map(item=>`<div class="check-item"><div class="ci-icon ${item.type}">${ICONS[item.type]||ICONS.info}</div><div><div class="ci-title">${item.title}</div><div class="ci-desc">${item.description}</div><div class="ci-src">${item.source}</div></div></div>`).join('');
+    body.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(201,168,76,0.1)"><div><div style="font-family:var(--font-serif);font-size:14px;color:var(--gold-light)">${parsed.route||selectedTrip.destination}</div><div style="font-size:11px;color:var(--cream-dim);margin-top:2px">${selectedTrip.purpose} · ${selectedTrip.depart||'?'} → ${selectedTrip.return||'?'}</div></div><span style="padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;background:var(--${riskColor}-bg);color:var(--${riskColor})">${riskMap[parsed.risk_level]||parsed.risk_level}</span></div><div style="font-size:12px;color:var(--cream-dim);line-height:1.6;padding:10px 12px;background:rgba(0,0,0,0.2);border-radius:5px;border-left:3px solid var(--gold);margin-bottom:12px">${parsed.summary}</div>${items}<div style="display:flex;gap:8px;align-items:flex-start;padding:10px 12px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.13);border-radius:5px;margin-top:10px"><svg style="width:13px;height:13px;flex-shrink:0;margin-top:2px;stroke:var(--warn);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><p style="font-size:11px;color:var(--cream-dim);line-height:1.5">${tr('disclaimer')}</p></div>`;
+  }catch(err){body.innerHTML=`<p style="color:var(--danger);font-size:13px;padding:1rem 0">Error: ${err.message}</p>`;}
+}
+
+window.doSignOut=async function(){if(window._fbSignOut&&window._auth){await window._fbSignOut(window._auth);}window.location.href='/index.html';};
+setLang(lang);
+window.showTab=showTab;window.openModal=openModal;window.closeModal=closeModal;
+window.saveProfile=saveProfile;window.saveHealth=saveHealth;window.saveVisas=saveVisas;
+window.saveTrip=saveTrip;window.removeTag=removeTag;window.selectTrip=selectTrip;
+window.generateChecklist=generateChecklist;window.setLang=setLang;
+</script>
+</body>
+</html>
