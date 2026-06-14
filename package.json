@@ -1,0 +1,11 @@
+{
+  "name": "my-passport",
+  "version": "1.0.0",
+  "description": "Digital Travel Compliance Passport",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "netlify dev"
+  }
+}
