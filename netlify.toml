@@ -2,6 +2,9 @@
   publish = "public"
   functions = "netlify/functions"
 
+[build.environment]
+  NODE_VERSION = "18"
+
 [[redirects]]
   from = "/.netlify/functions/*"
   to = "/.netlify/functions/:splat"
@@ -11,6 +14,7 @@
   from = "/pages/*"
   to = "/pages/:splat"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/*"
