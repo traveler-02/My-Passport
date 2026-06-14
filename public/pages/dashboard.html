@@ -11,6 +11,8 @@
   --cream:#f5f0e8;--cream2:#d4c9b0;--cream3:#b8a98a;
   --ink:#0d1f16;--page:#f8f4ed;--page3:#c8c0ae;
   --ff:"IM Fell English",Georgia,serif;--ffs:"Inter",sans-serif;
+  --ff-mono:"Courier New",Courier,monospace;
+  --ff-sig:"Brush Script MT",cursive;
   --danger:#8b1a1a;--warn:#7a5810;--ok:#1a3a2a;--info:#1a2a6b;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -49,7 +51,7 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 .cover-bio{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(201,168,76,0.28);border-radius:2px;padding:3px 10px;margin-bottom:0.6rem;}
 .cover-bio-dot{width:10px;height:10px;border:1px solid rgba(201,168,76,0.45);border-radius:50%;position:relative;}
 .cover-bio-dot::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:4px;height:4px;border-radius:50%;background:rgba(201,168,76,0.55);}
-.cover-bio-lbl{font-size:6.5px;color:rgba(201,168,76,0.5);font-family:Courier New,monospace;letter-spacing:0.07em;}
+.cover-bio-lbl{font-size:6.5px;color:rgba(201,168,76,0.5);font-family:var(--ff-mono);letter-spacing:0.07em;}
 .cover-hint{font-size:8px;color:rgba(201,168,76,0.3);font-family:var(--ffs);letter-spacing:0.05em;text-align:center;padding-bottom:0.6rem;}
 
 .country-bar{background:rgba(0,0,0,0.4);border-top:1px solid rgba(201,168,76,0.12);padding:8px 12px 8px 18px;display:flex;align-items:center;gap:8px;position:relative;z-index:4;}
@@ -60,8 +62,8 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 .pages{display:none;}
 .pages.open{display:block;}
 .page-topbar{background:rgba(0,0,0,0.3);padding:6px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.1);}
-.passport-label{font-size:8px;color:rgba(201,168,76,0.45);font-family:Courier New,monospace;letter-spacing:0.07em;}
-.close-btn{background:none;border:none;color:rgba(201,168,76,0.35);font-size:10px;cursor:pointer;font-family:Courier New,monospace;letter-spacing:0.05em;transition:color 0.15s;}
+.passport-label{font-size:8px;color:rgba(201,168,76,0.45);font-family:var(--ff-mono);letter-spacing:0.07em;}
+.close-btn{background:none;border:none;color:rgba(201,168,76,0.35);font-size:10px;cursor:pointer;font-family:var(--ff-mono);letter-spacing:0.05em;transition:color 0.15s;}
 .close-btn:hover{color:var(--gold);}
 
 .tabs{display:flex;background:rgba(0,0,0,0.18);border-bottom:1px solid rgba(201,168,76,0.12);overflow-x:auto;}
@@ -78,7 +80,7 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 .page::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px),repeating-linear-gradient(90deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px);pointer-events:none;}
 .page>*{position:relative;z-index:1;}
 .wm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-20deg);font-size:55px;color:rgba(26,58,42,0.04);font-family:var(--ff);font-weight:bold;white-space:nowrap;pointer-events:none;z-index:0;letter-spacing:0.1em;}
-.pg-num{position:absolute;bottom:9px;font-size:7.5px;font-family:Courier New,monospace;color:var(--cream3);letter-spacing:0.1em;}
+.pg-num{position:absolute;bottom:9px;font-size:7.5px;font-family:var(--ff-mono);color:var(--cream3);letter-spacing:0.1em;}
 .page-l .pg-num{right:12px;}
 .page-r .pg-num{left:12px;}
 .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;padding-bottom:7px;border-bottom:1.5px solid var(--gold3);}
@@ -86,16 +88,16 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 
 .poly{background:linear-gradient(145deg,#ddeae3,#c8d8cc,#bacecc);border:1px solid rgba(80,120,100,0.4);border-radius:3px;padding:11px;position:relative;overflow:hidden;margin-bottom:9px;}
 .poly::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(255,255,255,0.07) 3px,rgba(255,255,255,0.07) 4px);pointer-events:none;}
-.poly::after{content:attr(data-country);position:absolute;bottom:4px;left:0;right:0;font-size:5px;font-family:Courier New,monospace;color:rgba(40,70,55,0.18);letter-spacing:0.06em;text-align:center;white-space:nowrap;overflow:hidden;}
+.poly::after{content:attr(data-country);position:absolute;bottom:4px;left:0;right:0;font-size:5px;font-family:var(--ff-mono);color:rgba(40,70,55,0.18);letter-spacing:0.06em;text-align:center;white-space:nowrap;overflow:hidden;}
 .photo-row{display:flex;gap:9px;margin-bottom:7px;}
 .photo-box{width:62px;height:78px;background:linear-gradient(145deg,#b8c8c4,#a0b4b0);border:1px solid rgba(70,100,90,0.4);border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
 .photo-ghost{position:absolute;top:3px;right:3px;width:15px;height:18px;background:rgba(80,110,100,0.22);border-radius:1px;}
 .photo-icon{font-size:24px;opacity:0.3;color:#2a4a3a;}
 .df{margin-bottom:5px;}
-.dl{font-size:6px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(25,55,40,0.48);font-family:Courier New,monospace;}
+.dl{font-size:6px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(25,55,40,0.48);font-family:var(--ff-mono);}
 .dv{font-family:var(--ff);font-size:12px;color:#152a1e;font-weight:bold;line-height:1.2;}
 .dv.sm{font-size:10px;}
-.dv.mono{font-family:Courier New,monospace;font-size:9.5px;}
+.dv.mono{font-family:var(--ff-mono);font-size:9.5px;}
 .dv.red{color:var(--danger);}
 .bg2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 .bg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
@@ -103,18 +105,18 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 .bg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;}
 .sig-row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid rgba(40,80,60,0.16);}
 .sig-line{border-bottom:1px solid rgba(40,80,60,0.32);width:90px;}
-.sig-text{font-size:15px;color:rgba(15,35,70,0.62);font-family:"Brush Script MT",cursive;font-style:italic;margin-bottom:2px;}
-.sig-lbl{font-size:5.5px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(40,80,60,0.36);font-family:Courier New,monospace;}
+.sig-text{font-size:15px;color:rgba(15,35,70,0.62);font-family:var(--ff-sig);font-style:italic;margin-bottom:2px;}
+.sig-lbl{font-size:5.5px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(40,80,60,0.36);font-family:var(--ff-mono);}
 .chip{display:flex;align-items:center;gap:4px;}
 .chip-box{width:18px;height:13px;border:1px solid rgba(40,80,60,0.32);border-radius:1px;display:flex;align-items:center;justify-content:center;}
 .chip-box::before{content:"";width:6px;height:6px;border:1px solid rgba(40,80,60,0.32);border-radius:50%;}
-.chip-lbl{font-size:5.5px;font-family:Courier New,monospace;color:rgba(40,80,60,0.38);}
+.chip-lbl{font-size:5.5px;font-family:var(--ff-mono);color:rgba(40,80,60,0.38);}
 .sec-strip{display:flex;gap:6px;align-items:center;padding:4px 6px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.16);border-radius:2px;margin-bottom:7px;}
-.sec-i{display:flex;align-items:center;gap:2px;font-size:5.5px;color:var(--gold3);font-family:Courier New,monospace;text-transform:uppercase;}
+.sec-i{display:flex;align-items:center;gap:2px;font-size:5.5px;color:var(--gold3);font-family:var(--ff-mono);text-transform:uppercase;}
 .sec-dot{width:4px;height:4px;border-radius:50%;background:var(--gold3);}
 .mrz{background:#e4eae4;border:1px solid rgba(70,100,80,0.22);border-radius:2px;padding:5px 7px;}
-.mrz-lbl{font-size:5.5px;text-transform:uppercase;letter-spacing:0.09em;color:rgba(40,80,60,0.38);margin-bottom:3px;font-family:Courier New,monospace;}
-.mrz-line{font-family:Courier New,monospace;font-size:7.5px;color:#152a1e;letter-spacing:0.11em;line-height:1.75;white-space:nowrap;overflow:hidden;}
+.mrz-lbl{font-size:5.5px;text-transform:uppercase;letter-spacing:0.09em;color:rgba(40,80,60,0.38);margin-bottom:3px;font-family:var(--ff-mono);}
+.mrz-line{font-family:var(--ff-mono);font-size:7.5px;color:#152a1e;letter-spacing:0.11em;line-height:1.75;white-space:nowrap;overflow:hidden;}
 
 .stamps-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .stamp{border-radius:2px;padding:5px 6px;text-align:center;position:relative;overflow:hidden;}
@@ -124,10 +126,10 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 .stamp.visa{background:rgba(26,58,42,0.08);color:#1a3a2a;border:1.5px solid rgba(26,58,42,0.42);transform:rotate(-1deg);}
 .stamp.oval{border-radius:40%;}
 .stamp.round{border-radius:50%;width:64px;height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;padding:4px;}
-.stamp-type{font-size:6px;text-transform:uppercase;letter-spacing:0.1em;font-family:Courier New,monospace;margin-bottom:1px;}
+.stamp-type{font-size:6px;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--ff-mono);margin-bottom:1px;}
 .stamp-country{font-size:10px;font-weight:bold;font-family:var(--ff);margin-bottom:1px;}
-.stamp-date{font-size:6px;font-family:Courier New,monospace;letter-spacing:0.06em;}
-.stamp-port{font-size:5px;font-family:Courier New,monospace;opacity:0.62;margin-top:1px;}
+.stamp-date{font-size:6px;font-family:var(--ff-mono);letter-spacing:0.06em;}
+.stamp-port{font-size:5px;font-family:var(--ff-mono);opacity:0.62;margin-top:1px;}
 .trip-stamp{background:rgba(201,168,76,0.07);border:1.5px solid rgba(201,168,76,0.35);color:#6b4a10;border-radius:2px;padding:5px 6px;text-align:center;}
 .motif{border:1px solid rgba(100,140,110,0.18);border-radius:2px;padding:8px;margin-bottom:9px;position:relative;}
 .motif::before{content:"";position:absolute;inset:3px;border:1px solid rgba(100,140,110,0.08);border-radius:2px;pointer-events:none;}
@@ -136,44 +138,44 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 .trip-entry:last-child{border-bottom:none;}
 .te-flag{font-size:18px;flex-shrink:0;}
 .te-dest{font-size:11px;font-weight:600;color:#152a1e;font-family:var(--ff);}
-.te-dates{font-size:7.5px;font-family:Courier New,monospace;color:#3a5040;margin-top:1px;}
-.te-purp{font-size:7px;font-family:Courier New,monospace;color:var(--gold3);text-transform:uppercase;margin-top:1px;}
-.te-btn{margin-left:auto;padding:3px 8px;background:rgba(201,168,76,0.09);border:1px solid rgba(201,168,76,0.28);border-radius:2px;color:#6b4a10;font-size:7px;font-family:Courier New,monospace;text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;white-space:nowrap;}
+.te-dates{font-size:7.5px;font-family:var(--ff-mono);color:#3a5040;margin-top:1px;}
+.te-purp{font-size:7px;font-family:var(--ff-mono);color:var(--gold3);text-transform:uppercase;margin-top:1px;}
+.te-btn{margin-left:auto;padding:3px 8px;background:rgba(201,168,76,0.09);border:1px solid rgba(201,168,76,0.28);border-radius:2px;color:#6b4a10;font-size:7px;font-family:var(--ff-mono);text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;white-space:nowrap;}
 .te-btn:hover{background:rgba(201,168,76,0.18);}
 
 .add-form{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.16);border-radius:2px;padding:9px;}
-.af-title{font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold3);font-family:Courier New,monospace;margin-bottom:8px;}
+.af-title{font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold3);font-family:var(--ff-mono);margin-bottom:8px;}
 .ff{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;}
-.ff label{font-size:6.5px;text-transform:uppercase;letter-spacing:0.08em;color:#3a5040;font-family:Courier New,monospace;}
+.ff label{font-size:6.5px;text-transform:uppercase;letter-spacing:0.08em;color:#3a5040;font-family:var(--ff-mono);}
 .ff select,.ff input{width:100%;padding:4px 6px;background:rgba(245,240,232,0.85);border:1px solid rgba(100,130,100,0.28);border-radius:2px;font-size:10px;font-family:var(--ff);color:#152a1e;outline:none;}
 .ff select:focus,.ff input:focus{border-color:var(--gold3);}
 .ff select option{background:#f5f0e8;}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 @media(max-width:400px){.fg2{grid-template-columns:1fr;}}
-.btn-s{width:100%;padding:6px;background:linear-gradient(135deg,var(--gold),#a8882a);border:none;border-radius:2px;color:#152a1e;font-family:Courier New,monospace;font-size:8.5px;font-weight:bold;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;margin-top:2px;transition:all 0.2s;}
+.btn-s{width:100%;padding:6px;background:linear-gradient(135deg,var(--gold),#a8882a);border:none;border-radius:2px;color:#152a1e;font-family:var(--ff-mono);font-size:8.5px;font-weight:bold;text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;margin-top:2px;transition:all 0.2s;}
 .btn-s:hover{transform:translateY(-1px);}
 
 .check-item{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid rgba(100,130,100,0.09);align-items:flex-start;}
 .check-item:last-child{border-bottom:none;}
-.ci-seal{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:8px;font-family:Courier New,monospace;font-weight:bold;}
+.ci-seal{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:8px;font-family:var(--ff-mono);font-weight:bold;}
 .ci-seal.d{background:rgba(139,26,26,0.1);color:var(--danger);border:1px solid rgba(139,26,26,0.28);}
 .ci-seal.w{background:rgba(122,88,16,0.1);color:var(--warn);border:1px solid rgba(122,88,16,0.28);}
 .ci-seal.ok{background:rgba(26,58,42,0.1);color:var(--ok);border:1px solid rgba(26,58,42,0.28);}
 .ci-seal.i{background:rgba(26,42,107,0.09);color:var(--info);border:1px solid rgba(26,42,107,0.24);}
 .ci-title{font-size:10.5px;font-weight:bold;color:#152a1e;font-family:var(--ff);margin-bottom:2px;}
 .ci-desc{font-size:9.5px;color:#3a5040;font-family:var(--ff);line-height:1.42;}
-.ci-src{font-size:7.5px;color:var(--gold3);font-family:Courier New,monospace;margin-top:2px;letter-spacing:0.04em;}
-.risk-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:2px;font-size:7.5px;text-transform:uppercase;letter-spacing:0.08em;font-family:Courier New,monospace;margin-bottom:8px;}
+.ci-src{font-size:7.5px;color:var(--gold3);font-family:var(--ff-mono);margin-top:2px;letter-spacing:0.04em;}
+.risk-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:2px;font-size:7.5px;text-transform:uppercase;letter-spacing:0.08em;font-family:var(--ff-mono);margin-bottom:8px;}
 .risk-badge.ok{background:rgba(26,58,42,0.09);color:var(--ok);border:1px solid rgba(26,58,42,0.28);}
 .risk-badge.caution{background:rgba(122,88,16,0.09);color:var(--warn);border:1px solid rgba(122,88,16,0.28);}
 .risk-badge.danger{background:rgba(139,26,26,0.09);color:var(--danger);border:1px solid rgba(139,26,26,0.28);}
 .obs-block{padding:7px 9px;background:rgba(201,168,76,0.04);border-left:2px solid rgba(201,168,76,0.22);margin-bottom:7px;font-size:9.5px;font-family:var(--ff);color:#3a5040;line-height:1.5;font-style:italic;}
-.obs-lbl{font-size:6.5px;text-transform:uppercase;letter-spacing:0.09em;color:var(--gold3);font-family:Courier New,monospace;margin-bottom:2px;font-style:normal;}
+.obs-lbl{font-size:6.5px;text-transform:uppercase;letter-spacing:0.09em;color:var(--gold3);font-family:var(--ff-mono);margin-bottom:2px;font-style:normal;}
 .note-line{border-bottom:1px solid rgba(100,130,100,0.16);height:19px;}
 .loading-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;padding:1.5rem;}
 .spinner{width:22px;height:22px;border:2px solid rgba(100,130,100,0.16);border-top-color:var(--gold3);border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.loading-wrap p{font-size:9px;font-family:Courier New,monospace;color:#3a5040;letter-spacing:0.06em;}
+.loading-wrap p{font-size:9px;font-family:var(--ff-mono);color:#3a5040;letter-spacing:0.06em;}
 
 .main-panel{display:flex;flex-direction:column;gap:1.25rem;}
 .panel{background:linear-gradient(160deg,rgba(240,235,220,0.96),rgba(232,226,208,0.99));border:1px solid rgba(100,130,100,0.2);border-radius:4px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.14);}
@@ -192,16 +194,27 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
 .tc-flag{font-size:21px;flex-shrink:0;}
 .tc-dest{font-size:13px;font-weight:600;color:#152a1e;font-family:var(--ff);}
 .tc-dates{font-size:10px;color:#3a5040;margin-top:1px;}
-.tc-purp{font-size:9px;color:var(--gold3);font-family:Courier New,monospace;text-transform:uppercase;margin-top:1px;}
+.tc-purp{font-size:9px;color:var(--gold3);font-family:var(--ff-mono);text-transform:uppercase;margin-top:1px;}
 .tc-btn{margin-left:auto;padding:5px 11px;background:rgba(26,58,42,0.08);border:1px solid rgba(26,58,42,0.22);border-radius:3px;color:#152a1e;font-size:10px;cursor:pointer;transition:all 0.15s;font-family:var(--ffs);}
 .tc-btn:hover{background:rgba(26,58,42,0.15);}
 .cl-sel-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 9px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.22);border-radius:2px;cursor:pointer;font-family:var(--ff);font-size:11px;color:#152a1e;text-align:left;transition:all 0.15s;margin-bottom:5px;}
 .cl-sel-btn:hover{background:rgba(201,168,76,0.13);}
 .dis{display:flex;gap:7px;align-items:flex-start;padding:7px 9px;background:rgba(122,88,16,0.05);border:1px solid rgba(122,88,16,0.14);border-radius:2px;margin-top:9px;}
 .dis p{font-size:9px;color:#5a4010;font-family:var(--ff);line-height:1.45;font-style:italic;}
+.err-msg{color:var(--danger);font-size:11px;font-family:var(--ff);padding:1rem;}
+.net-guard{display:none;position:fixed;inset:0;background:rgba(10,15,10,0.9);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:1rem;color:var(--gold);font-family:var(--ff);font-size:16px;text-align:center;}
+.net-guard.show{display:flex;}
+.net-guard small{font-size:11px;color:var(--gold3);font-family:var(--ff-mono);}
 </style>
 </head>
 <body>
+
+<div class="net-guard" id="net-guard">
+  <div>&#127758; My Passport</div>
+  <div>Conectando con Firebase...</div>
+  <small>Si esto tarda, verifica tu conexi&#243;n.</small>
+  <button onclick="window.location.href='/index.html'" style="margin-top:1rem;padding:8px 20px;background:var(--gold);border:none;border-radius:4px;color:var(--ink);cursor:pointer;font-family:var(--ff-mono);font-size:11px;">Volver al inicio</button>
+</div>
 
 <nav>
   <div class="nav-i">
@@ -281,7 +294,12 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
           <div class="ph"><span class="ph-title" data-t="ph_bio">Travel Document</span><span id="ph-flag">&#127466;&#127464;</span></div>
           <div class="poly" id="poly" data-country="REP&#218;BLICA DEL ECUADOR">
             <div class="photo-row">
-              <div class="photo-box"><div class="photo-ghost"></div><span class="photo-icon">&#128100;</span></div>
+              <div class="photo-box" id="photo-box-click" onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()" style="cursor:pointer;position:relative;" title="Click para cambiar foto">
+              <div class="photo-ghost"></div>
+              <span class="photo-icon" id="photo-icon-placeholder">&#128100;</span>
+              <img id="photo-preview" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;filter:grayscale(0.85) contrast(1.15) sepia(0.15);" alt="Foto titular"/>
+              <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.4);font-size:5px;color:rgba(255,255,255,0.7);text-align:center;padding:2px;font-family:var(--ff-mono);letter-spacing:0.05em;">CLICK</div>
+            </div>
               <div style="flex:1;padding-top:2px;">
                 <div class="df"><div class="dl" data-t="dl_surname">Apellidos / Surname</div><div class="dv" id="dv-surname">&#8212;</div></div>
                 <div class="df"><div class="dl" data-t="dl_given">Nombres / Given names</div><div class="dv" id="dv-given">&#8212;</div></div>
@@ -362,6 +380,16 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
                 <select id="inp-blood"><option value="">&#8212;</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
               </div>
             </div>
+            <div class="ff">
+              <label data-t="dl_photo">Foto del titular</label>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <label for="inp-photo" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:2px;color:var(--gold3);font-size:8px;font-family:var(--ff-mono);text-transform:uppercase;letter-spacing:0.08em;cursor:pointer;">
+                  &#128247; Subir foto
+                </label>
+                <input id="inp-photo" type="file" accept="image/*" onchange="handlePhoto(this)" style="display:none"/>
+                <span id="photo-status" style="font-size:8px;color:#3a5040;font-family:var(--ff-mono);"></span>
+              </div>
+            </div>
             <div class="ff"><label data-t="dl_sig">Firma</label><input id="inp-sig" type="text" placeholder="Juan Garc&#237;a"/></div>
             <div class="ff"><label data-t="dl_vax">Vacunas (separar con coma)</label><input id="inp-vax" type="text" placeholder="Fiebre amarilla, Hep A"/></div>
             <div class="ff"><label data-t="dl_meds">Medicamentos cr&#243;nicos</label><input id="inp-meds" type="text" placeholder="Ritalin, insulina"/></div>
@@ -379,7 +407,7 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
           <div class="wm">VISADOS</div>
           <div class="ph"><span class="ph-title" data-t="ph_visas">Visados &#183; Sellos</span><span>&#128706;</span></div>
           <div class="motif">
-            <div style="font-size:6.5px;font-family:'Courier New',monospace;color:#3a5040;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;" data-t="dec_stamps">Sellos decorativos de ejemplo</div>
+            <div style="font-size:6.5px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;" data-t="dec_stamps">Sellos decorativos de ejemplo</div>
             <div class="stamps-grid">
               <div class="stamp entry oval"><div class="stamp-type">ENTRADA</div><div class="stamp-country">JAP&#211;N</div><div class="stamp-date">15 MAR 2024</div><div class="stamp-port">NARITA INT&#39;L</div></div>
               <div class="stamp exit oval"><div class="stamp-type">SALIDA</div><div class="stamp-country">JAP&#211;N</div><div class="stamp-date">28 MAR 2024</div><div class="stamp-port">KANSAI AIRPORT</div></div>
@@ -489,8 +517,8 @@ nav{background:rgba(8,12,8,0.97);border-bottom:1px solid rgba(201,168,76,0.2);pa
           <div style="text-align:center;padding:1.5rem 0;">
             <div style="font-size:34px;margin-bottom:8px;">&#127760;</div>
             <div style="font-family:var(--ff);font-size:14px;color:#152a1e;margin-bottom:4px;letter-spacing:0.1em;">My Passport</div>
-            <div style="font-size:8px;font-family:'Courier New',monospace;color:#3a5040;">Digital Travel Compliance System</div>
-            <div style="font-size:7px;font-family:'Courier New',monospace;color:#8a9a80;margin-top:6px;">Powered by Anthropic Claude AI</div>
+            <div style="font-size:8px;font-family:var(--ff-mono);color:#3a5040;">Digital Travel Compliance System</div>
+            <div style="font-size:7px;font-family:var(--ff-mono);color:#8a9a80;margin-top:6px;">Powered by Anthropic Claude AI</div>
           </div>
           <div class="note-line"></div><div class="note-line"></div><div class="note-line"></div><div class="note-line"></div>
           <span class="pg-num">10</span>
@@ -541,17 +569,20 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 
 // FIX 1: Firebase config placeholder clearly marked
 const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+window._firebaseLoaded = true; // Mark as loaded for network guard
+const _ng = document.getElementById("net-guard");
+if (_ng) _ng.classList.remove("show");
 
 // FIX 16: expose to window synchronously before any async
 window._fbReady = { auth, db, doc, getDoc, setDoc, collection, addDoc, getDocs, fbSignOut };
@@ -570,11 +601,18 @@ onAuthStateChanged(auth, async user => {
 
 <script>
 // ─── STUB: defined early so Firebase module can call it immediately ───
-// Will be overwritten by full definition below
 window._appInit = function() {
-  // Wait for full script to load, then retry
   setTimeout(function() { if (window._appInit_full) window._appInit_full(); }, 100);
 };
+
+// ─── NETWORK GUARD: if Firebase module fails to load, redirect to login ───
+window._firebaseLoaded = false;
+setTimeout(function() {
+  if (!window._firebaseLoaded) {
+    console.warn("Firebase failed to load — redirecting to login");
+    window.location.href = "/index.html";
+  }
+}, 8000);
 
 // ─────────────────────────────────────────
 // TRANSLATIONS — FIX 4: all 10 languages
@@ -616,6 +654,17 @@ const NAMES={ECU:"Ecuador",COL:"Colombia",PER:"Peru",MEX:"Mexico",ARG:"Argentina
 let profile={}, trips=[], selectedTrip=null, lang=localStorage.getItem("mp_lang")||"es";
 
 function tr(k){ return (T[lang]&&T[lang][k])||(T.es[k])||k; }
+
+// ─── XSS PROTECTION: sanitize user-controlled strings before innerHTML ───
+function sanitize(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 window.setLang = function(l) {
   lang = l;
@@ -671,6 +720,29 @@ window.showTab = function(el, tab) {
   if (!document.getElementById("pages").classList.contains("open")) openBook();
 };
 
+window.handlePhoto = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    // Show in passport
+    const preview = document.getElementById("photo-preview");
+    const placeholder = document.getElementById("photo-icon-placeholder");
+    if (preview) { preview.src = dataUrl; preview.style.display = "block"; }
+    if (placeholder) placeholder.style.display = "none";
+    // Remove click label when photo loaded
+    const clickLabel = document.querySelector('#photo-box-click div:last-child');
+    if (clickLabel) clickLabel.style.display = "none";
+    // Store in profile
+    profile.photoData = dataUrl;
+    // Status
+    const st = document.getElementById("photo-status");
+    if (st) st.textContent = "✓ " + file.name.substring(0,20);
+  };
+  reader.readAsDataURL(file);
+};
+
 window.saveProfile = async function() {
   profile = {
     surname: document.getElementById("inp-surname").value.toUpperCase(),
@@ -687,7 +759,8 @@ window.saveProfile = async function() {
     vax: document.getElementById("inp-vax").value,
     meds: document.getElementById("inp-meds").value,
     res: document.getElementById("inp-res").value,
-    alertEmail: document.getElementById("inp-alert-email").value
+    alertEmail: document.getElementById("inp-alert-email").value,
+    photoData: profile.photoData || ""
   };
   const fb = window._fbReady;
   if (window._uid && fb) {
@@ -714,7 +787,7 @@ async function loadProfile() {
   if (p) {
     profile = p;
     // FIX 5+12: include issued and blood
-    ["surname","given","passno","dob","pob","issued","expiry","blood","sig","vax","meds","res","alertEmail"].forEach(k => {
+    ["surname","given","passno","dob","pob","issued","expiry","blood","sig","vax","meds","res","alertEmail","photoData"].forEach(k => {
       const el = document.getElementById("inp-"+k);
       if (el) el.value = p[k] || "";
     });
@@ -732,6 +805,15 @@ async function loadProfile() {
 
 function renderProfile() {
   const p = profile;
+  // Restore photo
+  if (p.photoData) {
+    const preview = document.getElementById("photo-preview");
+    const placeholder = document.getElementById("photo-icon-placeholder");
+    if (preview) { preview.src = p.photoData; preview.style.display = "block"; }
+    if (placeholder) placeholder.style.display = "none";
+    const clickLabel = document.querySelector('#photo-box-click div:last-child');
+    if (clickLabel) clickLabel.style.display = "none";
+  }
   // FIX 7: safe access with fallback for all fields
   const get = (k) => p[k] || "—";
   document.getElementById("dv-surname").textContent = get("surname").toUpperCase();
@@ -813,7 +895,7 @@ function renderPassportTrips() {
     "<div class='trip-entry'>" +
     "<div class='te-flag'>"+getFlag(t.dest)+"</div>" +
     "<div style='flex:1'>" +
-      "<div class='te-dest'>"+(t.destDisplay||t.dest)+"</div>" +
+      "<div class='te-dest'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
       "<div class='te-dates'>"+(t.dep||"—")+" &#8594; "+(t.ret||"—")+"</div>" +
       "<div class='te-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+(t.lay?" · "+t.lay:"")+"</div>" +
     "</div>" +
@@ -826,9 +908,9 @@ function renderTripStamps() {
   const el = document.getElementById("trip-stamps-area");
   if (!trips.length) { el.innerHTML="<p style='font-size:10px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:0.75rem;'>"+tr("no_trip_stamps")+"</p>"; return; }
   el.innerHTML = "<div class='stamps-grid'>" + trips.map((t,i) =>
-    "<div class='stamp trip-stamp' style='transform:rotate("+((i%2===0?-1:1)*(1+i*0.5))+"deg)'>" +
+    "<div class='stamp trip-stamp' style='transform:rotate("+(((Math.random()*14)-7).toFixed(1))+"deg)'>" +
     "<div class='stamp-type'>ENTRADA · "+(t.purp||"").toUpperCase()+"</div>" +
-    "<div class='stamp-country'>"+(t.destDisplay||t.dest).substring(0,10).toUpperCase()+"</div>" +
+    "<div class='stamp-country'>"+sanitize((t.destDisplay||t.dest).substring(0,10).toUpperCase())+"</div>" +
     "<div class='stamp-date'>"+(t.dep||"—")+"</div>" +
     (t.lay ? "<div class='stamp-port'>VIA "+t.lay.substring(0,8).toUpperCase()+"</div>" : "") +
     "</div>"
@@ -848,7 +930,7 @@ function renderMainTrips() {
     "<div class='trip-card-main'>" +
     "<div class='tc-flag'>"+getFlag(t.dest)+"</div>" +
     "<div style='flex:1'>" +
-      "<div class='tc-dest'>"+(t.destDisplay||t.dest)+"</div>" +
+      "<div class='tc-dest'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
       "<div class='tc-dates'>"+(t.dep||"—")+" &#8594; "+(t.ret||"—")+"</div>" +
       "<div class='tc-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+(t.lay?" · "+t.lay:"")+"</div>" +
     "</div>" +
@@ -859,7 +941,7 @@ function renderMainTrips() {
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
     "<span><div style='font-weight:bold;font-size:11px'>"+(t.destDisplay||t.dest)+"</div>" +
-    "<div style='font-size:9px;font-family:Courier New,monospace;color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+"</div></span>" +
+    "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+"</div></span>" +
     "</button>"
   ).join("");
   if (sel) sel.style.display = "block";
@@ -872,7 +954,7 @@ function renderCLBtns() {
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
     "<span><div style='font-weight:bold;font-size:11px'>"+(t.destDisplay||t.dest)+"</div>" +
-    "<div style='font-size:9px;font-family:Courier New,monospace;color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+"</div></span>" +
+    "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+"</div></span>" +
     "</button>"
   ).join("");
 }
@@ -926,22 +1008,23 @@ Responde SOLO JSON valido sin markdown ni backticks:
     const items = (data.items||[]).map(item =>
       "<div class='check-item'>" +
       "<div class='ci-seal "+(SC[item.type]||"i")+"'>"+(S[item.type]||"i")+"</div>" +
-      "<div><div class='ci-title'>"+item.title+"</div>" +
-      "<div class='ci-desc'>"+item.description+"</div>" +
-      "<div class='ci-src'>"+item.source+"</div></div></div>"
+      "<div><div class='ci-title'>"+sanitize(item.title)+"</div>" +
+      "<div class='ci-desc'>"+sanitize(item.description)+"</div>" +
+      "<div class='ci-src'>"+sanitize(item.source)+"</div></div></div>"
     ).join("");
     const html =
       "<div style='margin-bottom:8px'>" +
-      "<div style='font-family:var(--ff);font-size:12px;font-weight:bold;color:#152a1e;margin-bottom:1px'>"+(data.route||selectedTrip.dest)+"</div>" +
-      "<div style='font-size:7.5px;font-family:Courier New,monospace;color:#3a5040;margin-bottom:6px'>"+((selectedTrip.purpKey?tr("opt_"+selectedTrip.purpKey):selectedTrip.purp||selectedTrip.purpKey)).toUpperCase()+" &middot; "+(selectedTrip.dep||"&#8212;")+" &#8594; "+(selectedTrip.ret||"&#8212;")+"</div>" +
+      "<div style='font-family:var(--ff);font-size:12px;font-weight:bold;color:#152a1e;margin-bottom:1px'>"+sanitize(data.route||selectedTrip.dest)+"</div>" +
+      "<div style='font-size:7.5px;font-family:var(--ff-mono);color:#3a5040;margin-bottom:6px'>"+((selectedTrip.purpKey?tr("opt_"+selectedTrip.purpKey):selectedTrip.purp||selectedTrip.purpKey)).toUpperCase()+" &middot; "+(selectedTrip.dep||"&#8212;")+" &#8594; "+(selectedTrip.ret||"&#8212;")+"</div>" +
       "<span class='risk-badge "+rc+"'>&#9679; "+(RL[data.risk_level]||"")+"</span>" +
-      "<div class='obs-block' style='font-size:9.5px;margin-bottom:8px'>"+data.summary+"</div></div>" +
+      "<div class='obs-block' style='font-size:9.5px;margin-bottom:8px'>"+sanitize(data.summary)+"</div></div>" +
       items +
       "<div class='dis'><p>&#9888; "+tr("disclaimer")+"</p></div>";
+    // Both containers are intentional: cl-main-body = right panel, cl-result = passport page 8
     document.getElementById("cl-main-body").innerHTML = html;
     document.getElementById("cl-result").innerHTML = html;
   } catch(err) {
-    const e = "<p style='color:var(--danger);font-size:11px;font-family:var(--ff);padding:1rem'>Error: "+err.message+"</p>";
+    const e = "<p class='err-msg'>&#9888; Error: "+sanitize(err.message)+"</p>";
     document.getElementById("cl-main-body").innerHTML = e;
     document.getElementById("cl-result").innerHTML = e;
   }
