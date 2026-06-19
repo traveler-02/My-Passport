@@ -20,10 +20,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* nav removed — UI integrated into passport */
 
-.shell{max-width:1060px;margin:0 auto;padding:1.5rem 1.5rem 1.5rem;}
+.shell{max-width:1160px;margin:0 auto;padding:1.5rem 1.5rem 1.5rem;}
 
 /* Passport-integrated top bar */
-.pp-topbar{max-width:900px;margin:0 auto;width:100%;background:rgba(0,0,0,0.55);border-bottom:1px solid rgba(201,168,76,0.15);padding:6px 16px 6px 20px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5;}
+.pp-topbar{max-width:1100px;margin:0 auto;width:100%;background:rgba(0,0,0,0.55);border-bottom:1px solid rgba(201,168,76,0.15);padding:6px 16px 6px 20px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5;}
 .pp-user{display:flex;align-items:center;gap:7px;}
 .pp-avatar{width:22px;height:22px;border-radius:50%;background:#1f4a32;border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gold);overflow:hidden;flex-shrink:0;}
 .pp-avatar img{width:100%;height:100%;object-fit:cover;}
@@ -66,7 +66,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,0.7);
   width:100%;
-  max-width:900px;
+  max-width:1100px;
   margin:0 auto;
 }
 /* Cover maintains ICAO 9303 passport ratio: 125mm x 88mm = 1.42:1 */
@@ -126,7 +126,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   background:rgba(0,0,0,0.18);
   border-bottom:1px solid rgba(201,168,76,0.12);
   overflow-x:auto;
-  max-width:900px;
+  max-width:1100px;
   margin:0 auto;
   width:100%;
 }
@@ -140,7 +140,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   grid-template-columns:1fr 1fr;
   position:relative;
   width:100%;
-  max-width:900px;
+  max-width:1100px;
   margin:0 auto;
   /* Landscape: wider than tall, like a real open passport */
   min-height:0;
@@ -150,10 +150,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   padding:20px 18px;
   position:relative;
   overflow:hidden;
-  /* Passport page ratio: each half is 125x88mm = portrait half of landscape book */
-  aspect-ratio:125/177;
-  min-height:320px;
-  max-height:520px;
+  /* Each open passport page is LANDSCAPE: wider than tall (ICAO ~142:100) */
+  aspect-ratio:142/100;
 }
 .page-l{border-right:2px solid rgba(0,0,0,0.12);}
 
@@ -174,10 +172,19 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
     min-width:100%;
     border-right:none;
     aspect-ratio:unset;
-    min-height:480px;
-    max-height:none;
+    min-height:460px;
   }
   .page-l{border-right:none;}
+  /* Bio spread (pp-left/pp-right) also needs the swipe-carousel treatment */
+  .spread #pp-left,
+  .spread #pp-right{
+    flex:0 0 100%;
+    scroll-snap-align:start;
+    min-width:100%;
+    aspect-ratio:unset !important;
+    min-height:520px;
+    border-right:none;
+  }
   .spread::after{
     content:"◦ ◦";
     position:absolute;
@@ -336,414 +343,440 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 .net-guard.show{display:flex;}
 .net-guard small{font-size:11px;color:var(--gold3);font-family:var(--ff-mono);}
 
-/* ══ REAL PASSPORT PAGE STYLES ══ */
+/* ══════════════════════════════════════
+   REAL PASSPORT INTERIOR — complete rewrite
+   Based on ICAO 9303 standard
+═══════════════════════════════════════ */
 
-/* Country-based page accent colors */
-:root {
-  --page-accent: #2a6044;
-  --page-accent2: #1a3a2a;
-  --page-accent-light: rgba(42,96,68,0.12);
-  --page-accent-line: rgba(42,96,68,0.35);
+/* Open book: two pages side by side, landscape total */
+.passport-book-open {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,0,0,0.3);
 }
+/* passport-book-open not used — spread handles bio layout */
 
-/* Guilloche background pattern (SVG-based, changes per country) */
-.page-guilloche {
-  position: absolute;
-  inset: 0;
-  opacity: 0.07;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3CradialGradient id='rg' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23346644'/%3E%3Cstop offset='100%25' stop-color='%231a3a2a'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cellipse cx='100' cy='100' rx='80' ry='80' fill='none' stroke='%23346644' stroke-width='0.5'/%3E%3Cellipse cx='100' cy='100' rx='60' ry='60' fill='none' stroke='%23346644' stroke-width='0.4'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='40' fill='none' stroke='%23346644' stroke-width='0.4'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='40' fill='none' stroke='%23346644' stroke-width='0.4' transform='rotate(30 100 100)'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='40' fill='none' stroke='%23346644' stroke-width='0.4' transform='rotate(60 100 100)'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='40' fill='none' stroke='%23346644' stroke-width='0.4' transform='rotate(90 100 100)'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='40' fill='none' stroke='%23346644' stroke-width='0.4' transform='rotate(120 100 100)'/%3E%3Cellipse cx='100' cy='100' rx='90' ry='40' fill='none' stroke='%23346644' stroke-width='0.4' transform='rotate(150 100 100)'/%3E%3Ccircle cx='100' cy='100' r='10' fill='none' stroke='%23346644' stroke-width='0.8'/%3E%3C/svg%3E");
-  background-size: 80px 80px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ── LEFT (artistic) page ── */
-.page-art {
-  background: var(--page);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+/* ── LEFT PAGE: Artistic / signature page ── */
+.pp-left {
   position: relative;
   overflow: hidden;
+  background: #f0ede4;
+  aspect-ratio: 142/100;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid rgba(0,0,0,0.15);
 }
 
-/* Top watermark / coat of arms area */
-.page-art-header {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 14px 12px 0;
-  border-bottom: 1px solid var(--page-accent-line);
-  padding-bottom: 8px;
+/* Country-specific artistic background */
+.pp-left-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
-.page-art-country {
+/* Guilloche overlay */
+.pp-left-art::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(42,96,68,0.04) 14px, rgba(42,96,68,0.04) 15px),
+    repeating-linear-gradient(90deg, transparent, transparent 14px, rgba(42,96,68,0.04) 14px, rgba(42,96,68,0.04) 15px);
+  z-index: 1;
+}
+
+/* Central illustration area */
+.pp-left-illustration {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px 14px 0;
+}
+.pp-left-country {
   font-family: var(--ff);
   font-size: 8px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--page-accent2);
-  margin-bottom: 3px;
+  color: var(--art-dark, #1a3a2a);
+  text-align: center;
+  margin-bottom: 2px;
 }
-.page-art-title {
+.pp-left-doctype {
   font-family: var(--ff);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
-  color: var(--page-accent2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--art-dark, #1a3a2a);
+  text-align: center;
+  margin-bottom: 12px;
+}
+/* Big central emblem — SVG rosette */
+.pp-left-emblem {
+  width: min(70%, 160px);
+  height: auto;
+  opacity: 0.12;
+  color: var(--art-dark, #1a3a2a);
+  margin-bottom: 10px;
+}
+/* Decorative quote text */
+.pp-left-quote {
+  font-family: var(--ff);
+  font-size: 7.5px;
+  font-style: italic;
+  color: var(--art-dark, #1a3a2a);
+  opacity: 0.3;
+  text-align: center;
+  line-height: 1.65;
+  padding: 0 12px;
+  max-height: 80px;
+  overflow: hidden;
+}
+/* Colored artistic band (like the eagle/flag area in US passport) */
+.pp-left-artband {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  background: linear-gradient(180deg,
+    rgba(42,96,68,0.08) 0%,
+    rgba(42,96,68,0.18) 40%,
+    rgba(42,96,68,0.10) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 120px;
+}
+.pp-left-artband-text {
+  font-family: var(--ff);
+  font-size: 32px;
+  color: rgba(42,96,68,0.08);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
+  user-select: none;
+  word-break: break-all;
+}
+/* Signature area at bottom */
+.pp-left-sig {
+  position: relative;
+  z-index: 2;
+  padding: 8px 16px 12px;
+  background: rgba(42,96,68,0.04);
+  border-top: 1px solid rgba(42,96,68,0.2);
+}
+.pp-left-sig-line {
+  min-height: 26px;
+  border-bottom: 1px solid rgba(var(--art-dark-hex,#1a3a2a),0.4);
+  margin-bottom: 4px;
+  font-family: var(--ff-sig);
+  font-size: 20px;
+  color: rgba(10,20,60,0.6);
+  padding-bottom: 2px;
+}
+.pp-left-sig-label {
+  font-family: var(--ff-mono);
+  font-size: 5.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--art-dark, #1a3a2a);
+  opacity: 0.55;
+  text-align: center;
+}
+.pp-left-pgnum {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-family: var(--ff-mono);
+  font-size: 8px;
+  color: var(--art-dark,#1a3a2a);
+  opacity: 0.4;
+  letter-spacing: 0.06em;
+}
+
+/* ── RIGHT PAGE: Biographical data ── */
+.pp-right {
+  position: relative;
+  overflow: hidden;
+  background: #f5f1e8;
+  aspect-ratio: 142/100;
+  display: flex;
+  flex-direction: column;
+}
+/* Guilloche background on bio page */
+.pp-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at 70% 40%, rgba(42,96,68,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse at 30% 70%, rgba(42,96,68,0.05) 0%, transparent 50%);
+  z-index: 0;
+}
+.pp-right > * { position: relative; z-index: 1; }
+
+/* Country header bar */
+.pp-hdr {
+  background: var(--art-dark, #1a3a2a);
+  padding: 7px 12px 6px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.pp-hdr-left {}
+.pp-hdr-type {
+  font-family: var(--ff-mono);
+  font-size: 7px;
+  color: rgba(201,168,76,0.6);
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+}
+.pp-hdr-country {
+  font-family: var(--ff);
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--gold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  line-height: 1.15;
 }
-.page-art-subtitle {
-  font-size: 7px;
+.pp-hdr-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+.pp-hdr-code {
   font-family: var(--ff-mono);
-  color: rgba(42,96,68,0.55);
-  letter-spacing: 0.1em;
+  font-size: 9px;
+  color: var(--gold2);
+  letter-spacing: 0.06em;
+  display: block;
+}
+.pp-hdr-pno-label {
+  font-size: 6px;
+  color: rgba(201,168,76,0.55);
+  font-family: var(--ff-mono);
+  letter-spacing: 0.08em;
+  display: block;
   margin-top: 2px;
 }
 
-/* Central artistic emblem area */
-.page-art-emblem {
-  position: relative;
-  z-index: 1;
+/* Main content: photo col + fields col */
+.pp-main {
+  display: flex;
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-}
-.page-art-emblem svg {
-  width: min(70%, 180px);
-  height: auto;
-  opacity: 0.18;
-}
-
-/* Decorative text quotes (like "We the People") */
-.page-art-quote {
-  position: absolute;
-  top: 30%;
-  left: 10px;
-  right: 10px;
-  font-family: var(--ff);
-  font-size: 8px;
-  color: var(--page-accent2);
-  opacity: 0.25;
-  line-height: 1.6;
-  font-style: italic;
-  z-index: 1;
-  text-align: center;
-}
-
-/* Signature line at bottom of left page */
-.page-art-footer {
-  position: relative;
-  z-index: 1;
-  padding: 8px 16px 12px;
-  border-top: 1px solid var(--page-accent-line);
-}
-.sig-bearer-line {
-  border-bottom: 1px solid var(--page-accent2);
-  margin-bottom: 4px;
-  height: 28px;
-}
-.sig-bearer-label {
-  font-size: 6px;
-  font-family: var(--ff-mono);
-  color: var(--page-accent2);
-  opacity: 0.6;
-  letter-spacing: 0.08em;
-  text-align: center;
-}
-.page-num-art {
-  position: absolute;
-  bottom: 6px;
-  right: 10px;
-  font-size: 9px;
-  font-family: var(--ff-mono);
-  color: var(--page-accent2);
-  opacity: 0.5;
-  letter-spacing: 0.08em;
-}
-
-/* ── RIGHT (biographical) page ── */
-.page-bio {
-  background: var(--page);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Country header bar — like "UNITED STATES OF AMERICA" */
-.bio-country-bar {
-  position: relative;
-  z-index: 2;
-  background: var(--page-accent2);
-  color: var(--gold);
-  padding: 6px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.bio-country-name {
-  font-family: var(--ff);
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.bio-type-block {
-  text-align: right;
-}
-.bio-type-label {
-  font-size: 6px;
-  font-family: var(--ff-mono);
-  opacity: 0.65;
-  letter-spacing: 0.08em;
-  display: block;
-}
-.bio-type-value {
-  font-size: 10px;
-  font-family: var(--ff-mono);
-  font-weight: bold;
-  letter-spacing: 0.1em;
-}
-
-/* Main bio body */
-.bio-body {
-  position: relative;
-  z-index: 2;
-  display: flex;
   gap: 0;
-  flex: 1;
-  padding: 0;
 }
 
 /* Photo column */
-.bio-photo-col {
-  width: 105px;
+.pp-photo-col {
+  width: 110px;
   flex-shrink: 0;
-  padding: 10px 8px 0 12px;
+  padding: 10px 8px 8px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  background: rgba(42,96,68,0.04);
-  border-right: 1px solid var(--page-accent-line);
+  gap: 7px;
+  border-right: 1px solid rgba(42,96,68,0.15);
+  background: rgba(42,96,68,0.03);
 }
-.bio-photo-wrap {
-  width: 96px;
-  height: 122px;
-  border: 1.5px solid var(--page-accent2);
+.pp-photo-frame {
+  width: 82px;
+  height: 104px;
+  border: 1.5px solid rgba(42,96,68,0.5);
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  background: linear-gradient(145deg,#c8d8cc,#b0c4bc);
+  background: linear-gradient(145deg,#c8d4d0,#b0c0bc);
+  flex-shrink: 0;
 }
-.bio-photo-wrap img {
+.pp-photo-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(0.8) contrast(1.15) sepia(0.12);
+  filter: grayscale(0.75) contrast(1.1) sepia(0.1);
+  display: none;
 }
-.bio-photo-placeholder {
+.pp-photo-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
-  color: rgba(42,96,68,0.3);
+  font-size: 34px;
+  color: rgba(42,96,68,0.25);
 }
-.bio-photo-click-hint {
+.pp-photo-hint {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(42,96,68,0.7);
-  font-size: 5px;
-  color: rgba(255,255,255,0.8);
+  bottom: 0; left: 0; right: 0;
+  background: rgba(42,96,68,0.75);
+  font-size: 5.5px;
+  color: rgba(255,255,255,0.85);
   text-align: center;
   padding: 2px;
   font-family: var(--ff-mono);
   letter-spacing: 0.06em;
 }
-/* Ghost photo (security feature) */
-.bio-photo-ghost {
-  width: 32px;
-  height: 40px;
-  border: 1px solid rgba(42,96,68,0.3);
-  opacity: 0.2;
+/* Seal overlaid on photo corner */
+.pp-photo-seal {
+  position: absolute;
+  bottom: -10px; right: -10px;
+  width: 52px; height: 52px;
+  opacity: 0.15;
+  color: var(--art-dark,#1a3a2a);
+}
+/* Ghost photo */
+.pp-photo-ghost {
+  width: 36px;
+  height: 46px;
+  border: 1px solid rgba(42,96,68,0.25);
   overflow: hidden;
+  opacity: 0.22;
   align-self: flex-end;
 }
-.bio-photo-ghost img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(1) opacity(0.5);
-}
-/* Authority seal overlay */
-.bio-seal {
-  position: absolute;
-  bottom: -8px;
-  right: -8px;
-  width: 48px;
-  height: 48px;
-  opacity: 0.18;
-  z-index: 3;
-}
-/* Passport type badge */
-.bio-type-badge {
-  background: var(--page-accent2);
-  color: rgba(201,168,76,0.9);
+.pp-photo-ghost img { width:100%;height:100%;object-fit:cover;filter:grayscale(1); display:none; }
+/* Country badge */
+.pp-badge {
+  background: var(--art-dark,#1a3a2a);
+  color: var(--gold);
   font-family: var(--ff-mono);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: bold;
-  padding: 2px 6px;
-  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  letter-spacing: 0.1em;
   align-self: flex-start;
-  margin-top: 4px;
+}
+.pp-biometric-icon {
+  font-size: 7px;
+  font-family: var(--ff-mono);
+  color: var(--art-dark,#1a3a2a);
+  opacity: 0.4;
+  letter-spacing: 0.04em;
+  text-align: center;
 }
 
-/* Data fields column */
-.bio-fields-col {
+/* Fields column */
+.pp-fields {
   flex: 1;
-  padding: 8px 10px 0;
+  padding: 7px 10px 3px 10px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
+  min-width: 0;
 }
-.bio-field {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.bio-field-label {
-  font-size: 6.5px;
+.pp-field { display: flex; flex-direction: column; gap: 1px; }
+.pp-field-lbl {
+  font-size: 5.5px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--page-accent2);
+  letter-spacing: 0.09em;
+  color: var(--art-dark,#1a3a2a);
   font-family: var(--ff-mono);
-  opacity: 0.7;
+  opacity: 0.6;
+  line-height: 1.2;
 }
-.bio-field-value {
+.pp-field-val {
   font-family: var(--ff);
   font-size: 13px;
   font-weight: bold;
-  color: #0a1a10;
+  color: #080f08;
   line-height: 1.15;
+  border-bottom: 0.5px solid rgba(42,96,68,0.18);
+  padding-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pp-field-val.mono { font-family: var(--ff-mono); font-size: 10.5px; }
+.pp-field-val.sm { font-size: 11px; }
+.pp-field-val.alert { color: #7a0e0e; }
+.pp-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pp-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+
+/* Signature on bio page */
+.pp-sig-row {
+  margin-top: 3px;
+  padding-top: 4px;
+  border-top: 0.5px solid rgba(42,96,68,0.18);
+}
+.pp-sig-val {
+  font-family: var(--ff-sig);
+  font-size: 20px;
+  color: rgba(10,20,60,0.6);
+  min-height: 24px;
+  border-bottom: 0.5px solid rgba(42,96,68,0.25);
+  padding-bottom: 1px;
+}
+
+/* Security features bar */
+.pp-security {
+  display: flex;
+  gap: 0;
+  padding: 3px 10px;
+  background: rgba(42,96,68,0.06);
+  border-top: 0.5px solid rgba(42,96,68,0.2);
   border-bottom: 0.5px solid rgba(42,96,68,0.2);
-  padding-bottom: 3px;
-  margin-bottom: 1px;
-}
-.bio-field-value.mono {
-  font-family: var(--ff-mono);
-  font-size: 10px;
-}
-.bio-field-value.sm {
-  font-size: 10px;
-}
-.bio-field-value.red {
-  color: #7a1010;
-}
-.bio-row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  flex-wrap: wrap;
   gap: 6px;
 }
-.bio-row-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 4px;
-}
-
-/* Signature field */
-.bio-sig-area {
-  margin-top: 4px;
-  border-top: 0.5px solid var(--page-accent-line);
-  padding-top: 4px;
-}
-.bio-sig-value {
-  font-family: var(--ff-sig);
-  font-size: 18px;
-  color: rgba(10,20,60,0.65);
-  min-height: 24px;
-  border-bottom: 0.5px solid rgba(42,96,68,0.3);
-}
-.bio-sig-label {
-  font-size: 5px;
-  font-family: var(--ff-mono);
-  color: rgba(42,96,68,0.5);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* Security features strip */
-.bio-security-strip {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  gap: 8px;
-  padding: 4px 10px;
-  background: rgba(42,96,68,0.06);
-  border-top: 0.5px solid var(--page-accent-line);
-  border-bottom: 0.5px solid var(--page-accent-line);
-}
-.bio-sec-item {
+.pp-sec-item {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 2.5px;
   font-size: 5.5px;
   font-family: var(--ff-mono);
-  color: var(--page-accent2);
-  opacity: 0.7;
-  letter-spacing: 0.05em;
+  color: var(--art-dark,#1a3a2a);
+  opacity: 0.65;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
-.bio-sec-dot {
-  width: 4px;
-  height: 4px;
+.pp-sec-dot {
+  width: 4px; height: 4px;
   border-radius: 50%;
-  background: var(--page-accent2);
-  opacity: 0.6;
+  background: var(--art-dark,#1a3a2a);
+  opacity: 0.55;
+  flex-shrink: 0;
 }
 
 /* MRZ strip */
-.bio-mrz {
-  position: relative;
-  z-index: 2;
-  background: rgba(42,96,68,0.08);
-  border-top: 1px solid var(--page-accent-line);
-  padding: 6px 12px 8px;
+.pp-mrz {
+  background: rgba(42,96,68,0.1);
+  border-top: 1px solid rgba(42,96,68,0.3);
+  padding: 5px 10px 8px;
 }
-.bio-mrz-label {
+.pp-mrz-lbl {
   font-size: 5px;
   font-family: var(--ff-mono);
-  color: rgba(42,96,68,0.5);
-  letter-spacing: 0.1em;
+  color: var(--art-dark,#1a3a2a);
+  opacity: 0.45;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 3px;
 }
-.bio-mrz-line {
+.pp-mrz-line {
   font-family: var(--ff-mono);
   font-size: 9px;
-  color: #0a1a10;
+  color: #080f08;
   letter-spacing: 0.1em;
   line-height: 1.85;
   white-space: nowrap;
   overflow: hidden;
 }
-.bio-page-num {
+.pp-pgnum {
   position: absolute;
-  bottom: 6px;
-  right: 10px;
-  font-size: 8px;
+  bottom: 7px; right: 10px;
   font-family: var(--ff-mono);
-  color: rgba(42,96,68,0.4);
-}
-
-/* Country quotes database */
-.page-art[data-country-quotes] .page-art-quote {
-  display: block;
+  font-size: 8px;
+  color: var(--art-dark,#1a3a2a);
+  opacity: 0.35;
 }
 
 </style>
@@ -840,197 +873,178 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       </div>
 
       <!-- BIO P1-2 -->
-      <!-- Mobile swipe hint -->
-      <div id="swipe-hint">&#8592; desliza para ver ambas p&#225;ginas &#8594;</div>
+      <div id="swipe-hint">&#8592; desliza &#8594;</div>
       <div class="spread" id="spread-bio">
 
-        <!-- LEFT: Artistic / decorative page -->
-        <div class="page page-art page-l" id="bio-art-page">
-          <div class="page-guilloche" id="bio-guilloche"></div>
+      <!-- ═══ LEFT PAGE: Artistic / Signature ═══ -->
+      <div class="pp-left" id="pp-left">
+        <!-- Art background fills whole page -->
+        <div class="pp-left-art" id="pp-left-art"></div>
 
-          <!-- Country header -->
-          <div class="page-art-header">
-            <div class="page-art-country" id="art-country-name">REP&#218;BLICA DEL ECUADOR</div>
-            <div class="page-art-title" id="art-passport-title">PASAPORTE &nbsp;·&nbsp; PASSPORT</div>
-            <div class="page-art-subtitle">DOCUMENTO DE VIAJE / TRAVEL DOCUMENT</div>
-          </div>
+        <!-- Illustration area -->
+        <div class="pp-left-illustration">
+          <div class="pp-left-country" id="art-country-name">REP&#218;BLICA DEL ECUADOR</div>
+          <div class="pp-left-doctype" id="art-passport-title">PASAPORTE &middot; PASSPORT</div>
 
-          <!-- Central emblem (SVG coat of arms style) -->
-          <div class="page-art-emblem">
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" id="art-emblem">
-              <!-- Guilloche rosette -->
-              <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="0.8"/>
-              <circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" stroke-width="0.5"/>
-              <ellipse cx="100" cy="100" rx="85" ry="35" fill="none" stroke="currentColor" stroke-width="0.5"/>
-              <ellipse cx="100" cy="100" rx="85" ry="35" fill="none" stroke="currentColor" stroke-width="0.5" transform="rotate(30 100 100)"/>
-              <ellipse cx="100" cy="100" rx="85" ry="35" fill="none" stroke="currentColor" stroke-width="0.5" transform="rotate(60 100 100)"/>
-              <ellipse cx="100" cy="100" rx="85" ry="35" fill="none" stroke="currentColor" stroke-width="0.5" transform="rotate(90 100 100)"/>
-              <ellipse cx="100" cy="100" rx="85" ry="35" fill="none" stroke="currentColor" stroke-width="0.5" transform="rotate(120 100 100)"/>
-              <ellipse cx="100" cy="100" rx="85" ry="35" fill="none" stroke="currentColor" stroke-width="0.5" transform="rotate(150 100 100)"/>
-              <!-- Star center -->
-              <polygon points="100,75 105,93 124,93 109,104 115,122 100,111 85,122 91,104 76,93 95,93" fill="currentColor" opacity="0.6"/>
-              <circle cx="100" cy="100" r="18" fill="none" stroke="currentColor" stroke-width="1"/>
-              <!-- Globe lines -->
-              <ellipse cx="100" cy="100" rx="18" ry="7" fill="none" stroke="currentColor" stroke-width="0.6"/>
-              <ellipse cx="100" cy="100" rx="18" ry="13" fill="none" stroke="currentColor" stroke-width="0.5"/>
-              <line x1="100" y1="82" x2="100" y2="118" stroke="currentColor" stroke-width="0.6"/>
-              <!-- Outer ring text dots -->
-              <circle cx="100" cy="10" r="1.5" fill="currentColor"/>
-              <circle cx="100" cy="190" r="1.5" fill="currentColor"/>
-              <circle cx="10" cy="100" r="1.5" fill="currentColor"/>
-              <circle cx="190" cy="100" r="1.5" fill="currentColor"/>
-            </svg>
-            <!-- Country decorative quote -->
-            <div class="page-art-quote" id="art-quote">La libertad de los pueblos no se mendiga: se conquista con el filo de la espada.</div>
-          </div>
+          <!-- Rosette emblem SVG -->
+          <svg class="pp-left-emblem" id="art-emblem" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="0.7"/>
+            <circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="0.5"/>
+            <ellipse cx="100" cy="100" rx="92" ry="38" fill="none" stroke="currentColor" stroke-width="0.6"/>
+            <ellipse cx="100" cy="100" rx="92" ry="38" fill="none" stroke="currentColor" stroke-width="0.6" transform="rotate(30 100 100)"/>
+            <ellipse cx="100" cy="100" rx="92" ry="38" fill="none" stroke="currentColor" stroke-width="0.6" transform="rotate(60 100 100)"/>
+            <ellipse cx="100" cy="100" rx="92" ry="38" fill="none" stroke="currentColor" stroke-width="0.6" transform="rotate(90 100 100)"/>
+            <ellipse cx="100" cy="100" rx="92" ry="38" fill="none" stroke="currentColor" stroke-width="0.6" transform="rotate(120 100 100)"/>
+            <ellipse cx="100" cy="100" rx="92" ry="38" fill="none" stroke="currentColor" stroke-width="0.6" transform="rotate(150 100 100)"/>
+            <circle cx="100" cy="100" r="22" fill="none" stroke="currentColor" stroke-width="1"/>
+            <polygon points="100,78 104,93 120,93 107,103 112,118 100,108 88,118 93,103 80,93 96,93" fill="currentColor" opacity="0.7"/>
+            <ellipse cx="100" cy="100" rx="22" ry="9" fill="none" stroke="currentColor" stroke-width="0.7"/>
+            <line x1="100" y1="78" x2="100" y2="122" stroke="currentColor" stroke-width="0.7"/>
+            <line x1="78" y1="100" x2="122" y2="100" stroke="currentColor" stroke-width="0.7"/>
+          </svg>
 
-          <!-- Bottom: signature of bearer -->
-          <div class="page-art-footer">
-            <div class="sig-bearer-line" id="art-sig-value"></div>
-            <div class="sig-bearer-label">SIGNATURE OF BEARER / FIRMA DEL TITULAR / SIGNATURE DU TITULAIRE</div>
-          </div>
-          <div class="page-num-art">1</div>
+          <div class="pp-left-quote" id="art-quote">La libertad de los pueblos no se mendiga: se conquista con el filo de la espada.</div>
         </div>
 
-        <!-- RIGHT: Biographical data page -->
-        <div class="page page-bio">
-          <div class="page-guilloche"></div>
-
-          <!-- Country name header bar -->
-          <div class="bio-country-bar">
-            <div>
-              <div class="bio-country-name" id="bio-country-bar-name">REP&#218;BLICA DEL ECUADOR</div>
-              <div style="font-size:6px;font-family:var(--ff-mono);opacity:0.6;letter-spacing:0.08em;">PASAPORTE &nbsp;/&nbsp; PASSPORT &nbsp;/&nbsp; PASSEPORT</div>
-            </div>
-            <div class="bio-type-block">
-              <span class="bio-type-label">TYPE / TIPO</span>
-              <span class="bio-type-value">P</span>
-              &nbsp;&nbsp;
-              <span class="bio-type-label">CODE / C&#211;DIGO</span>
-              <span class="bio-type-value" id="bio-nat-code">ECU</span>
-            </div>
-          </div>
-
-          <!-- Main body: photo + fields -->
-          <div class="bio-body">
-
-            <!-- Photo column -->
-            <div class="bio-photo-col">
-              <div class="bio-type-badge" id="bio-type-badge">PASAPORTE</div>
-              <div class="bio-photo-wrap" id="photo-box-click"
-                onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()"
-                title="Click para cambiar foto">
-                <div class="bio-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
-                <img id="photo-preview" style="display:none;width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;" alt="Foto titular"/>
-                <div class="bio-photo-click-hint">&#128247; FOTO</div>
-                <!-- Seal overlay -->
-                <svg class="bio-seal" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
-                  <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="1"/>
-                  <text x="50" y="54" text-anchor="middle" font-size="7" font-family="monospace" fill="currentColor" letter-spacing="1">OFFICIAL SEAL</text>
-                </svg>
-              </div>
-              <!-- Ghost photo -->
-              <div class="bio-photo-ghost" id="bio-photo-ghost">
-                <img id="photo-ghost-img" style="display:none;width:100%;height:100%;object-fit:cover;filter:grayscale(1) opacity(0.4);" alt=""/>
-              </div>
-              <div style="font-size:5px;font-family:var(--ff-mono);color:rgba(42,96,68,0.4);text-align:center;letter-spacing:0.06em;margin-top:2px;">&#128737; BIOM&#201;TRICO</div>
-            </div>
-
-            <!-- Fields column -->
-            <div class="bio-fields-col">
-
-              <!-- Surname -->
-              <div class="bio-field">
-                <div class="bio-field-label">Apellidos / Surname / Nom</div>
-                <div class="bio-field-value" id="dv-surname">&#8212;</div>
-              </div>
-
-              <!-- Given names -->
-              <div class="bio-field">
-                <div class="bio-field-label">Nombres / Given names / Pr&#233;noms</div>
-                <div class="bio-field-value" id="dv-given">&#8212;</div>
-              </div>
-
-              <!-- Nationality + Sex -->
-              <div class="bio-row-2">
-                <div class="bio-field">
-                  <div class="bio-field-label">Nationalit&#233; / Nationality / Nacionalidad</div>
-                  <div class="bio-field-value sm" id="dv-nat">&#8212;</div>
-                </div>
-                <div class="bio-field">
-                  <div class="bio-field-label">Sexe / Sex / Sexo</div>
-                  <div class="bio-field-value sm" id="dv-sex">&#8212;</div>
-                </div>
-              </div>
-
-              <!-- DOB + POB -->
-              <div class="bio-row-2">
-                <div class="bio-field">
-                  <div class="bio-field-label">Date of birth / Fecha de nac.</div>
-                  <div class="bio-field-value mono" id="dv-dob">&#8212;</div>
-                </div>
-                <div class="bio-field">
-                  <div class="bio-field-label">Place of birth / Lugar de nac.</div>
-                  <div class="bio-field-value sm" id="dv-pob">&#8212;</div>
-                </div>
-              </div>
-
-              <!-- Passport No + Issue + Expiry + Blood -->
-              <div class="bio-row-2">
-                <div class="bio-field">
-                  <div class="bio-field-label">Passport No. / N&#186; Pasaporte</div>
-                  <div class="bio-field-value mono" id="dv-passno">&#8212;</div>
-                </div>
-                <div class="bio-field">
-                  <div class="bio-field-label">Sexe/Blood/Sangre</div>
-                  <div class="bio-field-value mono red" id="dv-blood">&#8212;</div>
-                </div>
-              </div>
-              <div class="bio-row-2">
-                <div class="bio-field">
-                  <div class="bio-field-label">Date of issue / Fecha expedici&#243;n</div>
-                  <div class="bio-field-value mono" id="dv-issued">&#8212;</div>
-                </div>
-                <div class="bio-field">
-                  <div class="bio-field-label">Date of expiry / Caducidad</div>
-                  <div class="bio-field-value mono red" id="dv-expiry">&#8212;</div>
-                </div>
-              </div>
-
-              <!-- Authority -->
-              <div class="bio-field">
-                <div class="bio-field-label">Authority / Autoridad emisora</div>
-                <div class="bio-field-value sm" id="dv-authority" style="font-size:8px;">Ministerio de Relaciones Exteriores</div>
-              </div>
-
-              <!-- Holder signature -->
-              <div class="bio-sig-area">
-                <div class="bio-field-label">Signature of bearer / Firma del titular</div>
-                <div class="bio-sig-value" id="dv-sig">&#8212;</div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Security strip -->
-          <div class="bio-security-strip">
-            <div class="bio-sec-item"><div class="bio-sec-dot"></div>UV Security</div>
-            <div class="bio-sec-item"><div class="bio-sec-dot"></div>Microtext</div>
-            <div class="bio-sec-item"><div class="bio-sec-dot"></div>Hologram</div>
-            <div class="bio-sec-item"><div class="bio-sec-dot"></div>Laser Engraving</div>
-            <div class="bio-sec-item"><div class="bio-sec-dot"></div>RFID Chip</div>
-          </div>
-
-          <!-- MRZ -->
-          <div class="bio-mrz">
-            <div class="bio-mrz-label">Zone de lecture automatique / Machine readable zone / Zona de lectura mec&#225;nica</div>
-            <div class="bio-mrz-line" id="mrz1">P&lt;ECU&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
-            <div class="bio-mrz-line" id="mrz2">?????????&lt;0ECU0101011M3101010&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4</div>
-          </div>
-          <div class="bio-page-num">2</div>
+        <!-- Colored artistic band (the "illustration" zone) -->
+        <div class="pp-left-artband" id="pp-left-artband">
+          <div class="pp-left-artband-text" id="pp-left-artband-text">ECU</div>
         </div>
 
+        <!-- Signature of bearer -->
+        <div class="pp-left-sig">
+          <div class="pp-left-sig-line" id="art-sig-line"></div>
+          <div class="pp-left-sig-label">SIGNATURE OF BEARER / FIRMA DEL TITULAR / SIGNATURE DU TITULAIRE</div>
+        </div>
+        <span class="pp-left-pgnum">1</span>
+      </div>
+
+      <!-- ═══ RIGHT PAGE: Biographical Data ═══ -->
+      <div class="pp-right" id="pp-right">
+
+        <!-- Country header bar -->
+        <div class="pp-hdr" id="pp-hdr">
+          <div class="pp-hdr-left">
+            <div class="pp-hdr-type">PASSPORT / PASAPORTE / PASSEPORT</div>
+            <div class="pp-hdr-country" id="bio-country-name">REP&#218;BLICA DEL ECUADOR</div>
+          </div>
+          <div class="pp-hdr-right">
+            <span class="pp-hdr-code">TYPE &nbsp; CODE &nbsp; PASSPORT NO.</span>
+            <span class="pp-hdr-code" style="font-size:11px;font-weight:bold;color:var(--gold2)">P &nbsp; <span id="bio-nat-code">ECU</span></span>
+            <span class="pp-hdr-pno-label" id="dv-passno-hdr">—</span>
+          </div>
+        </div>
+
+        <!-- Main: photo + fields -->
+        <div class="pp-main">
+
+          <!-- Photo column -->
+          <div class="pp-photo-col">
+            <div class="pp-badge" id="pp-badge">PASAPORTE</div>
+
+            <div class="pp-photo-frame" id="photo-box-click"
+              onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()"
+              title="Click para cambiar foto">
+              <div class="pp-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
+              <img id="photo-preview" alt="Foto titular"/>
+              <div class="pp-photo-hint">&#128247; FOTO</div>
+              <svg class="pp-photo-seal" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                <circle cx="50" cy="50" r="37" fill="none" stroke="currentColor" stroke-width="1"/>
+                <text x="50" y="53" text-anchor="middle" font-size="8" font-family="monospace" fill="currentColor" letter-spacing="0.5">OFFICIAL</text>
+              </svg>
+            </div>
+
+            <div class="pp-photo-ghost" id="pp-photo-ghost">
+              <img id="photo-ghost-img" alt=""/>
+            </div>
+
+            <div class="pp-biometric-icon">&#128737; BIOM&#201;TRICO<br/>E-PASSPORT</div>
+          </div>
+
+          <!-- Fields column -->
+          <div class="pp-fields">
+
+            <div class="pp-field">
+              <div class="pp-field-lbl">Apellidos / Surname / Nom</div>
+              <div class="pp-field-val" id="dv-surname">&#8212;</div>
+            </div>
+
+            <div class="pp-field">
+              <div class="pp-field-lbl">Nombres / Given names / Pr&#233;noms</div>
+              <div class="pp-field-val" id="dv-given">&#8212;</div>
+            </div>
+
+            <div class="pp-row2">
+              <div class="pp-field">
+                <div class="pp-field-lbl">Nationality / Nationalit&#233; / Nacionalidad</div>
+                <div class="pp-field-val sm" id="dv-nat">&#8212;</div>
+              </div>
+              <div class="pp-field">
+                <div class="pp-field-lbl">Sex / Sexe / Sexo</div>
+                <div class="pp-field-val sm" id="dv-sex">&#8212;</div>
+              </div>
+            </div>
+
+            <div class="pp-row2">
+              <div class="pp-field">
+                <div class="pp-field-lbl">Date of birth / Fecha de nac.</div>
+                <div class="pp-field-val mono" id="dv-dob">&#8212;</div>
+              </div>
+              <div class="pp-field">
+                <div class="pp-field-lbl">Place of birth / Lugar de nac.</div>
+                <div class="pp-field-val sm" id="dv-pob">&#8212;</div>
+              </div>
+            </div>
+
+            <div class="pp-row3">
+              <div class="pp-field">
+                <div class="pp-field-lbl">Date of issue / Expedici&#243;n</div>
+                <div class="pp-field-val mono" id="dv-issued">&#8212;</div>
+              </div>
+              <div class="pp-field">
+                <div class="pp-field-lbl">Date of expiry / Caducidad</div>
+                <div class="pp-field-val mono alert" id="dv-expiry">&#8212;</div>
+              </div>
+              <div class="pp-field">
+                <div class="pp-field-lbl">Blood / Sangre</div>
+                <div class="pp-field-val mono alert" id="dv-blood">&#8212;</div>
+              </div>
+            </div>
+
+            <div class="pp-field">
+              <div class="pp-field-lbl">Authority / Autoridad / Autorit&#233;</div>
+              <div class="pp-field-val sm" id="dv-authority" style="font-size:9px;">Ministerio de Relaciones Exteriores</div>
+            </div>
+
+            <div class="pp-sig-row">
+              <div class="pp-field-lbl">Signature of bearer / Firma del titular</div>
+              <div class="pp-sig-val" id="dv-sig">&#8212;</div>
+            </div>
+
+          </div><!-- /pp-fields -->
+        </div><!-- /pp-main -->
+
+        <!-- Security strip -->
+        <div class="pp-security">
+          <div class="pp-sec-item"><div class="pp-sec-dot"></div>UV Security</div>
+          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Laser Engraving</div>
+          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Microtext</div>
+          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Hologram</div>
+          <div class="pp-sec-item"><div class="pp-sec-dot"></div>RFID Chip</div>
+          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Polycarbonate</div>
+        </div>
+
+        <!-- MRZ -->
+        <div class="pp-mrz">
+          <div class="pp-mrz-lbl">Zone de lecture automatique &mdash; Machine readable zone &mdash; Zona de lectura mec&#225;nica</div>
+          <div class="pp-mrz-line" id="mrz1">P&lt;ECU&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+          <div class="pp-mrz-line" id="mrz2">?????????&lt;0ECU0101011M3101010&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4</div>
+        </div>
+        <span class="pp-pgnum">2</span>
+
+      </div><!-- /pp-right -->
       </div><!-- /spread-bio -->
 
 <!-- VISAS P3-4 -->
@@ -1161,7 +1175,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   </div></div>
 
   <!-- MAIN PANEL — full width below passport -->
-  <div class="main-panel" style="max-width:900px;margin:0 auto;width:100%;">
+  <div class="main-panel" style="max-width:1100px;margin:0 auto;width:100%;">
     <div class="panel">
       <div class="panel-hdr">
         <div class="panel-title">&#9992;&#65039; <span data-t="panel_trips">Mis viajes</span></div>
@@ -1201,14 +1215,13 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 
 // FIX 1: Firebase config placeholder clearly marked
 const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
-
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -1304,23 +1317,23 @@ const COUNTRY_QUOTES = {
 
 // Page accent colors per country
 const COUNTRY_ACCENT = {
-  ECU:{main:"#2a6044",dark:"#1a3a2a",light:"rgba(42,96,68,0.12)",line:"rgba(42,96,68,0.35)"},
-  COL:{main:"#8b4a10",dark:"#5a2e08",light:"rgba(139,74,16,0.1)",line:"rgba(139,74,16,0.3)"},
-  PER:{main:"#8b1a1a",dark:"#5a0f0f",light:"rgba(139,26,26,0.1)",line:"rgba(139,26,26,0.3)"},
-  MEX:{main:"#1a6a2a",dark:"#0f4020",light:"rgba(26,106,42,0.1)",line:"rgba(26,106,42,0.3)"},
-  ARG:{main:"#1a4a8b",dark:"#0f2a5a",light:"rgba(26,74,139,0.1)",line:"rgba(26,74,139,0.3)"},
-  BRA:{main:"#1a6a1a",dark:"#0f4010",light:"rgba(26,106,26,0.1)",line:"rgba(26,106,26,0.3)"},
-  VEN:{main:"#8b6a10",dark:"#5a4008",light:"rgba(139,106,16,0.1)",line:"rgba(139,106,16,0.3)"},
-  CHL:{main:"#1a2a8b",dark:"#0f1a5a",light:"rgba(26,42,139,0.1)",line:"rgba(26,42,139,0.3)"},
-  ESP:{main:"#8b2a1a",dark:"#5a1a0f",light:"rgba(139,42,26,0.1)",line:"rgba(139,42,26,0.3)"},
-  USA:{main:"#1a2a6b",dark:"#0f1a4a",light:"rgba(26,42,107,0.1)",line:"rgba(26,42,107,0.3)"},
-  FRA:{main:"#1a1a8b",dark:"#0f0f5a",light:"rgba(26,26,139,0.1)",line:"rgba(26,26,139,0.3)"},
-  DEU:{main:"#3a3a3a",dark:"#1a1a1a",light:"rgba(58,58,58,0.1)",line:"rgba(58,58,58,0.3)"},
-  GBR:{main:"#1a1a8b",dark:"#0f0f5a",light:"rgba(26,26,139,0.1)",line:"rgba(26,26,139,0.3)"},
-  CHN:{main:"#8b1a1a",dark:"#5a0a0a",light:"rgba(139,26,26,0.1)",line:"rgba(139,26,26,0.3)"},
-  JPN:{main:"#2a1a3a",dark:"#1a0f2a",light:"rgba(42,26,58,0.1)",line:"rgba(42,26,58,0.3)"},
-  IND:{main:"#8b4a1a",dark:"#5a2a0f",light:"rgba(139,74,26,0.1)",line:"rgba(139,74,26,0.3)"},
-  RUS:{main:"#1a2a6b",dark:"#0f1a4a",light:"rgba(26,42,107,0.1)",line:"rgba(26,42,107,0.3)"},
+  ECU:{main:"#2a6044",dark:"#1a3a2a",light:"rgba(42,96,68,0.12)",line:"rgba(42,96,68,0.35)",rgb:"42,96,68"},
+  COL:{main:"#8b4a10",rgb:"139,74,16",dark:"#5a2e08",light:"rgba(139,74,16,0.1)",line:"rgba(139,74,16,0.3)"},
+  PER:{main:"#8b1a1a",rgb:"139,26,26",dark:"#5a0f0f",light:"rgba(139,26,26,0.1)",line:"rgba(139,26,26,0.3)"},
+  MEX:{main:"#1a6a2a",rgb:"26,106,42",dark:"#0f4020",light:"rgba(26,106,42,0.1)",line:"rgba(26,106,42,0.3)"},
+  ARG:{main:"#1a4a8b",rgb:"26,74,139",dark:"#0f2a5a",light:"rgba(26,74,139,0.1)",line:"rgba(26,74,139,0.3)"},
+  BRA:{main:"#1a6a1a",rgb:"26,106,26",dark:"#0f4010",light:"rgba(26,106,26,0.1)",line:"rgba(26,106,26,0.3)"},
+  VEN:{main:"#8b6a10",rgb:"139,106,16",dark:"#5a4008",light:"rgba(139,106,16,0.1)",line:"rgba(139,106,16,0.3)"},
+  CHL:{main:"#1a2a8b",rgb:"26,42,139",dark:"#0f1a5a",light:"rgba(26,42,139,0.1)",line:"rgba(26,42,139,0.3)"},
+  ESP:{main:"#8b2a1a",rgb:"139,42,26",dark:"#5a1a0f",light:"rgba(139,42,26,0.1)",line:"rgba(139,42,26,0.3)"},
+  USA:{main:"#1a2a6b",rgb:"26,42,107",dark:"#0f1a4a",light:"rgba(26,42,107,0.1)",line:"rgba(26,42,107,0.3)"},
+  FRA:{main:"#1a1a8b",rgb:"26,26,139",dark:"#0f0f5a",light:"rgba(26,26,139,0.1)",line:"rgba(26,26,139,0.3)"},
+  DEU:{main:"#3a3a3a",rgb:"58,58,58",dark:"#1a1a1a",light:"rgba(58,58,58,0.1)",line:"rgba(58,58,58,0.3)"},
+  GBR:{main:"#1a1a8b",rgb:"26,26,139",dark:"#0f0f5a",light:"rgba(26,26,139,0.1)",line:"rgba(26,26,139,0.3)"},
+  CHN:{main:"#8b1a1a",rgb:"139,26,26",dark:"#5a0a0a",light:"rgba(139,26,26,0.1)",line:"rgba(139,26,26,0.3)"},
+  JPN:{main:"#2a1a3a",rgb:"42,26,58",dark:"#1a0f2a",light:"rgba(42,26,58,0.1)",line:"rgba(42,26,58,0.3)"},
+  IND:{main:"#8b4a1a",rgb:"139,74,26",dark:"#5a2a0f",light:"rgba(139,74,26,0.1)",line:"rgba(139,74,26,0.3)"},
+  RUS:{main:"#1a2a6b",rgb:"26,42,107",dark:"#0f1a4a",light:"rgba(26,42,107,0.1)",line:"rgba(26,42,107,0.3)"},
 };
 
 // Country authority names
@@ -1349,42 +1362,49 @@ function updateArtPage(code) {
   const quote = COUNTRY_QUOTES[code] || COUNTRY_QUOTES.ECU;
   const c = COUNTRIES[code] || COUNTRIES.ECU;
   const auth = COUNTRY_AUTHORITY[code] || "Ministry of Foreign Affairs";
+  const rgb = acc.rgb || "42,96,68";
+  const el = function(id){ return document.getElementById(id); };
 
-  // Update CSS vars for page accent color
-  document.documentElement.style.setProperty('--page-accent', acc.main);
-  document.documentElement.style.setProperty('--page-accent2', acc.dark);
-  document.documentElement.style.setProperty('--page-accent-light', acc.light);
-  document.documentElement.style.setProperty('--page-accent-line', acc.line);
+  // Country name (both pages)
+  if (el('art-country-name')) el('art-country-name').textContent = c.name.toUpperCase();
+  if (el('bio-country-name')) el('bio-country-name').textContent = c.name.toUpperCase();
 
-  // Update art page
-  const artCountry = document.getElementById('art-country-name');
-  if (artCountry) artCountry.textContent = c.name.toUpperCase();
-  const artQuote = document.getElementById('art-quote');
-  if (artQuote) artQuote.textContent = quote;
+  // Quote
+  if (el('art-quote')) el('art-quote').textContent = quote;
 
-  // Update bio header
-  const bioBar = document.getElementById('bio-country-bar-name');
-  if (bioBar) bioBar.textContent = c.name.toUpperCase();
-  const bioCode = document.getElementById('bio-nat-code');
-  if (bioCode) bioCode.textContent = code;
+  // Country code
+  if (el('bio-nat-code')) el('bio-nat-code').textContent = code;
 
-  // Update authority
-  const authEl = document.getElementById('dv-authority');
-  if (authEl) authEl.textContent = auth;
+  // Authority
+  if (el('dv-authority')) el('dv-authority').textContent = auth;
 
-  // Update art SVG color
-  const artSvg = document.getElementById('art-emblem');
-  if (artSvg) artSvg.style.color = acc.main;
+  // SVG emblem color
+  if (el('art-emblem')) el('art-emblem').style.color = acc.main;
 
-  // Update bio-type-badge
-  const badge = document.getElementById('bio-type-badge');
-  if (badge) badge.textContent = (lang==='en'?'PASSPORT':lang==='fr'?'PASSEPORT':lang==='pt'?'PASSAPORTE':'PASAPORTE');
-  // Update art page title
-  const artTitle = document.getElementById('art-passport-title');
-  if (artTitle) artTitle.textContent = (lang==='en'?'PASSPORT · TRAVEL DOCUMENT':lang==='fr'?'PASSEPORT · DOCUMENT DE VOYAGE':lang==='pt'?'PASSAPORTE · DOCUMENTO DE VIAGEM':lang==='de'?'REISEPASS · REISEDOKUMENT':'PASAPORTE · DOCUMENTO DE VIAJE');
+  // Artband background + text
+  if (el('pp-left-artband')) {
+    el('pp-left-artband').style.background = "linear-gradient(180deg, rgba("+rgb+",0.1) 0%, rgba("+rgb+",0.25) 50%, rgba("+rgb+",0.1) 100%)";
+  }
+  if (el('pp-left-artband-text')) el('pp-left-artband-text').textContent = code;
+
+  // Left page subtle tint
+  if (el('pp-left')) {
+    el('pp-left').style.background = "linear-gradient(180deg, rgba("+rgb+",0.04) 0%, #f0ede4 100%)";
+  }
+
+  // Passport word translation
+  const passportWord = lang==='en'?'PASSPORT':lang==='fr'?'PASSEPORT':lang==='pt'?'PASSAPORTE':'PASAPORTE';
+  if (el('pp-badge')) el('pp-badge').textContent = passportWord;
+
+  // Art page title
+  const artTitleWords = {en:'PASSPORT · TRAVEL DOCUMENT',fr:'PASSEPORT · DOCUMENT DE VOYAGE',pt:'PASSAPORTE · DOCUMENTO DE VIAGEM',de:'REISEPASS · REISEDOKUMENT'};
+  if (el('art-passport-title')) el('art-passport-title').textContent = artTitleWords[lang] || 'PASAPORTE · DOCUMENTO DE VIAJE';
+
+  // Header background color
+  if (el('pp-hdr')) el('pp-hdr').style.background = acc.dark;
+
   // Sync country selector
-  const csel = document.getElementById("country-sel");
-  if (csel) csel.value = code;
+  if (el('country-sel')) el('country-sel').value = code;
 }
 
 const COUNTRIES = {
@@ -1533,12 +1553,9 @@ window.handlePhoto = function(input) {
     const dataUrl = e.target.result;
     // Show in passport
     const preview = document.getElementById("photo-preview");
-    const placeholder = document.getElementById("photo-icon-placeholder");
     if (preview) { preview.src = dataUrl; preview.style.display = "block"; }
+    const placeholder = document.getElementById("photo-icon-placeholder");
     if (placeholder) placeholder.style.display = "none";
-    // Remove click label when photo loaded
-    const clickLabel = document.querySelector('#photo-box-click div:last-child');
-    if (clickLabel) clickLabel.style.display = "none";
     // Store in profile
     profile.photoData = dataUrl;
     // Status
@@ -1610,12 +1627,13 @@ function renderProfile() {
   // Restore photo
   if (p.photoData) {
     const preview = document.getElementById("photo-preview");
-    const placeholder = document.getElementById("photo-icon-placeholder");
     if (preview) { preview.src = p.photoData; preview.style.display = "block"; }
+    const placeholder = document.getElementById("photo-icon-placeholder");
     if (placeholder) placeholder.style.display = "none";
-    // Update ghost photo too
-    const ghostImg = document.getElementById("photo-ghost-img");
-    if (ghostImg) { ghostImg.src = p.photoData; ghostImg.style.display = "block"; }
+    const ghost = document.getElementById("photo-ghost-img");
+    if (ghost) { ghost.src = p.photoData; ghost.style.display = "block"; }
+    const ghost2 = document.getElementById("art-sig-ghost");
+    if (ghost2) { ghost2.src = p.photoData; ghost2.style.display = "block"; }
   }
   // FIX 7: safe access with fallback for all fields
   const get = (k) => p[k] || "—";
@@ -1626,17 +1644,19 @@ function renderProfile() {
   document.getElementById("dv-dob").textContent = get("dob");
   document.getElementById("dv-pob").textContent = get("pob");
   document.getElementById("dv-passno").textContent = get("passno");
+  const pnoHdr = document.getElementById("dv-passno-hdr");
+  if (pnoHdr) pnoHdr.textContent = get("passno");
   document.getElementById("dv-issued").textContent = get("issued");   // FIX 5
   document.getElementById("dv-expiry").textContent = get("expiry");
   document.getElementById("dv-blood").textContent = get("blood");     // FIX 12
   document.getElementById("dv-sig").textContent = p.sig || p.given || "—";
   // Update signature on art page
-  const artSig = document.getElementById("art-sig-value");
-  if (artSig) { artSig.style.fontFamily="var(--ff-sig)"; artSig.style.fontSize="20px"; artSig.style.color="rgba(10,20,60,0.6)"; artSig.textContent = p.sig || p.given || ""; }
+  const artSig = document.getElementById("art-sig-line");
+  if (artSig) { artSig.textContent = p.sig || p.given || ""; }
   // Update bio-nat-code in header
   const natCode = document.getElementById("bio-nat-code");
   if (natCode) natCode.textContent = p.natCode || "ECU";
-  const bioBar = document.getElementById("bio-country-bar-name");
+  const bioBar = document.getElementById("bio-country-name");
   const c2 = COUNTRIES[p.natCode] || COUNTRIES.ECU;
   if (bioBar) bioBar.textContent = c2.name.toUpperCase();
   document.getElementById("obs-meds-text").textContent = p.meds ? "Medicamentos: " + p.meds : "Sin medicamentos registrados.";
