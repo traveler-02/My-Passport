@@ -406,17 +406,17 @@ body::before {
 <!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-  import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
   // ── REPLACE WITH YOUR FIREBASE CONFIG ──
- const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
-};
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -426,12 +426,21 @@ body::before {
   window._auth = auth;
   window._provider = provider;
   window._signInWithPopup = signInWithPopup;
+  window._signInWithRedirect = signInWithRedirect;
+  window._getRedirectResult = getRedirectResult;
   window._signInEmail = signInWithEmailAndPassword;
   window._createUser = createUserWithEmailAndPassword;
 
   onAuthStateChanged(auth, user => {
     if (user) {
       window.location.href = '/pages/dashboard.html';
+    }
+  });
+
+  // Check for redirect result on load (handles signInWithRedirect flow)
+  getRedirectResult(auth).catch(err => {
+    if (err && err.code && err.code !== 'auth/no-current-user') {
+      console.warn('Redirect sign-in error:', err.message);
     }
   });
 </script>
@@ -500,11 +509,34 @@ function showError(msg) {
 window.signInGoogle = async function() {
   if (!window._auth) return;
   showLoading(true);
+
+  // Popup-blocking-prone errors that should trigger a redirect fallback
+  const POPUP_FALLBACK_CODES = [
+    'auth/popup-closed-by-user',
+    'auth/popup-blocked',
+    'auth/cancelled-popup-request',
+    'auth/network-request-failed'
+  ];
+
   try {
     await window._signInWithPopup(window._auth, window._provider);
+    // onAuthStateChanged will redirect to dashboard on success
   } catch(e) {
+    const code = e && e.code;
+    if (POPUP_FALLBACK_CODES.includes(code)) {
+      // Popup failed (common in incognito/private mode, blockers, some mobile browsers)
+      // Fall back to full-page redirect flow instead
+      try {
+        await window._signInWithRedirect(window._auth, window._provider);
+        return; // page will navigate away
+      } catch(e2) {
+        showLoading(false);
+        showError('No se pudo iniciar sesión con Google. ' + (e2.message || ''));
+        return;
+      }
+    }
     showLoading(false);
-    showError(e.message);
+    showError(e.message || 'Error al iniciar sesión con Google.');
   }
 };
 
