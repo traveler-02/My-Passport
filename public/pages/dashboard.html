@@ -105,16 +105,16 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 .country-sel{background:transparent;border:none;color:var(--gold);font-size:13px;cursor:pointer;outline:none;flex:1;font-family:var(--ff);}
 .country-sel option{background:#0f2318;color:var(--cream);}
 
-.pages{display:none;opacity:0;transform:rotateY(-8deg) scale(0.97);transform-origin:left center;}
-.pages.open{display:block;animation:page-open 0.4s ease forwards;}
-@keyframes page-open{
-  from{opacity:0;transform:rotateY(-8deg) scale(0.97);}
-  to{opacity:1;transform:rotateY(0deg) scale(1);}
+.pages{display:none;contain:layout style;}
+.pages.open{display:block;animation:page-fade-in 0.35s ease forwards;}
+@keyframes page-fade-in{
+  from{opacity:0;}
+  to{opacity:1;}
 }
-.pages.closing{animation:page-close 0.3s ease forwards;}
-@keyframes page-close{
-  from{opacity:1;transform:rotateY(0deg) scale(1);}
-  to{opacity:0;transform:rotateY(8deg) scale(0.97);}
+.pages.closing{animation:page-fade-out 0.22s ease forwards;}
+@keyframes page-fade-out{
+  from{opacity:1;}
+  to{opacity:0;}
 }
 .page-topbar{background:rgba(0,0,0,0.3);padding:6px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.1);}
 .passport-label{font-size:8px;color:rgba(201,168,76,0.45);font-family:var(--ff-mono);letter-spacing:0.07em;}
@@ -1509,15 +1509,13 @@ window.applyCountry = function(code, skipLang) {
 
 window.openBook = function() {
   const cover = document.getElementById("cover");
-  cover.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+  cover.style.transition = "opacity 0.2s ease";
   cover.style.opacity = "0";
-  cover.style.transform = "rotateY(8deg) scale(0.97)";
   setTimeout(() => {
     cover.style.display = "none";
     cover.style.opacity = "";
-    cover.style.transform = "";
     document.getElementById("pages").classList.add("open");
-  }, 240);
+  }, 200);
 };
 window.closeBook = function() {
   const pages = document.getElementById("pages");
@@ -1525,7 +1523,7 @@ window.closeBook = function() {
   setTimeout(() => {
     pages.classList.remove("open","closing");
     document.getElementById("cover").style.display = "block";
-  }, 280);
+  }, 220);
 };
 
 // FIX 3: showTab receives element reference, no global event needed
