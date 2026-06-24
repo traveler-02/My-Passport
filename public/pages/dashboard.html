@@ -20,10 +20,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* nav removed — UI integrated into passport */
 
-.shell{max-width:1160px;margin:0 auto;padding:1.5rem 1.5rem 1.5rem;}
+.shell{max-width:1400px;margin:0 auto;padding:1rem 1rem 1.5rem;}
 
 /* Passport-integrated top bar */
-.pp-topbar{max-width:1100px;margin:0 auto;width:100%;background:rgba(0,0,0,0.55);border-bottom:1px solid rgba(201,168,76,0.15);padding:6px 16px 6px 20px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5;}
+.pp-topbar{max-width:1360px;margin:0 auto;width:100%;background:rgba(0,0,0,0.55);border-bottom:1px solid rgba(201,168,76,0.15);padding:6px 16px 6px 20px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5;}
 .pp-user{display:flex;align-items:center;gap:7px;}
 .pp-avatar{width:22px;height:22px;border-radius:50%;background:#1f4a32;border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gold);overflow:hidden;flex-shrink:0;}
 .pp-avatar img{width:100%;height:100%;object-fit:cover;}
@@ -66,7 +66,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,0.7);
   width:100%;
-  max-width:1100px;
+  max-width:1360px;
   margin:0 auto;
 }
 /* Cover maintains ICAO 9303 passport ratio: 125mm x 88mm = 1.42:1 */
@@ -126,7 +126,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   background:rgba(0,0,0,0.18);
   border-bottom:1px solid rgba(201,168,76,0.12);
   overflow-x:auto;
-  max-width:1100px;
+  max-width:1360px;
   margin:0 auto;
   width:100%;
 }
@@ -140,17 +140,16 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   grid-template-columns:1fr 1fr;
   position:relative;
   width:100%;
-  max-width:1100px;
+  max-width:1360px;
   margin:0 auto;
   /* Landscape: wider than tall, like a real open passport */
   min-height:0;
 }
 .page{
   background:var(--page);
-  padding:20px 18px;
+  padding:24px 22px;
   position:relative;
   overflow:hidden;
-  /* Each open passport page is LANDSCAPE: wider than tall (ICAO ~142:100) */
   aspect-ratio:142/100;
 }
 .page-l{border-right:2px solid rgba(0,0,0,0.12);}
@@ -410,7 +409,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .pp-left-doctype {
   font-family: var(--ff);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: bold;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -429,7 +428,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 /* Decorative quote text */
 .pp-left-quote {
   font-family: var(--ff);
-  font-size: 7.5px;
+  font-size: 9.5px;
   font-style: italic;
   color: var(--art-dark, #1a3a2a);
   opacity: 0.3;
@@ -475,7 +474,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   border-top: 1px solid rgba(42,96,68,0.2);
 }
 .pp-left-sig-line {
-  min-height: 26px;
+  min-height: 34px;
   border-bottom: 1px solid rgba(var(--art-dark-hex,#1a3a2a),0.4);
   margin-bottom: 4px;
   font-family: var(--ff-sig);
@@ -527,7 +526,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 /* Country header bar */
 .pp-hdr {
   background: var(--art-dark, #1a3a2a);
-  padding: 7px 12px 6px;
+  padding: 10px 16px 9px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -543,7 +542,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .pp-hdr-country {
   font-family: var(--ff);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: bold;
   color: var(--gold);
   letter-spacing: 0.1em;
@@ -579,7 +578,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* Photo column */
 .pp-photo-col {
-  width: 110px;
+  width: 145px;
   flex-shrink: 0;
   padding: 10px 8px 8px 10px;
   display: flex;
@@ -590,8 +589,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   background: rgba(42,96,68,0.03);
 }
 .pp-photo-frame {
-  width: 82px;
-  height: 104px;
+  width: 110px;
+  height: 140px;
   border: 1.5px solid rgba(42,96,68,0.5);
   position: relative;
   overflow: hidden;
@@ -675,12 +674,12 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .pp-field { display: flex; flex-direction: column; gap: 1px; }
 .pp-field-lbl {
-  font-size: 5.5px;
+  font-size: 7px;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.07em;
   color: var(--art-dark,#1a3a2a);
   font-family: var(--ff-mono);
-  opacity: 0.6;
+  opacity: 0.65;
   line-height: 1.2;
 }
 .pp-field-val {
@@ -709,7 +708,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .pp-sig-val {
   font-family: var(--ff-sig);
-  font-size: 20px;
+  font-size: 26px;
   color: rgba(10,20,60,0.6);
   min-height: 24px;
   border-bottom: 0.5px solid rgba(42,96,68,0.25);
@@ -763,7 +762,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .pp-mrz-line {
   font-family: var(--ff-mono);
-  font-size: 9px;
+  font-size: 11px;
   color: #080f08;
   letter-spacing: 0.1em;
   line-height: 1.85;
