@@ -136,67 +136,84 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* Open passport = landscape book */
 .spread{
-  display:grid;
-  grid-template-columns:1fr 1fr;
   position:relative;
   width:100%;
-  max-width:100%;
-  margin:0 auto;
-  min-height:0;
+  overflow:hidden;
 }
+/* Page viewer: shows one page at a time */
+.page-viewer {
+  display:flex;
+  width:200%;
+  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.page-viewer.show-right {
+  transform: translateX(-50%);
+}
+/* Navigation arrows */
+.page-nav {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:10;
+  background:rgba(0,0,0,0.35);
+  border:1px solid rgba(201,168,76,0.3);
+  color:rgba(201,168,76,0.8);
+  width:36px;
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+  transition:all 0.2s;
+  user-select:none;
+}
+.page-nav:hover { background:rgba(0,0,0,0.6); color:var(--gold); }
+.page-nav-left  { left:0; border-radius:0 4px 4px 0; }
+.page-nav-right { right:0; border-radius:4px 0 0 4px; }
+.page-indicator {
+  position:absolute;
+  bottom:8px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:6px;
+  z-index:10;
+}
+.page-dot {
+  width:7px; height:7px;
+  border-radius:50%;
+  background:rgba(201,168,76,0.3);
+  border:1px solid rgba(201,168,76,0.4);
+  transition:background 0.2s;
+  cursor:pointer;
+}
+.page-dot.active { background:rgba(201,168,76,0.8); }
 .page{
   background:var(--page);
   padding:24px 22px;
   position:relative;
   overflow:hidden;
   aspect-ratio:142/100;
+  flex:0 0 50%; /* 50% of page-viewer which is 200% wide = 100% of viewport */
+  min-width:50%;
+  box-sizing:border-box;
 }
-.page-l{border-right:2px solid rgba(0,0,0,0.12);}
+.page-l{ border-right:none; }
 
 /* Mobile: swipe carousel */
 @media(max-width:700px){
-  /* Mobile: each page fills full screen, rotated to landscape like real passport */
   body { overflow-x: hidden; }
-  .spread{
-    display:flex;
-    overflow-x:scroll;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    width:100vw;
-  }
-  .spread::-webkit-scrollbar{display:none;}
+  .page-nav { display:none; } /* Touch navigation on mobile */
   .page,
   .spread #pp-left,
   .spread #pp-right {
-    /* Each page = full viewport, rotated 90deg = landscape */
-    flex: 0 0 100vw;
-    min-width: 100vw;
-    height: 100vw;
-    scroll-snap-align: start;
-    border-right: none;
     aspect-ratio: unset !important;
-    /* Rotate to landscape — simulates holding passport sideways */
+    /* Rotate 90deg to show landscape like a real passport */
+    min-height: 100vw;
     transform: rotate(-90deg);
     transform-origin: center center;
-    overflow: hidden;
-  }
-  .spread #pp-left { border-right: none; border-bottom: none; }
-  .page-l { border-right: none; border-bottom: none; }
-
-  /* Swipe hint */
-  .spread::after{
-    content: "◦ ◦";
-    position: fixed;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: block;
-    pointer-events: none;
-    font-size: 16px;
-    color: rgba(201,168,76,0.5);
-    letter-spacing: 6px;
-    z-index: 100;
+    margin: calc((100vw - 100vh) / 2) 0;
   }
 }
 .page::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px),repeating-linear-gradient(90deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px);pointer-events:none;}
@@ -369,8 +386,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   aspect-ratio: 142/100;
   display: flex;
   flex-direction: column;
-  border-right: 2px solid rgba(0,0,0,0.15);
-  width: 100%;
+  border-right: none;
+  flex: 0 0 50%;
+  min-width: 50%;
+  box-sizing: border-box;
 }
 
 /* Country-specific artistic background */
@@ -517,7 +536,9 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   aspect-ratio: 142/100;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  flex: 0 0 50%;
+  min-width: 50%;
+  box-sizing: border-box;
 }
 /* Guilloche background on bio page */
 .pp-right::before {
@@ -882,6 +903,9 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       <!-- BIO P1-2 -->
       <div id="swipe-hint">&#8592; desliza &#8594;</div>
       <div class="spread" id="spread-bio">
+  <div class="page-nav page-nav-left" onclick="showPage(\'bio\', 0)" title="Página izquierda">&#8592;</div>
+  <div class="page-viewer" id="viewer-bio">
+
 
       <!-- ═══ LEFT PAGE: Artistic / Signature ═══ -->
       <div class="pp-left" id="pp-left">
@@ -1052,10 +1076,20 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
         <span class="pp-pgnum">2</span>
 
       </div><!-- /pp-right -->
-      </div><!-- /spread-bio -->
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage(\'bio\', 1)" title="Página derecha">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-bio-0" onclick="showPage(\'bio\', 0)"></div>
+    <div class="page-dot" id="dot-bio-1" onclick="showPage(\'bio\', 1)"></div>
+  </div>
+</div><!-- /spread-bio -->
 
 <!-- VISAS P3-4 -->
       <div class="spread" id="spread-visas" style="display:none">
+  <div class="page-nav page-nav-left" onclick="showPage('visas', 0)">&#8592;</div>
+  <div class="page-viewer" id="viewer-visas">
+
         <div class="page page-l">
           <div class="wm">VISADOS</div>
           <div class="ph"><span class="ph-title" data-t="ph_visas">Visados &#183; Sellos</span><span>&#128706;</span></div>
@@ -1078,10 +1112,20 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
           </div>
           <span class="pg-num">4</span>
         </div>
-      </div>
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage('visas', 1)">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-visas-0" onclick="showPage('visas', 0)"></div>
+    <div class="page-dot" id="dot-visas-1" onclick="showPage('visas', 1)"></div>
+  </div>
+</div>
 
       <!-- TRIPS P5-6 -->
       <div class="spread" id="spread-trips" style="display:none">
+  <div class="page-nav page-nav-left" onclick="showPage('trips', 0)">&#8592;</div>
+  <div class="page-viewer" id="viewer-trips">
+
         <div class="page page-l">
           <div class="wm">VIAJES</div>
           <div class="ph"><span class="ph-title" data-t="ph_trips">Itinerario de viajes</span><span>&#9992;&#65039;</span></div>
@@ -1134,10 +1178,20 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
           </div>
           <span class="pg-num">6</span>
         </div>
-      </div>
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage('trips', 1)">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-trips-0" onclick="showPage('trips', 0)"></div>
+    <div class="page-dot" id="dot-trips-1" onclick="showPage('trips', 1)"></div>
+  </div>
+</div>
 
       <!-- CHECKLIST P7-8 -->
       <div class="spread" id="spread-cl" style="display:none">
+  <div class="page-nav page-nav-left" onclick="showPage('cl', 0)">&#8592;</div>
+  <div class="page-viewer" id="viewer-cl">
+
         <div class="page page-l">
           <div class="wm">CHECKLIST</div>
           <div class="ph"><span class="ph-title" data-t="ph_cl">Checklist legal</span><span>&#9878;&#65039;</span></div>
@@ -1151,10 +1205,20 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
           <div id="cl-result"><p style="font-size:10px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="cl_empty">La checklist aparecer&#225; aqu&#237;.</p></div>
           <span class="pg-num">8</span>
         </div>
-      </div>
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage('cl', 1)">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-cl-0" onclick="showPage('cl', 0)"></div>
+    <div class="page-dot" id="dot-cl-1" onclick="showPage('cl', 1)"></div>
+  </div>
+</div>
 
       <!-- OBSERVATIONS P9-10 -->
       <div class="spread" id="spread-obs" style="display:none">
+  <div class="page-nav page-nav-left" onclick="showPage('obs', 0)">&#8592;</div>
+  <div class="page-viewer" id="viewer-obs">
+
         <div class="page page-l">
           <div class="wm">NOTAS</div>
           <div class="ph"><span class="ph-title" data-t="ph_obs">Notas y observaciones</span><span>&#128221;</span></div>
@@ -1176,7 +1240,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
           <div class="note-line"></div><div class="note-line"></div><div class="note-line"></div><div class="note-line"></div>
           <span class="pg-num">10</span>
         </div>
-      </div>
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage('obs', 1)">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-obs-0" onclick="showPage('obs', 0)"></div>
+    <div class="page-dot" id="dot-obs-1" onclick="showPage('obs', 1)"></div>
+  </div>
+</div>
 
     </div>
   </div></div>
@@ -1222,12 +1293,12 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 
 // FIX 1: Firebase config placeholder clearly marked
 const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -1939,6 +2010,39 @@ Responde SOLO JSON valido sin markdown ni backticks:
     document.getElementById("cl-result").innerHTML = e;
   }
 };
+
+
+// ── Single-page navigator ──
+function showPage(spreadId, pageIndex) {
+  var viewer = document.getElementById('viewer-' + spreadId);
+  if (!viewer) return;
+  if (pageIndex === 1) {
+    viewer.classList.add('show-right');
+  } else {
+    viewer.classList.remove('show-right');
+  }
+  // Update dots
+  var dot0 = document.getElementById('dot-' + spreadId + '-0');
+  var dot1 = document.getElementById('dot-' + spreadId + '-1');
+  if (dot0) dot0.classList.toggle('active', pageIndex === 0);
+  if (dot1) dot1.classList.toggle('active', pageIndex === 1);
+}
+
+// Touch swipe support for spreads
+(function() {
+  var spreads = document.querySelectorAll('.spread');
+  spreads.forEach(function(sp) {
+    var startX = 0;
+    sp.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, {passive:true});
+    sp.addEventListener('touchend', function(e) {
+      var dx = e.changedTouches[0].clientX - startX;
+      var sid = sp.id ? sp.id.replace('spread-', '') : null;
+      if (!sid) return;
+      if (dx < -50) showPage(sid, 1);  // swipe left -> show right page
+      if (dx > 50)  showPage(sid, 0);  // swipe right -> show left page
+    }, {passive:true});
+  });
+})();
 
 window.doSignOut = async function() {
   const fb = window._fbReady;
