@@ -143,7 +143,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 /* Page viewer: shows one page at a time */
 .page-viewer {
   display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
   width:200%;
+  overflow:hidden;
   transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
 }
 .page-viewer.show-right {
@@ -903,7 +906,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       <!-- BIO P1-2 -->
       <div id="swipe-hint">&#8592; desliza &#8594;</div>
       <div class="spread" id="spread-bio">
-  <div class="page-nav page-nav-left" onclick="showPage(\'bio\', 0)" title="Página izquierda">&#8592;</div>
+  <div class="page-nav page-nav-left" onclick="onclick="showPage('bio', 0)"" title="Página izquierda">&#8592;</div>
   <div class="page-viewer" id="viewer-bio">
 
 
@@ -1078,10 +1081,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       </div><!-- /pp-right -->
       
   </div>
-  <div class="page-nav page-nav-right" onclick="showPage(\'bio\', 1)" title="Página derecha">&#8594;</div>
+  <div class="page-nav page-nav-right" onclick="onclick="showPage('bio', 1)"" title="Página derecha">&#8594;</div>
   <div class="page-indicator">
-    <div class="page-dot active" id="dot-bio-0" onclick="showPage(\'bio\', 0)"></div>
-    <div class="page-dot" id="dot-bio-1" onclick="showPage(\'bio\', 1)"></div>
+    <div class="page-dot active" id="dot-bio-0" onclick="onclick="showPage('bio', 0)""></div>
+    <div class="page-dot" id="dot-bio-1" onclick="onclick="showPage('bio', 1)""></div>
   </div>
 </div><!-- /spread-bio -->
 
@@ -1293,12 +1296,12 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 
 // FIX 1: Firebase config placeholder clearly marked
 const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
