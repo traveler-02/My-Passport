@@ -202,21 +202,19 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   min-width:50%;
   box-sizing:border-box;
 }
-.page-l{ border-right:none; }
+.page-l{ border-right:none; flex:0 0 50%; width:50%; min-width:50%; box-sizing:border-box; }
 
 /* Mobile: swipe carousel */
 @media(max-width:700px){
   body { overflow-x: hidden; }
-  .page-nav { display:none; } /* Touch navigation on mobile */
+  /* Mobile: page-nav arrows smaller */
+  .page-nav { width:28px; height:44px; font-size:14px; }
+  /* Pages fill viewport width */
   .page,
   .spread #pp-left,
   .spread #pp-right {
     aspect-ratio: unset !important;
-    /* Rotate 90deg to show landscape like a real passport */
-    min-height: 100vw;
-    transform: rotate(-90deg);
-    transform-origin: center center;
-    margin: calc((100vw - 100vh) / 2) 0;
+    min-height: 70vw;
   }
 }
 .page::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px),repeating-linear-gradient(90deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px);pointer-events:none;}
@@ -472,15 +470,12 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   position: relative;
   z-index: 2;
   flex: 1;
-  background: linear-gradient(180deg,
-    rgba(42,96,68,0.08) 0%,
-    rgba(42,96,68,0.18) 40%,
-    rgba(42,96,68,0.10) 100%);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  min-height: 120px;
+  min-height: 80px;
 }
 .pp-left-artband-text {
   font-family: var(--ff);
@@ -906,7 +901,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       <!-- BIO P1-2 -->
       <div id="swipe-hint">&#8592; desliza &#8594;</div>
       <div class="spread" id="spread-bio">
-  <div class="page-nav page-nav-left" onclick="onclick="showPage('bio', 0)"" title="Página izquierda">&#8592;</div>
+  <div class="page-nav page-nav-left" onclick="showPage('bio', 0)" title="Página izquierda">&#8592;</div>
   <div class="page-viewer" id="viewer-bio">
 
 
@@ -1081,10 +1076,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       </div><!-- /pp-right -->
       
   </div>
-  <div class="page-nav page-nav-right" onclick="onclick="showPage('bio', 1)"" title="Página derecha">&#8594;</div>
+  <div class="page-nav page-nav-right" onclick="showPage('bio', 1)" title="Página derecha">&#8594;</div>
   <div class="page-indicator">
-    <div class="page-dot active" id="dot-bio-0" onclick="onclick="showPage('bio', 0)""></div>
-    <div class="page-dot" id="dot-bio-1" onclick="onclick="showPage('bio', 1)""></div>
+    <div class="page-dot active" id="dot-bio-0" onclick="showPage('bio', 0)"></div>
+    <div class="page-dot" id="dot-bio-1" onclick="showPage('bio', 1)"></div>
   </div>
 </div><!-- /spread-bio -->
 
@@ -1296,12 +1291,12 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 
 // FIX 1: Firebase config placeholder clearly marked
 const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -1498,9 +1493,10 @@ function renderArtPage(code) {
     emblemEl.innerHTML = svg;
   }
 
+  // artband is transparent - the flag background (pp-left-art) shows through
   var artband = document.getElementById("pp-left-artband");
   if (artband) {
-    artband.style.background = "linear-gradient(180deg,rgba("+rgb+",0.12) 0%,rgba("+rgb+",0.32) 50%,rgba("+rgb+",0.12) 100%)";
+    artband.style.background = "transparent";
   }
   var artbandText = document.getElementById("pp-left-artband-text");
   if (artbandText) artbandText.textContent = code;
