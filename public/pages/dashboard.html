@@ -136,17 +136,17 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* Open passport = landscape book */
 .spread{
-  position:relative;
-  width:100%;
-  overflow:hidden;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
 }
 /* Page viewer: shows one page at a time */
 .page-viewer {
-  display:flex;
-  flex-direction:row;
-  flex-wrap:nowrap;
-  width:200%;
-  overflow:hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  /* 200% wide so each 50% child = 100vw */
+  width: 200%;
   transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
 }
 .page-viewer.show-right {
@@ -154,22 +154,24 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 /* Navigation arrows */
 .page-nav {
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  z-index:10;
-  background:rgba(0,0,0,0.35);
-  border:1px solid rgba(201,168,76,0.3);
-  color:rgba(201,168,76,0.8);
-  width:36px;
-  height:56px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  font-size:18px;
-  transition:all 0.2s;
-  user-select:none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(201,168,76,0.4);
+  color: rgba(201,168,76,0.9);
+  width: 42px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all 0.2s;
+  user-select: none;
+  border-radius: 4px;
 }
 .page-nav:hover { background:rgba(0,0,0,0.6); color:var(--gold); }
 .page-nav-left  { left:0; border-radius:0 4px 4px 0; }
@@ -194,13 +196,16 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 .page-dot.active { background:rgba(201,168,76,0.8); }
 .page{
   background:var(--page);
-  padding:24px 22px;
+  padding:20px 18px;
   position:relative;
   overflow:hidden;
-  aspect-ratio:142/100;
-  flex:0 0 50%; /* 50% of page-viewer which is 200% wide = 100% of viewport */
-  min-width:50%;
-  box-sizing:border-box;
+  flex: 0 0 50%;
+  width: 50%;
+  min-width: 50%;
+  box-sizing: border-box;
+  aspect-ratio: 142 / 100;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
 }
 .page-l{ border-right:none; flex:0 0 50%; width:50%; min-width:50%; box-sizing:border-box; }
 
@@ -381,16 +386,19 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* ── LEFT PAGE: Artistic / signature page ── */
 .pp-left {
+  background: #f0ede4;
   position: relative;
   overflow: hidden;
-  background: #f0ede4;
-  aspect-ratio: 142/100;
   display: flex;
   flex-direction: column;
-  border-right: none;
   flex: 0 0 50%;
+  width: 50%;
   min-width: 50%;
   box-sizing: border-box;
+  aspect-ratio: 142 / 100;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  border-right: none;
 }
 
 /* Country-specific artistic background */
@@ -528,15 +536,19 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* ── RIGHT PAGE: Biographical data ── */
 .pp-right {
+  background: #f5f1e8;
   position: relative;
   overflow: hidden;
-  background: #f5f1e8;
-  aspect-ratio: 142/100;
   display: flex;
   flex-direction: column;
   flex: 0 0 50%;
+  width: 50%;
   min-width: 50%;
   box-sizing: border-box;
+  aspect-ratio: 142 / 100;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  border-right: none;
 }
 /* Guilloche background on bio page */
 .pp-right::before {
@@ -1291,12 +1303,12 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 
 // FIX 1: Firebase config placeholder clearly marked
 const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -1690,6 +1702,10 @@ window.showTab = function(el, tab) {
   }
   if (tab==="cl") renderCLBtns();
   if (!document.getElementById("pages").classList.contains("open")) openBook();
+  // Reset all viewers to left page when switching tabs
+  if (typeof showPage === 'function') {
+    ['bio','visas','trips','cl','obs'].forEach(function(s){ showPage(s, 0); });
+  }
 };
 
 window.handlePhoto = function(input) {
