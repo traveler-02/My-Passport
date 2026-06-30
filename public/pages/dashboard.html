@@ -817,6 +817,202 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   opacity: 0.35;
 }
 
+
+/* ══════════════════════════════════════════════════════
+   ICAO Doc 9303 TD3-COMPLIANT BIO PAGE
+   Real passport proportions: 125mm x 88mm (ratio 1.42:1)
+   Layout matches official passport data page structure
+═══════════════════════════════════════════════════════ */
+
+/* Country header — centered bold like real passports */
+.td3-hdr {
+  background: var(--art-dark, #1a3a2a);
+  padding: 8px 12px;
+  text-align: center;
+  border-bottom: 2px solid rgba(201,168,76,0.4);
+}
+.td3-hdr-country {
+  font-family: var(--ff);
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Body: photo col (30%) + fields col (70%) */
+.td3-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── PHOTO COLUMN ── */
+.td3-photo-col {
+  width: 34%;
+  flex-shrink: 0;
+  padding: 10px 10px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-right: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.015);
+}
+.td3-doctype-row { text-align:center; }
+.td3-field-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.td3-photo-frame {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border: 1.5px solid rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(145deg,#c8d4d0,#b0c0bc);
+}
+.td3-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.7) contrast(1.1) sepia(0.1);
+  display: none;
+}
+.td3-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  color: rgba(0,0,0,0.18);
+}
+.td3-photo-hint {
+  position: absolute;
+  bottom: 2px; right: 2px;
+  font-size: 11px;
+  opacity: 0.5;
+}
+.td3-type-code-row {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+.td3-mini-field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+}
+.td3-mini-field .td3-lbl { font-size: 6px; }
+.td3-val-mono {
+  font-family: var(--ff-mono);
+  font-size: 12px;
+  font-weight: bold;
+  color: #0a0a0a;
+}
+.td3-passno {
+  font-size: 14px;
+  color: #7a0e0e;
+}
+
+/* ── FIELDS COLUMN ── */
+.td3-fields-col {
+  flex: 1;
+  padding: 10px 12px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.td3-field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.td3-lbl {
+  font-size: 6.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #444;
+  font-family: var(--ff-mono);
+  font-weight: 600;
+}
+.td3-val {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  color: #0a0a0a;
+  letter-spacing: 0.02em;
+  border-bottom: 0.5px solid rgba(0,0,0,0.15);
+  padding-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.td3-val-sm { font-size: 12px; }
+.td3-val-mono.td3-val { font-family: var(--ff-mono); font-size: 13px; }
+.td3-val-red { color: #8b1a1a; }
+.td3-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Signature — bottom, prominent */
+.td3-sig-row {
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 0.5px solid rgba(0,0,0,0.1);
+}
+.td3-sig-val {
+  font-family: var(--ff-sig);
+  font-size: 24px;
+  color: #1a1a3a;
+  min-height: 30px;
+  border-bottom: 0.5px solid rgba(0,0,0,0.25);
+}
+
+/* Security strip */
+.td3-security {
+  display: flex;
+  gap: 10px;
+  padding: 3px 12px;
+  background: rgba(0,0,0,0.03);
+  border-top: 0.5px solid rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+}
+.td3-sec-item {
+  font-size: 6px;
+  font-family: var(--ff-mono);
+  color: #555;
+  letter-spacing: 0.04em;
+}
+
+/* MRZ — ICAO mandated OCR-B style, 2 lines, monospace, dark band */
+.td3-mrz {
+  background: #e8e6df;
+  border-top: 1.5px solid rgba(0,0,0,0.3);
+  padding: 6px 12px 8px;
+}
+.td3-mrz-line {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a0a0a;
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Apply ICAO TD3 exact aspect ratio (125:88 = 1.4205:1) to bio pages */
+.pp-right, .pp-left {
+  aspect-ratio: 125 / 88 !important;
+  border-radius: 6px;
+}
 </style>
 </head>
 <body>
@@ -961,127 +1157,129 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
         <span class="pp-left-pgnum">1</span>
       </div>
 
-      <!-- ═══ RIGHT PAGE: Biographical Data ═══ -->
+      <!-- ═══ RIGHT PAGE: Biographical Data (ICAO Doc 9303 TD3 layout) ═══ -->
       <div class="pp-right" id="pp-right">
 
-        <!-- Country header bar -->
-        <div class="pp-hdr" id="pp-hdr">
-          <div class="pp-hdr-left">
-            <div class="pp-hdr-type">PASSPORT / PASAPORTE / PASSEPORT</div>
-            <div class="pp-hdr-country" id="bio-country-name">REP&#218;BLICA DEL ECUADOR</div>
-          </div>
-          <div class="pp-hdr-right">
-            <span class="pp-hdr-code">TYPE &nbsp; CODE &nbsp; PASSPORT NO.</span>
-            <span class="pp-hdr-code" style="font-size:11px;font-weight:bold;color:var(--gold2)">P &nbsp; <span id="bio-nat-code">ECU</span></span>
-            <span class="pp-hdr-pno-label" id="dv-passno-hdr">—</span>
-          </div>
+        <!-- Country name header - centered, bold, like real passports -->
+        <div class="td3-hdr" id="td3-hdr">
+          <div class="td3-hdr-country" id="bio-country-name">REPÚBLICA DEL ECUADOR</div>
         </div>
 
-        <!-- Main: photo + fields -->
-        <div class="pp-main">
+        <!-- Main data zone -->
+        <div class="td3-body">
 
-          <!-- Photo column -->
-          <div class="pp-photo-col">
-            <div class="pp-badge" id="pp-badge">PASAPORTE</div>
-
-            <div class="pp-photo-frame" id="photo-box-click"
+          <!-- Photo column (left, ~30% width per ICAO) -->
+          <div class="td3-photo-col">
+            <div class="td3-doctype-row">
+              <div class="td3-field-mini">
+                <span class="td3-lbl">PASAPORTE</span>
+                <span class="td3-lbl-en">PASSPORT</span>
+              </div>
+            </div>
+            <div class="td3-photo-frame" id="photo-box-click"
               onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()"
               title="Click para cambiar foto">
-              <div class="pp-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
+              <div class="td3-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
               <img id="photo-preview" alt="Foto titular"/>
-              <div class="pp-photo-hint">&#128247; FOTO</div>
-              <svg class="pp-photo-seal" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="2.5"/>
-                <circle cx="50" cy="50" r="37" fill="none" stroke="currentColor" stroke-width="1"/>
-                <text x="50" y="53" text-anchor="middle" font-size="8" font-family="monospace" fill="currentColor" letter-spacing="0.5">OFFICIAL</text>
-              </svg>
+              <div class="td3-photo-hint">&#128247;</div>
             </div>
-
-            <div class="pp-photo-ghost" id="pp-photo-ghost">
-              <img id="photo-ghost-img" alt=""/>
+            <div class="td3-type-code-row">
+              <div class="td3-mini-field">
+                <span class="td3-lbl">TIPO/TYPE</span>
+                <span class="td3-val-mono" id="bio-doc-type">P</span>
+              </div>
+              <div class="td3-mini-field">
+                <span class="td3-lbl">PAÍS/CODE</span>
+                <span class="td3-val-mono" id="bio-nat-code">ECU</span>
+              </div>
             </div>
-
-            <div class="pp-biometric-icon">&#128737; BIOM&#201;TRICO<br/>E-PASSPORT</div>
+            <div class="td3-mini-field" style="margin-top:4px;">
+              <span class="td3-lbl">PASAPORTE No. / PASSPORT No.</span>
+              <span class="td3-val-mono td3-passno" id="dv-passno-hdr">—</span>
+            </div>
           </div>
 
-          <!-- Fields column -->
-          <div class="pp-fields">
+          <!-- Data fields column (right, ~70% width) -->
+          <div class="td3-fields-col">
 
-            <div class="pp-field">
-              <div class="pp-field-lbl">Apellidos / Surname / Nom</div>
-              <div class="pp-field-val" id="dv-surname">&#8212;</div>
+            <div class="td3-field">
+              <span class="td3-lbl">APELLIDOS / SURNAME</span>
+              <span class="td3-val" id="dv-surname">—</span>
             </div>
 
-            <div class="pp-field">
-              <div class="pp-field-lbl">Nombres / Given names / Pr&#233;noms</div>
-              <div class="pp-field-val" id="dv-given">&#8212;</div>
+            <div class="td3-field">
+              <span class="td3-lbl">NOMBRES / GIVEN NAMES</span>
+              <span class="td3-val" id="dv-given">—</span>
             </div>
 
-            <div class="pp-row2">
-              <div class="pp-field">
-                <div class="pp-field-lbl">Nationality / Nationalit&#233; / Nacionalidad</div>
-                <div class="pp-field-val sm" id="dv-nat">&#8212;</div>
+            <div class="td3-row2">
+              <div class="td3-field">
+                <span class="td3-lbl">NACIONALIDAD / NATIONALITY</span>
+                <span class="td3-val td3-val-sm" id="dv-nat">—</span>
               </div>
-              <div class="pp-field">
-                <div class="pp-field-lbl">Sex / Sexe / Sexo</div>
-                <div class="pp-field-val sm" id="dv-sex">&#8212;</div>
-              </div>
-            </div>
-
-            <div class="pp-row2">
-              <div class="pp-field">
-                <div class="pp-field-lbl">Date of birth / Fecha de nac.</div>
-                <div class="pp-field-val mono" id="dv-dob">&#8212;</div>
-              </div>
-              <div class="pp-field">
-                <div class="pp-field-lbl">Place of birth / Lugar de nac.</div>
-                <div class="pp-field-val sm" id="dv-pob">&#8212;</div>
+              <div class="td3-field">
+                <span class="td3-lbl">SEXO / SEX</span>
+                <span class="td3-val td3-val-sm" id="dv-sex">—</span>
               </div>
             </div>
 
-            <div class="pp-row3">
-              <div class="pp-field">
-                <div class="pp-field-lbl">Date of issue / Expedici&#243;n</div>
-                <div class="pp-field-val mono" id="dv-issued">&#8212;</div>
+            <div class="td3-row2">
+              <div class="td3-field">
+                <span class="td3-lbl">FECHA DE NACIMIENTO / DATE OF BIRTH</span>
+                <span class="td3-val td3-val-mono" id="dv-dob">—</span>
               </div>
-              <div class="pp-field">
-                <div class="pp-field-lbl">Date of expiry / Caducidad</div>
-                <div class="pp-field-val mono alert" id="dv-expiry">&#8212;</div>
-              </div>
-              <div class="pp-field">
-                <div class="pp-field-lbl">Blood / Sangre</div>
-                <div class="pp-field-val mono alert" id="dv-blood">&#8212;</div>
+              <div class="td3-field">
+                <span class="td3-lbl">LUGAR DE NACIMIENTO / PLACE OF BIRTH</span>
+                <span class="td3-val td3-val-sm" id="dv-pob">—</span>
               </div>
             </div>
 
-            <div class="pp-field">
-              <div class="pp-field-lbl">Authority / Autoridad / Autorit&#233;</div>
-              <div class="pp-field-val sm" id="dv-authority" style="font-size:9px;">Ministerio de Relaciones Exteriores</div>
+            <div class="td3-row2">
+              <div class="td3-field">
+                <span class="td3-lbl">FECHA DE EXPEDICIÓN / DATE OF ISSUE</span>
+                <span class="td3-val td3-val-mono" id="dv-issued">—</span>
+              </div>
+              <div class="td3-field">
+                <span class="td3-lbl">FECHA DE CADUCIDAD / DATE OF EXPIRY</span>
+                <span class="td3-val td3-val-mono td3-val-red" id="dv-expiry">—</span>
+              </div>
             </div>
 
-            <div class="pp-sig-row">
-              <div class="pp-field-lbl">Signature of bearer / Firma del titular</div>
-              <div class="pp-sig-val" id="dv-sig">&#8212;</div>
+            <div class="td3-row2">
+              <div class="td3-field">
+                <span class="td3-lbl">AUTORIDAD / AUTHORITY</span>
+                <span class="td3-val td3-val-sm" id="dv-authority">Ministerio de Relaciones Exteriores</span>
+              </div>
+              <div class="td3-field">
+                <span class="td3-lbl">GRUPO SANGUÍNEO / BLOOD</span>
+                <span class="td3-val td3-val-mono td3-val-red" id="dv-blood">—</span>
+              </div>
             </div>
 
-          </div><!-- /pp-fields -->
-        </div><!-- /pp-main -->
+            <!-- Signature - bottom right, large, like real passports -->
+            <div class="td3-sig-row">
+              <div class="td3-field" style="flex:1">
+                <span class="td3-lbl">FIRMA AUTORIZADA / FIRMA DEL TITULAR</span>
+                <span class="td3-sig-val" id="dv-sig">—</span>
+              </div>
+            </div>
 
-        <!-- Security strip -->
-        <div class="pp-security">
-          <div class="pp-sec-item"><div class="pp-sec-dot"></div>UV Security</div>
-          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Laser Engraving</div>
-          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Microtext</div>
-          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Hologram</div>
-          <div class="pp-sec-item"><div class="pp-sec-dot"></div>RFID Chip</div>
-          <div class="pp-sec-item"><div class="pp-sec-dot"></div>Polycarbonate</div>
+          </div><!-- /td3-fields-col -->
+        </div><!-- /td3-body -->
+
+        <!-- Security features strip -->
+        <div class="td3-security">
+          <span class="td3-sec-item">&#9679; UV</span>
+          <span class="td3-sec-item">&#9679; LASER</span>
+          <span class="td3-sec-item">&#9679; MICROTEXT</span>
+          <span class="td3-sec-item">&#9679; HOLOGRAM</span>
+          <span class="td3-sec-item">&#9679; RFID</span>
         </div>
 
-        <!-- MRZ -->
-        <div class="pp-mrz">
-          <div class="pp-mrz-lbl">Zone de lecture automatique &mdash; Machine readable zone &mdash; Zona de lectura mec&#225;nica</div>
-          <div class="pp-mrz-line" id="mrz1">P&lt;ECU&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
-          <div class="pp-mrz-line" id="mrz2">?????????&lt;0ECU0101011M3101010&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4</div>
+        <!-- MRZ Zone - ICAO mandated, 2 lines x 44 chars, OCR-B style font -->
+        <div class="td3-mrz">
+          <div class="td3-mrz-line" id="mrz1">P&lt;ECU&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+          <div class="td3-mrz-line" id="mrz2">?????????&lt;0ECU0101011M3101010&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4</div>
         </div>
         <span class="pp-pgnum">2</span>
 
@@ -1303,12 +1501,12 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 
 // FIX 1: Firebase config placeholder clearly marked
 const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -1641,10 +1839,6 @@ window.applyCountry = function(code, skipLang) {
   const wm = document.getElementById("wm-country");
   if (wm) wm.textContent = c.name.toUpperCase().split(" ")[0];
 
-  // Poly card country name
-  const poly = document.getElementById("poly");
-  if (poly) poly.dataset.country = c.name.toUpperCase();
-
   // Passport label
   const lbl = document.getElementById("passport-label");
   if (lbl) lbl.textContent = c.name.toUpperCase() + " / PASSPORT";
@@ -1796,8 +1990,6 @@ function renderProfile() {
     if (placeholder) placeholder.style.display = "none";
     const ghost = document.getElementById("photo-ghost-img");
     if (ghost) { ghost.src = p.photoData; ghost.style.display = "block"; }
-    const ghost2 = document.getElementById("art-sig-ghost");
-    if (ghost2) { ghost2.src = p.photoData; ghost2.style.display = "block"; }
   }
   // FIX 7: safe access with fallback for all fields
   const get = (k) => p[k] || "—";
@@ -1807,7 +1999,6 @@ function renderProfile() {
   document.getElementById("dv-sex").textContent = get("sex");
   document.getElementById("dv-dob").textContent = get("dob");
   document.getElementById("dv-pob").textContent = get("pob");
-  document.getElementById("dv-passno").textContent = get("passno");
   const pnoHdr = document.getElementById("dv-passno-hdr");
   if (pnoHdr) pnoHdr.textContent = get("passno");
   document.getElementById("dv-issued").textContent = get("issued");   // FIX 5
@@ -1833,10 +2024,7 @@ function renderProfile() {
   const pno = (p.passno||"?????????").padEnd(9,"<");
   document.getElementById("mrz1").textContent = ("P<"+nat+sn+"<<"+gn+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<").substring(0,44);
   document.getElementById("mrz2").textContent = (pno+"<0"+nat+dob+(p.sex||"M")+exp+"<<<<<<<<<<<<<<<<<").substring(0,44);
-  // Poly country watermark
-  const c = COUNTRIES[p.natCode] || COUNTRIES.ECU;
-  const poly = document.getElementById("poly");
-  if (poly) poly.dataset.country = c.name.toUpperCase();
+  // (poly watermark removed - replaced by TD3 layout)
 }
 
 // ── TRIPS ──
