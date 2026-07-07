@@ -1514,14 +1514,14 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 // FIX 1: Firebase config placeholder clearly marked
 // Config loaded from firebase-config.js (root file — NEVER overwritten)
 const firebaseConfig = window.FIREBASE_CONFIG || {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
+  authDomain: "my-passport-211af.firebaseapp.com",
+  projectId: "my-passport-211af",
+  storageBucket: "my-passport-211af.firebasestorage.app",
+  messagingSenderId: "118053564604",
+  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
 };
-
+  
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
