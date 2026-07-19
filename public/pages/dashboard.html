@@ -203,8 +203,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   width: 50%;
   min-width: 50%;
   box-sizing: border-box;
-  aspect-ratio: 142 / 100;
-  max-height: calc(100vh - 180px);
+  height: calc(100vw * 0.704);
+  max-height: calc(100vh - 160px);
   overflow-y: auto;
 }
 .page-l{ border-right:none; flex:0 0 50%; width:50%; min-width:50%; box-sizing:border-box; }
@@ -929,9 +929,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   padding: 8px 12px 4px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
   min-width: 0;
   overflow: hidden;
+  justify-content: space-between;
 }
 .td3-field {
   display: flex;
@@ -1018,11 +1019,13 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
 /* Apply ICAO TD3 exact aspect ratio (125:88 = 1.4205:1) to bio pages */
 .pp-right, .pp-left {
-  aspect-ratio: 125 / 88 !important;
   border-radius: 6px;
-  /* Ensure landscape: never taller than this */
-  max-height: 60vh;
-  overflow-y: auto;
+  width: 100%;
+  height: calc(100vw * 0.704);
+  max-height: calc(100vh - 160px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 </style>
 </head>
@@ -1514,14 +1517,14 @@ import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from '
 // FIX 1: Firebase config placeholder clearly marked
 // Config loaded from firebase-config.js (root file — NEVER overwritten)
 const firebaseConfig = window.FIREBASE_CONFIG || {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
-  
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -2096,9 +2099,9 @@ function renderPassportTrips() {
     "<div class='trip-entry'>" +
     "<div class='te-flag'>"+getFlag(t.dest)+"</div>" +
     "<div style='flex:1'>" +
-      "<div class='te-dest'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
+      "<div class='te-dest'>"+sanitize((t.destDisplay||t.dest||"Sin destino").replace(/^[^\s]+\s/,""))+"</div>" +
       "<div class='te-dates'>"+(t.dep||"—")+" &#8594; "+(t.ret||"—")+"</div>" +
-      "<div class='te-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+(t.lay?" · "+t.lay:"")+"</div>" +
+      "<div class='te-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+(t.lay?" · "+t.lay:"")+"</div>" +
     "</div>" +
     "<button class='te-btn' onclick='selectAndGenerate("+i+")'>" + tr("btn_generate") + "</button>" +
     "</div>"
@@ -2131,9 +2134,9 @@ function renderMainTrips() {
     "<div class='trip-card-main'>" +
     "<div class='tc-flag'>"+getFlag(t.dest)+"</div>" +
     "<div style='flex:1'>" +
-      "<div class='tc-dest'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
+      "<div class='tc-dest'>"+sanitize((t.destDisplay||t.dest||"Sin destino").replace(/^[^\s]+\s/,""))+"</div>" +
       "<div class='tc-dates'>"+(t.dep||"—")+" &#8594; "+(t.ret||"—")+"</div>" +
-      "<div class='tc-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+(t.lay?" · "+t.lay:"")+"</div>" +
+      "<div class='tc-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+(t.lay?" · "+t.lay:"")+"</div>" +
     "</div>" +
     "<button class='tc-btn' onclick='selectAndGenerate("+i+")'>&#9878; Checklist</button>" +
     "</div>"
@@ -2142,7 +2145,7 @@ function renderMainTrips() {
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
     "<span><div style='font-weight:bold;font-size:11px'>"+(t.destDisplay||t.dest)+"</div>" +
-    "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+"</div></span>" +
+    "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
     "</button>"
   ).join("");
   if (sel) sel.style.display = "block";
@@ -2155,7 +2158,7 @@ function renderCLBtns() {
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
     "<span><div style='font-weight:bold;font-size:11px'>"+(t.destDisplay||t.dest)+"</div>" +
-    "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):t.purp))+"</div></span>" +
+    "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
     "</button>"
   ).join("");
 }
