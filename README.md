@@ -44,19 +44,33 @@ my-passport/
 
 ---
 
-## PASO 2 — Pegar la configuración de Firebase en los archivos
+## PASO 2 — Pegar la configuración de Firebase (un solo archivo)
 
-Abre **`public/index.html`** y busca esta sección:
+Abre **`public/firebase-config.js`** — este es el ÚNICO lugar donde va la
+configuración de Firebase. Tanto `index.html` como `dashboard.html` la cargan
+desde aquí (`<script src="/firebase-config.js"></script>`), así que nunca
+queda duplicada ni puede desincronizarse entre páginas.
+
 ```javascript
-const firebaseConfig = {
+window.FIREBASE_CONFIG = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
-  ...
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.firebasestorage.app",
+  messagingSenderId: "...",
+  appId: "..."
 };
 ```
-Reemplázala con tu configuración real.
 
-Haz lo mismo en **`public/pages/dashboard.html`** (misma sección).
+### Desplegar las reglas de seguridad de Firestore
+
+Este repo incluye `firestore.rules` (acceso solo-dueño: cada usuario solo
+puede leer/escribir sus propios documentos bajo `/users/{uid}/...`).
+Despliégalas con:
+
+```
+firebase deploy --only firestore:rules
+```
 
 ---
 
@@ -83,13 +97,22 @@ Haz lo mismo en **`public/pages/dashboard.html`** (misma sección).
 ## PASO 5 — Agregar variables de entorno en Netlify
 
 1. En tu proyecto de Netlify → **Site configuration** → **Environment variables**
-2. Clic en **"Add a variable"**:
-   - **Key:** `ANTHROPIC_API_KEY`
-   - **Value:** tu API key de Anthropic (empieza con `sk-ant-...`)
+2. Agrega estas variables:
+   - **`ANTHROPIC_API_KEY`** (obligatoria) — tu API key de Anthropic (empieza con `sk-ant-...`)
+   - **`FIREBASE_PROJECT_ID`** (recomendada) — el `projectId` de tu proyecto Firebase (el mismo valor que en `firebase-config.js`). El servidor lo usa para verificar que el token de sesión del usuario es legítimo antes de llamar a Claude.
+   - **`ALLOWED_ORIGINS`** (recomendada) — el/los dominios donde vive tu app, separados por coma, ej. `https://tu-app.netlify.app`. La función `analyze` solo acepta peticiones desde estos orígenes (más `localhost` para desarrollo).
 3. **Save** → luego clic en **Deploys** → **Trigger deploy**
 
 ### ¿Dónde obtengo la API key de Anthropic?
 → https://console.anthropic.com → API Keys → Create Key
+
+### Nota de seguridad
+
+`netlify/functions/analyze.js` ahora **exige** un token de sesión de
+Firebase válido (se envía automáticamente desde el dashboard) antes de
+llamar a la API de Claude, y solo acepta peticiones desde los orígenes en
+`ALLOWED_ORIGINS`. Antes de este cambio, cualquier persona en internet podía
+invocar el endpoint directamente y consumir tu API key sin límite.
 
 ---
 

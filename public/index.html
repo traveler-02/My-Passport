@@ -404,19 +404,17 @@ body::before {
 </div>
 
 <!-- Firebase SDKs -->
+<!-- FIX-MAJ-4: config now loaded once from firebase-config.js (shared with
+     dashboard.html) instead of being hardcoded a third time here. -->
+<script src="/firebase-config.js"></script>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-  // ── REPLACE WITH YOUR FIREBASE CONFIG ──
- const firebaseConfig = {
-  apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
-};
+  if (!window.FIREBASE_CONFIG) {
+    throw new Error("firebase-config.js failed to load — check the <script> tag and network tab.");
+  }
+  const firebaseConfig = window.FIREBASE_CONFIG;
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -510,9 +508,12 @@ window.signInGoogle = async function() {
   if (!window._auth) return;
   showLoading(true);
 
-  // Popup-blocking-prone errors that should trigger a redirect fallback
+  // FIX-MAJ-8: only fall back to a full-page redirect for errors that mean
+  // the popup mechanism itself is unavailable (blocked, cancelled by the
+  // browser, network hiccup). 'auth/popup-closed-by-user' means the person
+  // deliberately closed it — forcing a jarring full-page redirect in that
+  // case is worse UX than just letting them try again.
   const POPUP_FALLBACK_CODES = [
-    'auth/popup-closed-by-user',
     'auth/popup-blocked',
     'auth/cancelled-popup-request',
     'auth/network-request-failed'
@@ -523,6 +524,10 @@ window.signInGoogle = async function() {
     // onAuthStateChanged will redirect to dashboard on success
   } catch(e) {
     const code = e && e.code;
+    if (code === 'auth/popup-closed-by-user') {
+      showLoading(false);
+      return; // no error message needed — the user chose to cancel
+    }
     if (POPUP_FALLBACK_CODES.includes(code)) {
       // Popup failed (common in incognito/private mode, blockers, some mobile browsers)
       // Fall back to full-page redirect flow instead
@@ -540,6 +545,22 @@ window.signInGoogle = async function() {
   }
 };
 
+// FIX-MAJ-9: Firebase Auth v9+ collapses wrong-password / user-not-found
+// into a single 'auth/invalid-credential' code for security reasons — the
+// old 'auth/wrong-password' check never matched anymore, so users only
+// ever saw the raw untranslated Firebase error string.
+function authErrorMessage(e) {
+  const map = {
+    'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+    'auth/wrong-password': 'Contraseña incorrecta.',
+    'auth/user-not-found': 'No existe una cuenta con ese correo.',
+    'auth/too-many-requests': 'Demasiados intentos. Intenta de nuevo más tarde.',
+    'auth/invalid-email': 'Correo electrónico no válido.',
+    'auth/email-already-in-use': 'Ya existe una cuenta con ese correo.'
+  };
+  return (e && e.code && map[e.code]) || (e && e.message) || 'Error al iniciar sesión.';
+}
+
 window.signInEmail = async function() {
   if (!window._auth) return;
   const email = document.getElementById('email-input').value;
@@ -550,7 +571,7 @@ window.signInEmail = async function() {
     await window._signInEmail(window._auth, email, pass);
   } catch(e) {
     showLoading(false);
-    showError(e.code === 'auth/wrong-password' ? 'Contraseña incorrecta.' : e.message);
+    showError(authErrorMessage(e));
   }
 };
 
@@ -565,7 +586,7 @@ window.registerEmail = async function() {
     await window._createUser(window._auth, email, pass);
   } catch(e) {
     showLoading(false);
-    showError(e.message);
+    showError(authErrorMessage(e));
   }
 };
 

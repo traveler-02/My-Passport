@@ -292,8 +292,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 .af-title{font-size:8px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold3);font-family:var(--ff-mono);margin-bottom:8px;}
 .ff{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;}
 .ff label{font-size:6.5px;text-transform:uppercase;letter-spacing:0.08em;color:#3a5040;font-family:var(--ff-mono);}
-.ff select,.ff input{width:100%;padding:4px 6px;background:rgba(245,240,232,0.85);border:1px solid rgba(100,130,100,0.28);border-radius:2px;font-size:10px;font-family:var(--ff);color:#152a1e;outline:none;}
-.ff select:focus,.ff input:focus{border-color:var(--gold3);}
+.ff select,.ff input,.ff textarea{width:100%;padding:4px 6px;background:rgba(245,240,232,0.85);border:1px solid rgba(100,130,100,0.28);border-radius:2px;font-size:10px;font-family:var(--ff);color:#152a1e;outline:none;resize:vertical;}
+.ff select:focus,.ff input:focus,.ff textarea:focus{border-color:var(--gold3);}
 .ff select option{background:#f5f0e8;}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 @media(max-width:400px){.fg2{grid-template-columns:1fr;}}
@@ -1079,6 +1079,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
     </div>
     <div class="country-bar" onclick="event.stopPropagation()">
         <span class="cb-label" data-t="lbl_country">Pa&#237;s /</span>
+        <span id="ph-flag" style="font-size:14px;line-height:1;margin-right:2px;"></span>
         <select class="country-sel" id="country-sel" onchange="applyCountry(this.value)">
           <option value="ECU">&#127466;&#127464; Ecuador</option><option value="COL">&#127464;&#127476; Colombia</option>
           <option value="PER">&#127477;&#127466; Per&#250;</option><option value="MEX">&#127474;&#127485; M&#233;xico</option>
@@ -1131,6 +1132,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       <div class="pp-left" id="pp-left">
         <!-- Art background fills whole page -->
         <div class="pp-left-art" id="pp-left-art"></div>
+        <!-- Ghosted duplicate photo watermark (real-passport security feature) -->
+        <img id="photo-ghost-img" alt="" style="display:none;position:absolute;top:8%;right:6%;width:22%;opacity:0.12;filter:grayscale(1);pointer-events:none;z-index:1;"/>
+        <!-- Country watermark text -->
+        <div id="wm-country" style="position:absolute;bottom:6%;left:0;right:0;text-align:center;font-family:var(--ff);font-size:11px;letter-spacing:0.5em;color:rgba(201,168,76,0.18);pointer-events:none;z-index:1;"></div>
 
         <!-- Illustration area -->
         <div class="pp-left-illustration">
@@ -1197,6 +1202,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
               <img id="photo-preview" alt="Foto titular"/>
               <div class="td3-photo-hint">&#128247;</div>
             </div>
+            <input type="file" id="inp-photo" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handlePhoto(this)"/>
+            <div id="photo-status" style="font-size:7px;font-family:var(--ff-mono);color:rgba(201,168,76,0.6);text-align:center;margin-top:2px;min-height:9px;"></div>
             <div class="td3-type-code-row">
               <div class="td3-mini-field">
                 <span class="td3-lbl">TIPO/TYPE</span>
@@ -1476,6 +1483,61 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
   <!-- MAIN PANEL — full width below passport -->
   <div class="main-panel" style="max-width:1100px;margin:0 auto;width:100%;">
+    <!-- FIX-CRIT-1: the profile edit form itself was entirely missing from the
+         markup — saveProfile()/loadProfile()/renderProfile() already existed in
+         JS and referenced these exact ids, but no <input> for them was ever
+         rendered, so saving a profile was completely impossible. -->
+    <div class="panel" id="edit-profile-panel">
+      <div class="panel-hdr">
+        <div class="panel-title">&#128100; <span data-t="edit_profile">Datos del pasaporte</span></div>
+        <button class="panel-action" onclick="document.getElementById('inp-photo').click()">&#128247; <span data-t="tab_bio">Foto</span></button>
+      </div>
+      <div class="panel-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;">
+          <div class="ff"><label data-t="dl_surname">Apellidos</label><input class="input-field" type="text" id="inp-surname" maxlength="60"/></div>
+          <div class="ff"><label data-t="dl_given">Nombres</label><input class="input-field" type="text" id="inp-given" maxlength="60"/></div>
+          <div class="ff"><label data-t="dl_nat">Nacionalidad</label>
+            <select class="input-field" id="inp-nat">
+              <option value="ECU">&#127466;&#127464; Ecuador</option><option value="COL">&#127464;&#127476; Colombia</option>
+              <option value="PER">&#127477;&#127466; Per&#250;</option><option value="MEX">&#127474;&#127485; M&#233;xico</option>
+              <option value="ARG">&#127462;&#127479; Argentina</option><option value="BRA">&#127463;&#127479; Brasil</option>
+              <option value="VEN">&#127483;&#127466; Venezuela</option><option value="CHL">&#127464;&#127473; Chile</option>
+              <option value="ESP">&#127466;&#127480; Espa&#241;a</option><option value="USA">&#127482;&#127480; USA</option>
+              <option value="FRA">&#127467;&#127479; France</option><option value="DEU">&#127465;&#127466; Germany</option>
+              <option value="GBR">&#127468;&#127463; UK</option><option value="CHN">&#127464;&#127475; China</option>
+              <option value="JPN">&#127471;&#127477; Japan</option><option value="IND">&#127470;&#127475; India</option>
+              <option value="RUS">&#127479;&#127482; Russia</option>
+            </select>
+          </div>
+          <div class="ff"><label data-t="dl_sex">Sexo</label>
+            <select class="input-field" id="inp-sex"><option value="M">M</option><option value="F">F</option><option value="X">X</option></select>
+          </div>
+          <div class="ff"><label data-t="dl_passno">N. Pasaporte</label><input class="input-field" type="text" id="inp-passno" maxlength="20" style="text-transform:uppercase"/></div>
+          <div class="ff"><label data-t="dl_dob">Nacimiento</label><input class="input-field" type="date" id="inp-dob"/></div>
+          <div class="ff"><label data-t="dl_pob">Lugar de nac.</label><input class="input-field" type="text" id="inp-pob" maxlength="60"/></div>
+          <div class="ff"><label data-t="dl_issued">Expedicion</label><input class="input-field" type="date" id="inp-issued"/></div>
+          <div class="ff"><label data-t="dl_expiry">Caducidad</label><input class="input-field" type="date" id="inp-expiry"/></div>
+          <div class="ff"><label data-t="dl_blood">Sangre</label>
+            <select class="input-field" id="inp-blood">
+              <option value=""></option><option>O+</option><option>O-</option><option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option><option>AB+</option><option>AB-</option>
+            </select>
+          </div>
+          <div class="ff"><label data-t="dl_sig">Titular</label><input class="input-field" type="text" id="inp-sig" maxlength="60"/></div>
+          <div class="ff"><label data-t="dl_alert_email">Email alertas</label><input class="input-field" type="email" id="inp-alert-email" maxlength="120"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px;">
+          <div class="ff"><label data-t="dl_vax">Vacunas</label><textarea class="input-field" id="inp-vax" maxlength="500" rows="2"></textarea></div>
+          <div class="ff"><label data-t="dl_meds">Medicamentos</label><textarea class="input-field" id="inp-meds" maxlength="500" rows="2"></textarea></div>
+          <div class="ff"><label data-t="dl_res">Residencias/Visas</label><textarea class="input-field" id="inp-res" maxlength="500" rows="2"></textarea></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
+          <button class="btn-s" onclick="saveProfile()" data-t="btn_save">Guardar datos</button>
+          <span id="profile-save-status" style="font-size:11px;color:#2a6044;"></span>
+          <span id="profile-save-error" style="font-size:11px;color:#8b2020;"></span>
+        </div>
+      </div>
+    </div>
     <div class="panel">
       <div class="panel-hdr">
         <div class="panel-title">&#9992;&#65039; <span data-t="panel_trips">Mis viajes</span></div>
@@ -1514,17 +1576,15 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// FIX 1: Firebase config placeholder clearly marked
-// Config loaded from firebase-config.js (root file — NEVER overwritten)
-const firebaseConfig = window.FIREBASE_CONFIG || {
- apiKey: "AIzaSyAVqpblplMLjPSt2vSXCCN-5hbXZFPW2vU",
-  authDomain: "my-passport-211af.firebaseapp.com",
-  projectId: "my-passport-211af",
-  storageBucket: "my-passport-211af.firebasestorage.app",
-  messagingSenderId: "118053564604",
-  appId: "1:118053564604:web:5fe465dd4bc681fcd7e0b9"
-
-};
+// FIX-MAJ-4: single source of truth for Firebase config is
+// public/firebase-config.js — no hardcoded fallback here, so the key
+// can never drift out of sync between files. If the config script
+// failed to load, fail loudly instead of silently reinitializing with
+// a stale/duplicate copy of the config.
+if (!window.FIREBASE_CONFIG) {
+  throw new Error("firebase-config.js failed to load — check the <script> tag and network tab.");
+}
+const firebaseConfig = window.FIREBASE_CONFIG;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -1535,6 +1595,9 @@ if (_ng) _ng.classList.remove("show");
 
 // FIX 16: expose to window synchronously before any async
 window._fbReady = { auth, db, doc, getDoc, setDoc, collection, addDoc, getDocs, fbSignOut };
+// FIX-CRIT-3: exposed so client calls to /.netlify/functions/analyze can
+// prove who they are — the endpoint now requires and verifies this token.
+window._getIdToken = () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.reject(new Error("Not signed in"));
 
 onAuthStateChanged(auth, async user => {
   if (!user) { window.location.href = '/index.html'; return; }
@@ -1542,12 +1605,24 @@ onAuthStateChanged(auth, async user => {
   // Update all user info elements (cover + pages topbar)
   const userLabel = user.displayName || user.email || '?';
   const userInitial = userLabel[0].toUpperCase();
-  const photoHtml = user.photoURL
-    ? '<img src="' + user.photoURL + '" alt="av" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>'
-    : userInitial;
+  // FIX-MAJ-7: build the avatar via safe DOM APIs instead of concatenating
+  // user.photoURL into an innerHTML string — photoURL is provider-supplied
+  // and should never be trusted as pre-escaped markup.
   ['pp-avatar','cover-avatar'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.innerHTML = photoHtml;
+    if (!el) return;
+    el.textContent = '';
+    if (user.photoURL) {
+      const img = document.createElement('img');
+      img.src = user.photoURL;
+      img.alt = 'av';
+      img.referrerPolicy = 'no-referrer';
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
+      img.onerror = () => { el.textContent = userInitial; };
+      el.appendChild(img);
+    } else {
+      el.textContent = userInitial;
+    }
   });
   ['pp-email','cover-email'].forEach(id => {
     const el = document.getElementById(id);
@@ -1923,55 +1998,136 @@ window.showTab = function(el, tab) {
   }
 };
 
+// FIX-CRIT-2: photos are resized+recompressed via <canvas> before ever
+// touching Firestore. Firestore caps a document at 1 MiB — an uncompressed
+// phone photo (often 3-10 MB) would blow past that and fail to save.
+// We cap the longest edge at 480px and re-encode as JPEG at 0.72 quality,
+// which keeps a passport-photo-sized image comfortably under ~150 KB.
+const PHOTO_MAX_DIM = 480;
+const PHOTO_JPEG_QUALITY = 0.72;
+
 window.handlePhoto = function(input) {
   const file = input.files[0];
   if (!file) return;
+  const st = document.getElementById("photo-status");
+
+  if (!file.type || !file.type.startsWith("image/")) {
+    if (st) st.textContent = "✗ " + (lang === "es" ? "Formato no válido" : "Invalid format");
+    return;
+  }
+  if (file.size > 15 * 1024 * 1024) {
+    if (st) st.textContent = "✗ " + (lang === "es" ? "Imagen demasiado grande (máx. 15MB)" : "Image too large (max 15MB)");
+    return;
+  }
+
+  if (st) st.textContent = lang === "es" ? "Procesando..." : "Processing...";
+
   const reader = new FileReader();
   reader.onload = function(e) {
-    const dataUrl = e.target.result;
-    // Show in passport
-    const preview = document.getElementById("photo-preview");
-    if (preview) { preview.src = dataUrl; preview.style.display = "block"; }
-    const placeholder = document.getElementById("photo-icon-placeholder");
-    if (placeholder) placeholder.style.display = "none";
-    // Store in profile
-    profile.photoData = dataUrl;
-    // Status
-    const st = document.getElementById("photo-status");
-    if (st) st.textContent = "✓ " + file.name.substring(0,20);
+    const img = new Image();
+    img.onload = function() {
+      let w = img.width, h = img.height;
+      if (w > h && w > PHOTO_MAX_DIM) { h = Math.round(h * PHOTO_MAX_DIM / w); w = PHOTO_MAX_DIM; }
+      else if (h > PHOTO_MAX_DIM) { w = Math.round(w * PHOTO_MAX_DIM / h); h = PHOTO_MAX_DIM; }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL("image/jpeg", PHOTO_JPEG_QUALITY);
+
+      // Guard: Firestore document hard cap is 1 MiB; keep photo well under
+      // that so the rest of the profile fields always still fit.
+      if (compressed.length > 700000) {
+        if (st) st.textContent = "✗ " + (lang === "es" ? "No se pudo comprimir lo suficiente" : "Could not compress enough");
+        return;
+      }
+
+      const preview = document.getElementById("photo-preview");
+      if (preview) { preview.src = compressed; preview.style.display = "block"; }
+      const placeholder = document.getElementById("photo-icon-placeholder");
+      if (placeholder) placeholder.style.display = "none";
+      const ghost = document.getElementById("photo-ghost-img");
+      if (ghost) { ghost.src = compressed; ghost.style.display = "block"; }
+
+      profile.photoData = compressed;
+      if (st) st.textContent = "✓ " + file.name.substring(0,20);
+    };
+    img.onerror = function() {
+      if (st) st.textContent = "✗ " + (lang === "es" ? "No se pudo leer la imagen" : "Could not read image");
+    };
+    img.src = e.target.result;
+  };
+  reader.onerror = function() {
+    if (st) st.textContent = "✗ " + (lang === "es" ? "Error al leer el archivo" : "Error reading file");
   };
   reader.readAsDataURL(file);
 };
 
+// Safe getter: never throws even if a field is missing from the DOM, and
+// centralizes trimming/length caps so a single free-text field can't bloat
+// the Firestore document or blow up the AI checklist prompt.
+function getVal(id, maxLen) {
+  const el = document.getElementById(id);
+  if (!el) return "";
+  let v = (el.value || "").trim();
+  if (maxLen && v.length > maxLen) v = v.slice(0, maxLen);
+  return v;
+}
+
 window.saveProfile = async function() {
+  const errEl = document.getElementById("profile-save-error");
+  if (errEl) errEl.textContent = "";
+
+  const passno = getVal("inp-passno", 20).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const expiry = getVal("inp-expiry");
+  const dob = getVal("inp-dob");
+
+  if (dob && expiry && expiry < dob) {
+    if (errEl) errEl.textContent = lang === "es"
+      ? "La fecha de caducidad no puede ser anterior a la fecha de nacimiento."
+      : "Expiry date cannot be before date of birth.";
+    return;
+  }
+
   profile = {
-    surname: document.getElementById("inp-surname").value.toUpperCase(),
-    given: document.getElementById("inp-given").value.toUpperCase(),
-    natCode: document.getElementById("inp-nat").value,
-    sex: document.getElementById("inp-sex").value,
-    passno: document.getElementById("inp-passno").value.toUpperCase(),
-    dob: document.getElementById("inp-dob").value,
-    pob: document.getElementById("inp-pob").value,
-    issued: document.getElementById("inp-issued").value,  // FIX 5
-    expiry: document.getElementById("inp-expiry").value,
-    blood: document.getElementById("inp-blood").value,    // FIX 12
-    sig: document.getElementById("inp-sig").value,
-    vax: document.getElementById("inp-vax").value,
-    meds: document.getElementById("inp-meds").value,
-    res: document.getElementById("inp-res").value,
-    alertEmail: document.getElementById("inp-alert-email").value,
+    surname: getVal("inp-surname", 60).toUpperCase(),
+    given: getVal("inp-given", 60).toUpperCase(),
+    natCode: getVal("inp-nat") || "ECU",
+    sex: getVal("inp-sex") || "M",
+    passno: passno,
+    dob: dob,
+    pob: getVal("inp-pob", 60),
+    issued: getVal("inp-issued"),
+    expiry: expiry,
+    blood: getVal("inp-blood", 10),
+    sig: getVal("inp-sig", 60),
+    vax: getVal("inp-vax", 500),
+    meds: getVal("inp-meds", 500),
+    res: getVal("inp-res", 500),
+    alertEmail: getVal("inp-alert-email", 120),
     photoData: profile.photoData || ""
   };
   const fb = window._fbReady;
-  if (window._uid && fb) {
-    await fb.setDoc(fb.doc(fb.db, "users", window._uid, "profile", "data"), profile);
-  } else {
-    localStorage.setItem("mp_profile", JSON.stringify(profile));
+  try {
+    if (window._uid && fb) {
+      await fb.setDoc(fb.doc(fb.db, "users", window._uid, "profile", "data"), profile);
+    } else {
+      localStorage.setItem("mp_profile", JSON.stringify(profile));
+    }
+  } catch (e) {
+    if (errEl) errEl.textContent = (lang === "es" ? "No se pudo guardar: " : "Could not save: ") + e.message;
+    return;
   }
   renderProfile();
   applyCountry(profile.natCode || "ECU");  // no skipLang — user just changed country
   updateArtPage(profile.natCode || "ECU");
   renderArtPage(profile.natCode || "ECU");
+  const st = document.getElementById("profile-save-status");
+  if (st) {
+    st.textContent = lang === "es" ? "✓ Guardado" : "✓ Saved";
+    setTimeout(() => { st.textContent = ""; }, 2500);
+  }
 };
 
 async function loadProfile() {
@@ -2102,7 +2258,7 @@ function renderPassportTrips() {
     "<div style='flex:1'>" +
       "<div class='te-dest'>"+sanitize((t.destDisplay||t.dest||"Sin destino").replace(/^[^\s]+\s/,""))+"</div>" +
       "<div class='te-dates'>"+(t.dep||"—")+" &#8594; "+(t.ret||"—")+"</div>" +
-      "<div class='te-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+(t.lay?" · "+t.lay:"")+"</div>" +
+      "<div class='te-purp'>"+sanitize((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+(t.lay?" · "+sanitize(t.lay):"")+"</div>" +
     "</div>" +
     "<button class='te-btn' onclick='selectAndGenerate("+i+")'>" + tr("btn_generate") + "</button>" +
     "</div>"
@@ -2114,10 +2270,10 @@ function renderTripStamps() {
   if (!trips.length) { el.innerHTML="<p style='font-size:10px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:0.75rem;'>"+tr("no_trip_stamps")+"</p>"; return; }
   el.innerHTML = "<div class='stamps-grid'>" + trips.map((t,i) =>
     "<div class='stamp trip-stamp' style='transform:rotate("+(((Math.random()*14)-7).toFixed(1))+"deg)'>" +
-    "<div class='stamp-type'>ENTRADA · "+(t.purp||"").toUpperCase()+"</div>" +
+    "<div class='stamp-type'>ENTRADA · "+sanitize((t.purp||"").toUpperCase())+"</div>" +
     "<div class='stamp-country'>"+sanitize(((t.destDisplay||t.dest||"").substring(0,10)).toUpperCase())+"</div>" +
     "<div class='stamp-date'>"+(t.dep||"—")+"</div>" +
-    (t.lay ? "<div class='stamp-port'>VIA "+t.lay.substring(0,8).toUpperCase()+"</div>" : "") +
+    (t.lay ? "<div class='stamp-port'>VIA "+sanitize(t.lay.substring(0,8).toUpperCase())+"</div>" : "") +
     "</div>"
   ).join("") + "</div>";
 }
@@ -2137,7 +2293,7 @@ function renderMainTrips() {
     "<div style='flex:1'>" +
       "<div class='tc-dest'>"+sanitize((t.destDisplay||t.dest||"Sin destino").replace(/^[^\s]+\s/,""))+"</div>" +
       "<div class='tc-dates'>"+(t.dep||"—")+" &#8594; "+(t.ret||"—")+"</div>" +
-      "<div class='tc-purp'>"+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+(t.lay?" · "+t.lay:"")+"</div>" +
+      "<div class='tc-purp'>"+sanitize((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+(t.lay?" · "+sanitize(t.lay):"")+"</div>" +
     "</div>" +
     "<button class='tc-btn' onclick='selectAndGenerate("+i+")'>&#9878; Checklist</button>" +
     "</div>"
@@ -2145,7 +2301,7 @@ function renderMainTrips() {
   if (selBody) selBody.innerHTML = trips.map((t,i) =>
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
-    "<span><div style='font-weight:bold;font-size:11px'>"+(t.destDisplay||t.dest)+"</div>" +
+    "<span><div style='font-weight:bold;font-size:11px'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
     "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
     "</button>"
   ).join("");
@@ -2158,7 +2314,7 @@ function renderCLBtns() {
   el.innerHTML = trips.map((t,i) =>
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
-    "<span><div style='font-weight:bold;font-size:11px'>"+(t.destDisplay||t.dest)+"</div>" +
+    "<span><div style='font-weight:bold;font-size:11px'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
     "<div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
     "</button>"
   ).join("");
@@ -2180,32 +2336,40 @@ window.generateChecklist = async function() {
   document.getElementById("cl-result").innerHTML = loadHtml;
 
   const nat = NAMES[profile.natCode] || profile.natCode || "desconocida";
-  const prompt = `Eres experto en regulaciones de viaje internacional. Usa IATA Timatic, Sherpa, iVisa, CDC, INCB, embajadas y OMC.
 
-PERFIL:
-- Nacionalidad: ${nat}
-- Pasaporte: ${profile.passno||"?"} vence: ${profile.expiry||"?"}
-- Residencias/visas: ${profile.res||"ninguna"}
-- Vacunas: ${profile.vax||"ninguna"}
-- Medicamentos: ${profile.meds||"ninguno"}
-- Destino: ${selectedTrip.destDisplay||selectedTrip.dest}
-- Escala: ${selectedTrip.lay && selectedTrip.lay!=="sin escala"?"en "+selectedTrip.lay:"sin escala"}
-- Motivo: ${selectedTrip.purpKey?tr("opt_"+selectedTrip.purpKey):selectedTrip.purp}
-- Fechas: ${selectedTrip.dep||"?"} al ${selectedTrip.ret||"?"}
-- Idioma respuesta: ${lang}
-
-Responde SOLO JSON valido sin markdown ni backticks:
-{"risk_level":"ok or caution or danger","summary":"texto","route":"texto","items":[{"type":"danger or warn or ok or info","title":"texto","description":"texto","source":"Fuente: texto"}]}
-
-6-9 items ordenados por criticidad. Todo en idioma: ${lang}.`;
+  // FIX-CRIT-3: the client used to build the entire Claude prompt as a free
+  // string and the server just forwarded it verbatim — that let anyone who
+  // could reach the endpoint use it as a general-purpose, unrestricted
+  // Claude proxy on our API key/budget. Now we send structured fields only;
+  // the server (analyze.js) owns the prompt template and requires a valid
+  // Firebase ID token.
+  const payload = {
+    nationality: nat,
+    passno: profile.passno || "",
+    expiry: profile.expiry || "",
+    residencyVisas: profile.res || "",
+    vaccines: profile.vax || "",
+    medications: profile.meds || "",
+    destination: selectedTrip.destDisplay || selectedTrip.dest || "",
+    layover: (selectedTrip.lay && selectedTrip.lay !== "sin escala") ? selectedTrip.lay : "",
+    purpose: selectedTrip.purpKey ? tr("opt_"+selectedTrip.purpKey) : (selectedTrip.purp || ""),
+    depDate: selectedTrip.dep || "",
+    retDate: selectedTrip.ret || "",
+    lang: lang
+  };
 
   try {
+    const fb = window._fbReady;
+    if (!window._uid || !fb || !window._getIdToken) throw new Error(lang === "es" ? "Sesión no válida. Vuelve a iniciar sesión." : "Invalid session. Please sign in again.");
+    const idToken = await window._getIdToken();
+
     const res = await fetch("/.netlify/functions/analyze", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({prompt})
+      method:"POST",
+      headers:{"Content-Type":"application/json", "Authorization":"Bearer "+idToken},
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
-    if (data.error) throw new Error(data.error);
+    if (!res.ok || data.error) throw new Error(data.error || ("HTTP " + res.status));
     const S = {danger:"&#10005;",warn:"!",ok:"&#10003;",info:"i"};
     const SC = {danger:"d",warn:"w",ok:"ok",info:"i"};
     const RL = {ok:tr("risk_ok"),caution:tr("risk_caution"),danger:tr("risk_danger")};
@@ -2234,6 +2398,7 @@ Responde SOLO JSON valido sin markdown ni backticks:
     document.getElementById("cl-result").innerHTML = e;
   }
 };
+
 
 
 // ── Single-page navigator ──
@@ -2292,6 +2457,12 @@ window._appInit_full = function() {
     window.location.href = "/index.html";
     return;
   }
+  // FIX-MIN: keep the profile-edit country <select> in sync with the single
+  // static list on country-sel, instead of maintaining a third hardcoded
+  // copy of the 17-country list that could silently drift out of sync.
+  const natSel = document.getElementById("inp-nat");
+  const srcSel = document.getElementById("country-sel");
+  if (natSel && srcSel && srcSel.innerHTML) natSel.innerHTML = srcSel.innerHTML;
   loadProfile();
   loadTrips();
   // Update art page on init

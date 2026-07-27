@@ -10,13 +10,23 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-[[redirects]]
-  from = "/pages/*"
-  to = "/pages/:splat"
-  status = 200
-  force = true
+# NOTE: the previous "/pages/* -> /pages/:splat force=true" rule was a
+# no-op (it redirected static files to themselves) and has been removed.
+# Netlify already serves files under public/pages/ directly.
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# FIX-MAJ: baseline security headers — none existed before. CSP is scoped to
+# the exact external origins this app actually talks to (Google Fonts,
+# Firebase, gstatic for the Firebase JS SDK).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://securetoken.googleapis.com https://identitytoolkit.googleapis.com; frame-src https://my-passport-211af.firebaseapp.com https://accounts.google.com"
