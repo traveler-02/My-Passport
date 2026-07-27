@@ -65,8 +65,15 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   border-radius:0;
   overflow:hidden;
   box-shadow:0 8px 40px rgba(0,0,0,0.6);
-  width:100%;
-  max-width:100%;
+  /* FIX-VISUAL-1: bound width by whichever is tighter — the container's
+     own width, or the width implied by available viewport height at the
+     correct TD3 ratio (88/125 = 0.704). This replaces a fragile
+     max-height clamp on the pages themselves, which forced height down
+     without shrinking width and silently squashed the passport out of
+     its correct portrait shape on short/wide viewports (e.g. laptop
+     windows). */
+  width: min(100%, calc((100vh - 200px) * 0.704));
+  max-width: 100%;
   margin:0 auto;
 }
 /* Cover maintains ICAO 9303 passport ratio: 125mm x 88mm = 1.42:1 */
@@ -203,8 +210,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   width: 50%;
   min-width: 50%;
   box-sizing: border-box;
-  height: calc(100vw * 0.704);
-  max-height: calc(100vh - 160px);
+  /* FIX-VISUAL-1: was `height: calc(100vw * 0.704)` — 0.704 = 88/125 is the
+     TD3 WIDTH:HEIGHT ratio, so multiplying width by it produced a shorter
+     landscape box instead of a taller portrait one. aspect-ratio:88/125
+     (width/height) gives the correct portrait ICAO TD3 shape, matching
+     .cover below. The outer .pbook now bounds width using viewport height,
+     so no separate max-height clamp is needed here (that clamp was also
+     silently distorting the ratio whenever it kicked in). */
+  aspect-ratio: 88/125;
   overflow-y: auto;
 }
 .page-l{ border-right:none; flex:0 0 50%; width:50%; min-width:50%; box-sizing:border-box; }
@@ -218,7 +231,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   .page,
   .spread #pp-left,
   .spread #pp-right {
-    aspect-ratio: unset !important;
+    aspect-ratio: 88/125;
     min-height: 70vw;
   }
 }
@@ -1017,12 +1030,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   overflow: hidden;
 }
 
-/* Apply ICAO TD3 exact aspect ratio (125:88 = 1.4205:1) to bio pages */
+/* FIX-VISUAL-1: same inversion as .page above — replaced the buggy
+   `height: calc(100vw * 0.704)` with the correct portrait aspect-ratio,
+   consistent with .cover's aspect-ratio:88/125. .pbook now bounds width
+   by available viewport height, so max-height is no longer needed. */
 .pp-right, .pp-left {
   border-radius: 6px;
   width: 100%;
-  height: calc(100vw * 0.704);
-  max-height: calc(100vh - 160px);
+  aspect-ratio: 88/125;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1890,6 +1905,26 @@ function sanitize(str) {
     .replace(/'/g, "&#39;");
 }
 
+// FIX-VISUAL-2: ICAO 9303 MRZ check digit. Weights cycle 7,3,1; letters
+// A-Z = 10-35, digits keep their value, '<' = 0. Sum(value*weight) mod 10.
+// Previously the check-digit positions in the MRZ were just filled with
+// literal '<' characters — a real passport MRZ always shows an actual
+// digit there, and skipping it also shifted every field after the
+// passport-number check digit one character out of place.
+function mrzCheckDigit(str) {
+  const weights = [7, 3, 1];
+  let sum = 0;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+    let v;
+    if (ch >= "0" && ch <= "9") v = ch.charCodeAt(0) - 48;
+    else if (ch >= "A" && ch <= "Z") v = ch.charCodeAt(0) - 55; // A=10 ... Z=35
+    else v = 0; // '<' and anything else
+    sum += v * weights[i % 3];
+  }
+  return String(sum % 10);
+}
+
 window.setLang = function(l) {
   lang = l;
   document.documentElement.lang = l;
@@ -2192,15 +2227,32 @@ function renderProfile() {
   const c2 = COUNTRIES[p.natCode] || COUNTRIES.ECU;
   if (bioBar) bioBar.textContent = c2.name.toUpperCase();
   document.getElementById("obs-meds-text").textContent = p.meds ? "Medicamentos: " + p.meds : "Sin medicamentos registrados.";
-  // MRZ
-  const sn = (p.surname||"???").replace(/\s/g,"<");
-  const gn = (p.given||"???").replace(/\s/g,"<");
-  const nat = p.natCode || "ECU";
-  const dob = (p.dob||"010101").replace(/-/g,"").substring(2) || "010101";
-  const exp = (p.expiry||"310101").replace(/-/g,"").substring(2) || "310101";
-  const pno = (p.passno||"?????????").padEnd(9,"<");
-  document.getElementById("mrz1").textContent = ("P<"+nat+sn+"<<"+gn+"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<").substring(0,44);
-  document.getElementById("mrz2").textContent = (pno+"<0"+nat+dob+(p.sex||"M")+exp+"<<<<<<<<<<<<<<<<<").substring(0,44);
+  // FIX-VISUAL-2: MRZ rebuilt to exact ICAO 9303 TD3 layout with real
+  // check digits (previously '<' fillers sat where digits belong, which
+  // also shifted nationality/DOB/sex/expiry one character out of place).
+  const sn = (p.surname||"???").toUpperCase().replace(/[^A-Z<]/g,"").replace(/\s/g,"<");
+  const gn = (p.given||"???").toUpperCase().replace(/[^A-Z<]/g,"").replace(/\s/g,"<");
+  const nat = (p.natCode || "ECU").toUpperCase();
+  const toYYMMDD = (iso, fallback) => {
+    if (!iso) return fallback;
+    const d = iso.replace(/-/g,"");
+    return d.length === 8 ? d.substring(2) : fallback;
+  };
+  const dob = toYYMMDD(p.dob, "010101");
+  const exp = toYYMMDD(p.expiry, "310101");
+  const sex = (p.sex === "F" || p.sex === "M") ? p.sex : "<";
+  const pno = (p.passno||"").toUpperCase().replace(/[^A-Z0-9]/g,"").padEnd(9,"<").substring(0,9);
+  const pnoCD = mrzCheckDigit(pno);
+  const dobCD = mrzCheckDigit(dob);
+  const expCD = mrzCheckDigit(exp);
+  const optionalData = "".padEnd(14, "<"); // no personal number field used
+  const optCD = mrzCheckDigit(optionalData);
+  const composite = mrzCheckDigit(pno + pnoCD + dob + dobCD + exp + expCD + optionalData + optCD);
+
+  const line1 = ("P<" + nat + sn + "<<" + gn + "<".repeat(44)).substring(0, 44);
+  const line2 = (pno + pnoCD + nat + dob + dobCD + sex + exp + expCD + optionalData + optCD + composite).substring(0, 44);
+  document.getElementById("mrz1").textContent = line1;
+  document.getElementById("mrz2").textContent = line2;
   // (poly watermark removed - replaced by TD3 layout)
 }
 
