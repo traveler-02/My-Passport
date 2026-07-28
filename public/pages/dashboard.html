@@ -75,14 +75,13 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   border-radius:0;
   overflow:hidden;
   box-shadow:0 8px 40px rgba(0,0,0,0.6);
-  /* FIX-VISUAL-1: bound width by whichever is tighter — the container's
-     own width, or the width implied by available viewport height at the
-     correct TD3 ratio (88/125 = 0.704). This replaces a fragile
-     max-height clamp on the pages themselves, which forced height down
-     without shrinking width and silently squashed the passport out of
-     its correct portrait shape on short/wide viewports (e.g. laptop
-     windows). */
-  width: min(100%, calc((100vh - 200px) * 0.704));
+  /* FIX-VISUAL-5: an open spread shows TWO pages side by side, so its
+     width:height ratio is double a single page's (2 x 88 : 125 = 1.408:1),
+     not a single page's 0.704:1. Using the single-page ratio here made
+     the whole spread render too narrow — each half-page then rendered at
+     roughly half a portrait page's width, which is why fields looked
+     cramped/clipped. */
+  width: min(100%, calc((100vh - 200px) * 1.408));
   max-width: 100%;
   margin:0 auto;
 }
@@ -151,66 +150,30 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 .tab:hover{color:var(--gold2);}
 .tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 
-/* Open passport = landscape book */
+/* FIX-VISUAL-5: real passports, once opened, show BOTH facing pages at
+   once side by side (that's what makes an open passport read as a wide/
+   landscape shape — two portrait pages next to each other). This used to
+   slide between one page at a time with arrows, which is why it never
+   looked like an open book no matter how the CSS ratio was tuned. */
 .spread{
   position: relative;
   width: 100%;
   overflow: hidden;
 }
-/* Page viewer: shows one page at a time */
 .page-viewer {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  /* 200% wide so each 50% child = 100vw */
-  width: 200%;
-  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  width: 100%;
 }
 .page-viewer.show-right {
-  transform: translateX(-50%);
+  /* No-op now that both pages render together; class kept so existing
+     JS (swipe/dots) doesn't error, it just has nothing to animate. */
+  transform: none;
 }
-/* Navigation arrows */
-.page-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(201,168,76,0.4);
-  color: rgba(201,168,76,0.9);
-  width: 42px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 20px;
-  font-weight: bold;
-  transition: all 0.2s;
-  user-select: none;
-  border-radius: 4px;
-}
-.page-nav:hover { background:rgba(0,0,0,0.6); color:var(--gold); }
-.page-nav-left  { left:0; border-radius:0 4px 4px 0; }
-.page-nav-right { right:0; border-radius:4px 0 0 4px; }
-.page-indicator {
-  position:absolute;
-  bottom:8px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:6px;
-  z-index:10;
-}
-.page-dot {
-  width:7px; height:7px;
-  border-radius:50%;
-  background:rgba(201,168,76,0.3);
-  border:1px solid rgba(201,168,76,0.4);
-  transition:background 0.2s;
-  cursor:pointer;
-}
-.page-dot.active { background:rgba(201,168,76,0.8); }
+/* Arrows/dots existed to flip between the two halves one at a time —
+   no longer needed now that both are visible at once. */
+.page-nav, .page-indicator { display: none; }
 .page{
   background:var(--page);
   padding:20px 18px;
@@ -235,15 +198,20 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 /* Mobile: swipe carousel */
 @media(max-width:700px){
   body { overflow-x: hidden; }
-  /* Mobile: page-nav arrows smaller */
-  .page-nav { width:28px; height:44px; font-size:14px; }
-  /* Pages fill viewport width */
+  /* FIX-VISUAL-5: on narrow screens, two half-width pages side by side
+     would be too small to read. Stack them vertically instead — both
+     pages are still shown (no arrows/carousel), just top-to-bottom. */
+  .page-viewer { flex-direction: column; }
   .page,
+  .page-l,
   .spread #pp-left,
   .spread #pp-right {
+    width: 100% !important;
+    min-width: 100% !important;
+    flex: 0 0 auto !important;
     aspect-ratio: 88/125;
-    min-height: 70vw;
   }
+  .pbook { width: 100% !important; max-width: 420px; }
 }
 .page::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px),repeating-linear-gradient(90deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px);pointer-events:none;}
 .page>*{position:relative;z-index:1;}
@@ -624,24 +592,31 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
-  padding: 16px 24px 8px;
-  gap: 16px;
+  /* FIX-VISUAL-5b: this was `overflow: hidden`, which silently clipped
+     fields that didn't fit the page's fixed height — several fields
+     (given names, nationality, sex, dates, passport no., blood group,
+     authority) were rendering but invisible below the fold. auto is a
+     safety net: with the tighter spacing below everything should fit
+     without scrolling in the normal case, but nothing is ever silently
+     lost if it doesn't. */
+  overflow-y: auto;
+  padding: 14px 24px 6px;
+  gap: 10px;
 }
 
 /* ── FIELDS GRID (full width, 8px-grid aligned) ── */
 .td3-fields-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
+  gap: 8px 24px;
   min-width: 0;
-  overflow: hidden;
+  flex-shrink: 0;
 }
-.td3-field { display: flex; flex-direction: column; gap: 4px; grid-column: span 1; }
+.td3-field { display: flex; flex-direction: column; gap: 2px; grid-column: span 1; }
 .td3-field:nth-child(1), .td3-field:nth-child(2) { grid-column: 1 / -1; } /* surname, given: full width */
 .td3-lbl {
   font-family: var(--doc-ff);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 400;
   color: var(--doc-gray);
   letter-spacing: 0.02em;
@@ -649,7 +624,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .td3-val {
   font-family: var(--doc-ff);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--doc-black);
   letter-spacing: 0;
