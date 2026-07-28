@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>My Passport — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --gold:#c9a84c;--gold2:#e2c97e;--gold3:#8a6e2f;
@@ -14,6 +14,16 @@
   --ff-mono:"Courier New",Courier,monospace;
   --ff-sig:"Brush Script MT",cursive;
   --danger:#8b1a1a;--warn:#7a5810;--ok:#1a3a2a;--info:#1a2a6b;
+  /* FIX-VISUAL-4: editorial minimalist design tokens for the bio-data
+     page, per exact spec — soft blue/gray palette, Inter, 8px grid.
+     Deliberately generic/fictional, not modeled on any real country's
+     document. Scoped to .pp-right only; cover/art pages keep the
+     existing warm gold theme. */
+  --doc-bg-1:#F7F9FB; --doc-bg-2:#EDF3F8; --doc-bg-3:#D8E5F2; --doc-accent:#BFD4E8;
+  --doc-gray:#3A3A3A; --doc-black:#1C1C1C;
+  --doc-ff:"Inter",Helvetica,Roboto,Arial,sans-serif;
+  --doc-ff-mrz:"Courier New",Courier,monospace;
+  --doc-grid:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
@@ -557,124 +567,146 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   box-sizing: border-box;
   border-right: none;
 }
-/* Guilloche background on bio page */
-/* FIX-VISUAL-3: replaced two faint radial-gradient blobs with an actual
-   guilloché-style fine engraved-line texture (the wavy interference
-   pattern visible on every real passport background — see reference
-   photos), layered over a subtle wash tinted with the selected
-   country's accent color instead of a flat cream background. */
+/* FIX-VISUAL-4: discrete geometric background pattern (thin dot grid) in
+   soft blue/gray tones — replaces the guilloché engraved-line texture.
+   Deliberately generic/abstract, not an imitation of a real security
+   print. */
 .pp-right::before {
   content: '';
   position: absolute;
   inset: 0;
-  background-color: #f5f1e8;
+  background-color: var(--doc-bg-1);
   background-image:
-    radial-gradient(ellipse at 15% 10%, rgba(var(--art-dark-hex,26,58,42),0.05) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 90%, rgba(var(--art-dark-hex,26,58,42),0.04) 0%, transparent 55%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23000' stroke-opacity='0.045' stroke-width='0.6'%3E%3Cpath d='M-8 8 Q8 -8 24 8 T56 8 T88 8'/%3E%3Cpath d='M-8 24 Q8 8 24 24 T56 24 T88 24'/%3E%3Cpath d='M-8 40 Q8 24 24 40 T56 40 T88 40'/%3E%3Cpath d='M-8 56 Q8 40 24 56 T56 56 T88 56'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: auto, auto, 64px 64px;
+    linear-gradient(135deg, var(--doc-bg-2) 0%, var(--doc-bg-1) 55%, var(--doc-bg-1) 100%),
+    radial-gradient(circle, rgba(63,102,138,0.12) 1px, transparent 1.2px);
+  background-size: auto, 24px 24px;
   z-index: 0;
 }
 .pp-right > * { position: relative; z-index: 1; }
 
-/* NOTE: the bio-data page layout below (.td3-*) is the only one actually
-   used in the HTML. An entire earlier design generation (.pp-hdr,
-   .pp-main, .pp-photo-col, .pp-fields, .pp-field*, .pp-sig-row,
-   .pp-security, .pp-mrz*, .pp-pgnum — ~250 lines) was fully superseded by
-   this one but never removed from the stylesheet; it has been deleted
-   here since it was dead weight with no effect on the rendered page. */
-
 /* ══════════════════════════════════════════════════════
-   ICAO Doc 9303 TD3-COMPLIANT BIO PAGE
-   Real passport proportions: 125mm x 88mm (ratio 1.42:1)
-   Layout matches official passport data page structure
+   BIO-DATA PAGE — editorial minimalist redesign
+   Base resolution 880 × 1250px (88mm × 125mm at 10px/mm)
+   8px grid · 10px radius · 1px borders · Inter
+   Generic/fictional — not modeled on any real country's document
 ═══════════════════════════════════════════════════════ */
 
-/* Country header — centered bold like real passports */
-/* FIX-VISUAL-3: real passport bio-page headers (Colombia, USA, Ecuador —
-   see reference photos) are bold, large text sitting directly on the page
-   background — never a solid colored bar. Replaced the dark-green banner
-   with that treatment, using the country's own accent color for the text
-   so it visibly changes with the selected nationality. */
 .td3-hdr {
-  padding: 10px 16px 6px;
-  text-align: center;
+  padding: 24px 24px 16px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
   flex-shrink: 0;
+  border-bottom: 1px solid var(--doc-accent);
 }
 .td3-hdr-country {
-  font-family: var(--ff);
-  font-size: 19px;
-  font-weight: 700;
-  color: var(--art-dark, #1a3a2a);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  /* Repurposed as a small nationality tag next to the generic title,
+     rather than a "Republic of X" hero heading — see FIX-VISUAL-4. */
+  font-family: var(--doc-ff);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--doc-gray);
+  letter-spacing: 0.04em;
+  text-transform: none;
 }
-.td3-hdr::after {
-  content: '';
-  display: block;
-  width: 64px;
-  height: 2px;
-  margin: 5px auto 0;
-  background: var(--gold);
-  opacity: 0.6;
+.td3-hdr-title {
+  font-family: var(--doc-ff);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--doc-black);
+  letter-spacing: 0.02em;
 }
 
-/* Body: photo col (30%) + fields col (70%) */
+/* Body: fields grid on top, photo+signature row at bottom */
 .td3-body {
   display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  padding: 16px 24px 8px;
+  gap: 16px;
 }
 
-/* ── PHOTO COLUMN ── */
+/* ── FIELDS GRID (full width, 8px-grid aligned) ── */
+.td3-fields-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  min-width: 0;
+  overflow: hidden;
+}
+.td3-field { display: flex; flex-direction: column; gap: 4px; grid-column: span 1; }
+.td3-field:nth-child(1), .td3-field:nth-child(2) { grid-column: 1 / -1; } /* surname, given: full width */
+.td3-lbl {
+  font-family: var(--doc-ff);
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--doc-gray);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.td3-val {
+  font-family: var(--doc-ff);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--doc-black);
+  letter-spacing: 0;
+  border-bottom: none;
+  padding-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.td3-val-sm { font-size: 13px; }
+.td3-val-mono.td3-val { font-family: var(--doc-ff-mrz); font-size: 13px; font-weight: 600; }
+.td3-val-red { color: var(--doc-black); } /* de-emphasized — no alarm-red in this palette */
+.td3-row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  grid-column: 1 / -1;
+}
+
+/* ── BOTTOM ROW: photo (lower-left, ~1/3) + signature (lower-right) ── */
 .td3-photo-col {
-  width: 32%;
+  width: 34%;
+  max-width: 200px;
   flex-shrink: 0;
-  padding: 10px 10px 6px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  border-right: 1px solid rgba(0,0,0,0.12);
-  background: rgba(0,0,0,0.015);
+  gap: 8px;
+  border: none;
+  background: none;
   align-items: flex-start;
+  align-self: flex-end;
 }
-.td3-doctype-row { text-align:center; }
-.td3-field-mini {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+.td3-doctype-row { display: none; } /* "PASAPORTE/PASSPORT" now lives in the header */
+.td3-field-mini { display: flex; flex-direction: column; align-items: flex-start; }
 .td3-photo-frame {
   width: 100%;
-  max-width: 120px;
-  aspect-ratio: 3/4;
-  border: 1.5px solid rgba(0,0,0,0.5);
+  aspect-ratio: 300/380;
+  max-width: none;
+  border: 1px solid var(--doc-accent);
+  border-radius: 6px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  background: linear-gradient(145deg,#c8d4d0,#b0c0bc);
-  align-self: flex-start;
+  background: var(--doc-bg-2);
+  align-self: stretch;
 }
-/* FIX-VISUAL-3: corner bracket accent seen on real passport photo boxes
-   (e.g. the reference Colombian passport's bottom-left "L" mark). */
 .td3-photo-frame::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: -1px;
-  width: 16px;
-  height: 16px;
-  border-left: 2.5px solid var(--art-dark, #1a3a2a);
-  border-bottom: 2.5px solid var(--art-dark, #1a3a2a);
-  pointer-events: none;
+  /* Spec calls for clean minimalism — the corner-bracket "authenticity"
+     accent from the realistic-passport iteration doesn't fit here. */
+  content: none;
 }
 .td3-photo-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(0.7) contrast(1.1) sepia(0.1);
+  filter: none;
   display: none;
 }
 .td3-photo-placeholder {
@@ -684,127 +716,96 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   align-items: center;
   justify-content: center;
   font-size: 38px;
-  color: rgba(0,0,0,0.18);
+  color: var(--doc-accent);
 }
 .td3-photo-hint {
   position: absolute;
-  bottom: 2px; right: 2px;
+  bottom: 6px; right: 6px;
   font-size: 11px;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 .td3-type-code-row {
   display: flex;
-  gap: 6px;
-  justify-content: space-between;
+  gap: 16px;
+  justify-content: flex-start;
+  width: 100%;
 }
 .td3-mini-field {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  flex: 1;
+  gap: 2px;
 }
-.td3-mini-field .td3-lbl { font-size: 6px; }
+.td3-mini-field .td3-lbl { font-size: 9px; }
 .td3-val-mono {
-  font-family: var(--ff-mono);
+  font-family: var(--doc-ff-mrz);
   font-size: 12px;
-  font-weight: bold;
-  color: #0a0a0a;
+  font-weight: 600;
+  color: var(--doc-black);
 }
 .td3-passno {
-  font-size: 14px;
-  color: #7a0e0e;
+  font-size: 13px;
+  color: var(--doc-black);
 }
 
-/* ── FIELDS COLUMN ── */
-.td3-fields-col {
-  flex: 1;
-  padding: 8px 12px 4px;
+.td3-bottom-row {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: 0;
-  overflow: hidden;
+  align-items: flex-end;
   justify-content: space-between;
-}
-.td3-field {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.td3-lbl {
-  font-size: 6.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #444;
-  font-family: var(--ff-mono);
-  font-weight: 600;
-}
-.td3-val {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 15px;
-  font-weight: bold;
-  color: #0a0a0a;
-  letter-spacing: 0.02em;
-  border-bottom: 0.5px solid rgba(0,0,0,0.15);
-  padding-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.td3-val-sm { font-size: 12px; }
-.td3-val-mono.td3-val { font-family: var(--ff-mono); font-size: 13px; }
-.td3-val-red { color: #8b1a1a; }
-.td3-row2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 24px;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
-/* Signature — bottom, prominent */
+/* Signature — bottom-right, stylized but clean */
 .td3-sig-row {
-  margin-top: auto;
-  padding-top: 6px;
-  border-top: 0.5px solid rgba(0,0,0,0.1);
+  flex: 1;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
 }
 .td3-sig-val {
   font-family: var(--ff-sig);
-  font-size: 24px;
-  color: #1a1a3a;
+  font-size: 22px;
+  color: var(--doc-black);
   min-height: 30px;
-  border-bottom: 0.5px solid rgba(0,0,0,0.25);
+  width: 100%;
+  text-align: right;
+  border-bottom: 1px solid var(--doc-accent);
+  padding-bottom: 4px;
 }
 
-/* Security strip */
-.td3-security {
-  display: flex;
-  gap: 8px;
-  padding: 2px 12px;
-  background: rgba(0,0,0,0.03);
-  border-top: 0.5px solid rgba(0,0,0,0.1);
-  flex-wrap: wrap;
-  flex-shrink: 0;
-}
-.td3-sec-item {
-  font-size: 6px;
-  font-family: var(--ff-mono);
-  color: #555;
-  letter-spacing: 0.04em;
-}
+/* Security strip — not used in the minimalist redesign (spec explicitly
+   avoids imitating real security-document elements) */
+.td3-security { display: none; }
+.td3-sec-item { display: none; }
 
-/* MRZ — ICAO mandated OCR-B style, 2 lines, monospace, dark band */
+/* MRZ — deliberately fictional and clearly labeled as such, per spec */
 .td3-mrz {
-  background: #e8e6df;
-  border-top: 1.5px solid rgba(0,0,0,0.3);
-  padding: 4px 12px 6px;
+  background: var(--doc-bg-2);
+  border-top: 1px solid var(--doc-accent);
+  padding: 12px 24px 20px;
   flex-shrink: 0;
+}
+.td3-mrz-disclaimer {
+  font-family: var(--doc-ff);
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--doc-gray);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
 }
 .td3-mrz-line {
-  font-family: 'Courier New', monospace;
+  font-family: var(--doc-ff-mrz);
   font-size: 10px;
   font-weight: 600;
-  color: #0a0a0a;
-  letter-spacing: 0.07em;
-  line-height: 1.6;
+  color: var(--doc-black);
+  letter-spacing: 0.06em;
+  line-height: 1.7;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -820,6 +821,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+/* FIX-VISUAL-4: bio-data page per exact spec — 10px radius, 1px border,
+   very soft shadow, base 1250x880 proportions (already correct at 88/125
+   via the shared rule above). */
+.pp-right {
+  border-radius: 10px;
+  border: 1px solid var(--doc-accent);
+  box-shadow: 0 2px 12px rgba(28,28,28,0.08);
 }
 </style>
 </head>
@@ -973,126 +982,116 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
       <!-- ═══ RIGHT PAGE: Biographical Data (ICAO Doc 9303 TD3 layout) ═══ -->
       <div class="pp-right" id="pp-right">
 
-        <!-- Country name header - centered, bold, like real passports -->
+        <!-- FIX-VISUAL-4: generic document title (not "Republic of X") plus
+             a small nationality tag — avoids imitating any real country's
+             official passport heading, per design spec. -->
         <div class="td3-hdr" id="td3-hdr">
-          <div class="td3-hdr-country" id="bio-country-name">REPÚBLICA DEL ECUADOR</div>
+          <span class="td3-hdr-title">Pasaporte · Passport</span>
+          <span class="td3-hdr-country" id="bio-country-name">República del Ecuador</span>
         </div>
 
         <!-- Main data zone -->
         <div class="td3-body">
 
-          <!-- Photo column (left, ~30% width per ICAO) -->
-          <div class="td3-photo-col">
-            <div class="td3-doctype-row">
-              <div class="td3-field-mini">
-                <span class="td3-lbl">PASAPORTE</span>
-                <span class="td3-lbl-en">PASSPORT</span>
-              </div>
-            </div>
-            <div class="td3-photo-frame" id="photo-box-click"
-              onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()"
-              title="Click para cambiar foto">
-              <div class="td3-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
-              <img id="photo-preview" alt="Foto titular"/>
-              <div class="td3-photo-hint">&#128247;</div>
-            </div>
-            <input type="file" id="inp-photo" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handlePhoto(this)"/>
-            <div id="photo-status" style="font-size:7px;font-family:var(--ff-mono);color:rgba(201,168,76,0.6);text-align:center;margin-top:2px;min-height:9px;"></div>
-            <div class="td3-type-code-row">
-              <div class="td3-mini-field">
-                <span class="td3-lbl">TIPO/TYPE</span>
-                <span class="td3-val-mono" id="bio-doc-type">P</span>
-              </div>
-              <div class="td3-mini-field">
-                <span class="td3-lbl">PAÍS/CODE</span>
-                <span class="td3-val-mono" id="bio-nat-code">ECU</span>
-              </div>
-            </div>
-            <div class="td3-mini-field" style="margin-top:4px;">
-              <span class="td3-lbl">PASAPORTE No. / PASSPORT No.</span>
-              <span class="td3-val-mono td3-passno" id="dv-passno-hdr">—</span>
-            </div>
-          </div>
-
-          <!-- Data fields column (right, ~70% width) -->
+          <!-- Fields grid: full width, 2 columns, 8px-grid aligned -->
           <div class="td3-fields-col">
 
             <div class="td3-field">
-              <span class="td3-lbl">APELLIDOS / SURNAME</span>
+              <span class="td3-lbl">Apellidos / Surname</span>
               <span class="td3-val" id="dv-surname">—</span>
             </div>
 
             <div class="td3-field">
-              <span class="td3-lbl">NOMBRES / GIVEN NAMES</span>
+              <span class="td3-lbl">Nombres / Given names</span>
               <span class="td3-val" id="dv-given">—</span>
             </div>
 
             <div class="td3-row2">
               <div class="td3-field">
-                <span class="td3-lbl">NACIONALIDAD / NATIONALITY</span>
+                <span class="td3-lbl">Nacionalidad / Nationality</span>
                 <span class="td3-val td3-val-sm" id="dv-nat">—</span>
               </div>
               <div class="td3-field">
-                <span class="td3-lbl">SEXO / SEX</span>
+                <span class="td3-lbl">Sexo / Sex</span>
                 <span class="td3-val td3-val-sm" id="dv-sex">—</span>
               </div>
             </div>
 
             <div class="td3-row2">
               <div class="td3-field">
-                <span class="td3-lbl">FECHA DE NACIMIENTO / DATE OF BIRTH</span>
+                <span class="td3-lbl">Fecha de nacimiento / Date of birth</span>
                 <span class="td3-val td3-val-mono" id="dv-dob">—</span>
               </div>
               <div class="td3-field">
-                <span class="td3-lbl">LUGAR DE NACIMIENTO / PLACE OF BIRTH</span>
+                <span class="td3-lbl">Lugar de nacimiento / Place of birth</span>
                 <span class="td3-val td3-val-sm" id="dv-pob">—</span>
               </div>
             </div>
 
             <div class="td3-row2">
               <div class="td3-field">
-                <span class="td3-lbl">FECHA DE EXPEDICIÓN / DATE OF ISSUE</span>
+                <span class="td3-lbl">Fecha de expedición / Date of issue</span>
                 <span class="td3-val td3-val-mono" id="dv-issued">—</span>
               </div>
               <div class="td3-field">
-                <span class="td3-lbl">FECHA DE CADUCIDAD / DATE OF EXPIRY</span>
+                <span class="td3-lbl">Fecha de caducidad / Date of expiry</span>
                 <span class="td3-val td3-val-mono td3-val-red" id="dv-expiry">—</span>
               </div>
             </div>
 
             <div class="td3-row2">
               <div class="td3-field">
-                <span class="td3-lbl">AUTORIDAD / AUTHORITY</span>
-                <span class="td3-val td3-val-sm" id="dv-authority">Ministerio de Relaciones Exteriores</span>
+                <span class="td3-lbl">No. de pasaporte / Passport no.</span>
+                <span class="td3-val-mono td3-passno" id="dv-passno-hdr">—</span>
               </div>
               <div class="td3-field">
-                <span class="td3-lbl">GRUPO SANGUÍNEO / BLOOD</span>
+                <span class="td3-lbl">Grupo sanguíneo / Blood group</span>
                 <span class="td3-val td3-val-mono td3-val-red" id="dv-blood">—</span>
               </div>
             </div>
 
-            <!-- Signature - bottom right, large, like real passports -->
-            <div class="td3-sig-row">
-              <div class="td3-field" style="flex:1">
-                <span class="td3-lbl">FIRMA AUTORIZADA / FIRMA DEL TITULAR</span>
-                <span class="td3-sig-val" id="dv-sig">—</span>
+            <div class="td3-row2">
+              <div class="td3-field">
+                <span class="td3-lbl">Autoridad / Authority</span>
+                <span class="td3-val td3-val-sm" id="dv-authority">Ministerio de Relaciones Exteriores</span>
+              </div>
+              <div class="td3-field">
+                <span class="td3-lbl">Tipo / Código · Type / Code</span>
+                <span class="td3-val-mono" style="display:inline-flex;gap:10px;">
+                  <span id="bio-doc-type">P</span><span id="bio-nat-code">ECU</span>
+                </span>
               </div>
             </div>
 
           </div><!-- /td3-fields-col -->
+
+          <!-- Bottom row: photo (lower-left, ~1/3 width) + signature (lower-right) -->
+          <div class="td3-bottom-row">
+            <div class="td3-photo-col">
+              <div class="td3-photo-frame" id="photo-box-click"
+                onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()"
+                title="Click para cambiar foto">
+                <div class="td3-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
+                <img id="photo-preview" alt="Foto titular"/>
+                <div class="td3-photo-hint">&#128247;</div>
+              </div>
+              <input type="file" id="inp-photo" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handlePhoto(this)"/>
+              <div id="photo-status" style="font-size:10px;font-family:var(--doc-ff);color:var(--doc-gray);min-height:12px;"></div>
+            </div>
+
+            <div class="td3-sig-row">
+              <span class="td3-lbl">Firma del titular / Holder's signature</span>
+              <span class="td3-sig-val" id="dv-sig">—</span>
+            </div>
+          </div>
+
         </div><!-- /td3-body -->
 
-        <!-- Security features strip -->
-        <div class="td3-security">
-          <span class="td3-sec-item">&#9679; UV</span>
-          <span class="td3-sec-item">&#9679; LASER</span>
-          <span class="td3-sec-item">&#9679; MICROTEXT</span>
-          <span class="td3-sec-item">&#9679; HOLOGRAM</span>
-          <span class="td3-sec-item">&#9679; RFID</span>
-        </div>
-
-        <!-- MRZ Zone - ICAO mandated, 2 lines x 44 chars, OCR-B style font -->
+        <!-- MRZ Zone — fictional example, explicitly marked as not valid
+             for travel (design spec requires this, and this is a personal
+             tracking app, not an official travel document). -->
         <div class="td3-mrz">
+          <div class="td3-mrz-disclaimer">Ejemplo ilustrativo — no válido para viajar / Illustrative example — not valid for travel</div>
           <div class="td3-mrz-line" id="mrz1">P&lt;ECU&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
           <div class="td3-mrz-line" id="mrz2">?????????&lt;0ECU0101011M3101010&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4</div>
         </div>
