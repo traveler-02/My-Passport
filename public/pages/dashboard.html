@@ -408,9 +408,6 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   width: 50%;
   min-width: 50%;
   box-sizing: border-box;
-  aspect-ratio: 142 / 100;
-  max-height: calc(100vh - 180px);
-  overflow-y: auto;
   border-right: none;
 }
 
@@ -520,7 +517,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .pp-left-sig-line {
   min-height: 34px;
-  border-bottom: 1px solid rgba(var(--art-dark-hex,#1a3a2a),0.4);
+  border-bottom: 1px solid rgba(var(--art-dark-hex,26,58,42),0.4);
   margin-bottom: 4px;
   font-family: var(--ff-sig);
   font-size: 20px;
@@ -558,278 +555,34 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   width: 50%;
   min-width: 50%;
   box-sizing: border-box;
-  aspect-ratio: 142 / 100;
-  max-height: calc(100vh - 180px);
-  overflow-y: auto;
   border-right: none;
 }
 /* Guilloche background on bio page */
+/* FIX-VISUAL-3: replaced two faint radial-gradient blobs with an actual
+   guilloché-style fine engraved-line texture (the wavy interference
+   pattern visible on every real passport background — see reference
+   photos), layered over a subtle wash tinted with the selected
+   country's accent color instead of a flat cream background. */
 .pp-right::before {
   content: '';
   position: absolute;
   inset: 0;
+  background-color: #f5f1e8;
   background-image:
-    radial-gradient(ellipse at 70% 40%, rgba(42,96,68,0.07) 0%, transparent 65%),
-    radial-gradient(ellipse at 30% 70%, rgba(42,96,68,0.05) 0%, transparent 50%);
+    radial-gradient(ellipse at 15% 10%, rgba(var(--art-dark-hex,26,58,42),0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(var(--art-dark-hex,26,58,42),0.04) 0%, transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cg fill='none' stroke='%23000' stroke-opacity='0.045' stroke-width='0.6'%3E%3Cpath d='M-8 8 Q8 -8 24 8 T56 8 T88 8'/%3E%3Cpath d='M-8 24 Q8 8 24 24 T56 24 T88 24'/%3E%3Cpath d='M-8 40 Q8 24 24 40 T56 40 T88 40'/%3E%3Cpath d='M-8 56 Q8 40 24 56 T56 56 T88 56'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: auto, auto, 64px 64px;
   z-index: 0;
 }
 .pp-right > * { position: relative; z-index: 1; }
 
-/* Country header bar */
-.pp-hdr {
-  background: var(--art-dark, #1a3a2a);
-  padding: 10px 16px 9px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-.pp-hdr-left {}
-.pp-hdr-type {
-  font-family: var(--ff-mono);
-  font-size: 7px;
-  color: rgba(201,168,76,0.6);
-  letter-spacing: 0.1em;
-  line-height: 1.3;
-}
-.pp-hdr-country {
-  font-family: var(--ff);
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--gold);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  line-height: 1.15;
-}
-.pp-hdr-right {
-  text-align: right;
-  flex-shrink: 0;
-}
-.pp-hdr-code {
-  font-family: var(--ff-mono);
-  font-size: 9px;
-  color: var(--gold2);
-  letter-spacing: 0.06em;
-  display: block;
-}
-.pp-hdr-pno-label {
-  font-size: 6px;
-  color: rgba(201,168,76,0.55);
-  font-family: var(--ff-mono);
-  letter-spacing: 0.08em;
-  display: block;
-  margin-top: 2px;
-}
-
-/* Main content: photo col + fields col */
-.pp-main {
-  display: flex;
-  flex: 1;
-  gap: 0;
-}
-
-/* Photo column */
-.pp-photo-col {
-  width: 145px;
-  flex-shrink: 0;
-  padding: 10px 8px 8px 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  border-right: 1px solid rgba(42,96,68,0.15);
-  background: rgba(42,96,68,0.03);
-}
-.pp-photo-frame {
-  width: 110px;
-  height: 140px;
-  border: 1.5px solid rgba(42,96,68,0.5);
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  background: linear-gradient(145deg,#c8d4d0,#b0c0bc);
-  flex-shrink: 0;
-}
-.pp-photo-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(0.75) contrast(1.1) sepia(0.1);
-  display: none;
-}
-.pp-photo-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34px;
-  color: rgba(42,96,68,0.25);
-}
-.pp-photo-hint {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(42,96,68,0.75);
-  font-size: 5.5px;
-  color: rgba(255,255,255,0.85);
-  text-align: center;
-  padding: 2px;
-  font-family: var(--ff-mono);
-  letter-spacing: 0.06em;
-}
-/* Seal overlaid on photo corner */
-.pp-photo-seal {
-  position: absolute;
-  bottom: -10px; right: -10px;
-  width: 52px; height: 52px;
-  opacity: 0.15;
-  color: var(--art-dark,#1a3a2a);
-}
-/* Ghost photo */
-.pp-photo-ghost {
-  width: 36px;
-  height: 46px;
-  border: 1px solid rgba(42,96,68,0.25);
-  overflow: hidden;
-  opacity: 0.22;
-  align-self: flex-end;
-}
-.pp-photo-ghost img { width:100%;height:100%;object-fit:cover;filter:grayscale(1); display:none; }
-/* Country badge */
-.pp-badge {
-  background: var(--art-dark,#1a3a2a);
-  color: var(--gold);
-  font-family: var(--ff-mono);
-  font-size: 8px;
-  font-weight: bold;
-  padding: 2px 7px;
-  letter-spacing: 0.1em;
-  align-self: flex-start;
-}
-.pp-biometric-icon {
-  font-size: 7px;
-  font-family: var(--ff-mono);
-  color: var(--art-dark,#1a3a2a);
-  opacity: 0.4;
-  letter-spacing: 0.04em;
-  text-align: center;
-}
-
-/* Fields column */
-.pp-fields {
-  flex: 1;
-  padding: 7px 10px 3px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-.pp-field { display: flex; flex-direction: column; gap: 1px; }
-.pp-field-lbl {
-  font-size: 7px;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--art-dark,#1a3a2a);
-  font-family: var(--ff-mono);
-  opacity: 0.65;
-  line-height: 1.2;
-}
-.pp-field-val {
-  font-family: var(--ff);
-  font-size: 13px;
-  font-weight: bold;
-  color: #080f08;
-  line-height: 1.15;
-  border-bottom: 0.5px solid rgba(42,96,68,0.18);
-  padding-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pp-field-val.mono { font-family: var(--ff-mono); font-size: 10.5px; }
-.pp-field-val.sm { font-size: 11px; }
-.pp-field-val.alert { color: #7a0e0e; }
-.pp-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.pp-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
-
-/* Signature on bio page */
-.pp-sig-row {
-  margin-top: 3px;
-  padding-top: 4px;
-  border-top: 0.5px solid rgba(42,96,68,0.18);
-}
-.pp-sig-val {
-  font-family: var(--ff-sig);
-  font-size: 26px;
-  color: rgba(10,20,60,0.6);
-  min-height: 24px;
-  border-bottom: 0.5px solid rgba(42,96,68,0.25);
-  padding-bottom: 1px;
-}
-
-/* Security features bar */
-.pp-security {
-  display: flex;
-  gap: 0;
-  padding: 3px 10px;
-  background: rgba(42,96,68,0.06);
-  border-top: 0.5px solid rgba(42,96,68,0.2);
-  border-bottom: 0.5px solid rgba(42,96,68,0.2);
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.pp-sec-item {
-  display: flex;
-  align-items: center;
-  gap: 2.5px;
-  font-size: 5.5px;
-  font-family: var(--ff-mono);
-  color: var(--art-dark,#1a3a2a);
-  opacity: 0.65;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.pp-sec-dot {
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--art-dark,#1a3a2a);
-  opacity: 0.55;
-  flex-shrink: 0;
-}
-
-/* MRZ strip */
-.pp-mrz {
-  background: rgba(42,96,68,0.1);
-  border-top: 1px solid rgba(42,96,68,0.3);
-  padding: 5px 10px 8px;
-}
-.pp-mrz-lbl {
-  font-size: 5px;
-  font-family: var(--ff-mono);
-  color: var(--art-dark,#1a3a2a);
-  opacity: 0.45;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 3px;
-}
-.pp-mrz-line {
-  font-family: var(--ff-mono);
-  font-size: 11px;
-  color: #080f08;
-  letter-spacing: 0.1em;
-  line-height: 1.85;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.pp-pgnum {
-  position: absolute;
-  bottom: 7px; right: 10px;
-  font-family: var(--ff-mono);
-  font-size: 8px;
-  color: var(--art-dark,#1a3a2a);
-  opacity: 0.35;
-}
-
+/* NOTE: the bio-data page layout below (.td3-*) is the only one actually
+   used in the HTML. An entire earlier design generation (.pp-hdr,
+   .pp-main, .pp-photo-col, .pp-fields, .pp-field*, .pp-sig-row,
+   .pp-security, .pp-mrz*, .pp-pgnum — ~250 lines) was fully superseded by
+   this one but never removed from the stylesheet; it has been deleted
+   here since it was dead weight with no effect on the rendered page. */
 
 /* ══════════════════════════════════════════════════════
    ICAO Doc 9303 TD3-COMPLIANT BIO PAGE
@@ -838,20 +591,33 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 ═══════════════════════════════════════════════════════ */
 
 /* Country header — centered bold like real passports */
+/* FIX-VISUAL-3: real passport bio-page headers (Colombia, USA, Ecuador —
+   see reference photos) are bold, large text sitting directly on the page
+   background — never a solid colored bar. Replaced the dark-green banner
+   with that treatment, using the country's own accent color for the text
+   so it visibly changes with the selected nationality. */
 .td3-hdr {
-  background: var(--art-dark, #1a3a2a);
-  padding: 6px 12px;
+  padding: 10px 16px 6px;
   text-align: center;
-  border-bottom: 2px solid rgba(201,168,76,0.4);
   flex-shrink: 0;
 }
 .td3-hdr-country {
   font-family: var(--ff);
-  font-size: 16px;
-  font-weight: bold;
-  color: var(--gold);
-  letter-spacing: 0.06em;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--art-dark, #1a3a2a);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+}
+.td3-hdr::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin: 5px auto 0;
+  background: var(--gold);
+  opacity: 0.6;
 }
 
 /* Body: photo col (30%) + fields col (70%) */
@@ -890,6 +656,19 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   cursor: pointer;
   background: linear-gradient(145deg,#c8d4d0,#b0c0bc);
   align-self: flex-start;
+}
+/* FIX-VISUAL-3: corner bracket accent seen on real passport photo boxes
+   (e.g. the reference Colombian passport's bottom-left "L" mark). */
+.td3-photo-frame::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 16px;
+  height: 16px;
+  border-left: 2.5px solid var(--art-dark, #1a3a2a);
+  border-bottom: 2.5px solid var(--art-dark, #1a3a2a);
+  pointer-events: none;
 }
 .td3-photo-frame img {
   width: 100%;
@@ -1148,7 +927,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
         <!-- Art background fills whole page -->
         <div class="pp-left-art" id="pp-left-art"></div>
         <!-- Ghosted duplicate photo watermark (real-passport security feature) -->
-        <img id="photo-ghost-img" alt="" style="display:none;position:absolute;top:8%;right:6%;width:22%;opacity:0.12;filter:grayscale(1);pointer-events:none;z-index:1;"/>
+        <img id="photo-ghost-img" alt="" style="display:none;position:absolute;top:6%;right:5%;width:26%;opacity:0.16;filter:grayscale(1) contrast(1.1);pointer-events:none;z-index:1;mix-blend-mode:multiply;"/>
         <!-- Country watermark text -->
         <div id="wm-country" style="position:absolute;bottom:6%;left:0;right:0;text-align:center;font-family:var(--ff);font-size:11px;letter-spacing:0.5em;color:rgba(201,168,76,0.18);pointer-events:none;z-index:1;"></div>
 
@@ -1826,6 +1605,19 @@ function updateArtPage(code) {
   const auth = COUNTRY_AUTHORITY[code] || "Ministry of Foreign Affairs";
   const rgb = acc.rgb || "42,96,68";
   const el = function(id){ return document.getElementById(id); };
+
+  // FIX-VISUAL-3: previously nothing ever set --art-dark / --art-dark-hex,
+  // so every CSS rule using them silently fell back to Ecuador's hardcoded
+  // green (#1a3a2a) — the whole bio-data page stayed the same color no
+  // matter which nationality was selected. Setting them here on the root
+  // makes the header, borders, signature line, etc. follow the selected
+  // country's real accent palette (already defined in COUNTRY_ACCENT).
+  const root = document.documentElement.style;
+  root.setProperty('--art-dark', acc.dark);
+  root.setProperty('--art-dark-hex', rgb);
+  root.setProperty('--art-main', acc.main);
+  root.setProperty('--art-light', acc.light);
+  root.setProperty('--art-line', acc.line);
 
   // Country name (both pages)
   if (el('art-country-name')) el('art-country-name').textContent = c.name.toUpperCase();
