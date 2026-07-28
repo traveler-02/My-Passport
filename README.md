@@ -94,14 +94,38 @@ firebase deploy --only firestore:rules
 
 ---
 
-## PASO 5 — Agregar variables de entorno en Netlify
+## PASO 4b — Alternativa: desplegar en Render
 
-1. En tu proyecto de Netlify → **Site configuration** → **Environment variables**
+**Importante:** Render NO ejecuta funciones estilo Netlify
+(`netlify/functions/`) — necesita un servidor normal escuchando en un
+puerto. Por eso este repo incluye `server.js` (Express), que sirve el
+sitio estático y expone el mismo endpoint `/.netlify/functions/analyze`
+con exactamente la misma lógica (compartida en `lib/analyzeCore.js`), así
+que el comportamiento es idéntico en ambas plataformas.
+
+1. Ve a https://dashboard.render.com → **"New +"** → **"Web Service"**
+2. Conecta tu repo de GitHub `my-passport`
+3. Configuración:
+   - **Runtime:** Node
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start` (ya configurado para correr `node server.js`)
+4. Agrega las mismas variables de entorno que en el Paso 5 (`ANTHROPIC_API_KEY`, `FIREBASE_PROJECT_ID`, `ALLOWED_ORIGINS` — usa tu dominio real de Render, ej. `https://tu-app.onrender.com`)
+5. **Create Web Service**
+
+Solo necesitas UNA de las dos plataformas (Netlify o Render), no ambas —
+usa la que ya tengas configurada como dominio en vivo.
+
+---
+
+## PASO 5 — Agregar variables de entorno
+
+1. **Netlify:** tu proyecto → **Site configuration** → **Environment variables**.
+   **Render:** tu servicio → **Environment**.
 2. Agrega estas variables:
    - **`ANTHROPIC_API_KEY`** (obligatoria) — tu API key de Anthropic (empieza con `sk-ant-...`)
    - **`FIREBASE_PROJECT_ID`** (recomendada) — el `projectId` de tu proyecto Firebase (el mismo valor que en `firebase-config.js`). El servidor lo usa para verificar que el token de sesión del usuario es legítimo antes de llamar a Claude.
-   - **`ALLOWED_ORIGINS`** (recomendada) — el/los dominios donde vive tu app, separados por coma, ej. `https://tu-app.netlify.app`. La función `analyze` solo acepta peticiones desde estos orígenes (más `localhost` para desarrollo).
-3. **Save** → luego clic en **Deploys** → **Trigger deploy**
+   - **`ALLOWED_ORIGINS`** (recomendada) — el/los dominios donde vive tu app, separados por coma, ej. `https://tu-app.netlify.app` o `https://tu-app.onrender.com`. El endpoint `analyze` solo acepta peticiones desde estos orígenes (más `localhost` para desarrollo).
+3. Guarda → vuelve a desplegar (**Trigger deploy** en Netlify, o Render lo hace automáticamente al guardar variables)
 
 ### ¿Dónde obtengo la API key de Anthropic?
 → https://console.anthropic.com → API Keys → Create Key
