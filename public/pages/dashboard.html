@@ -75,14 +75,13 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   border-radius:0;
   overflow:hidden;
   box-shadow:0 8px 40px rgba(0,0,0,0.6);
-  /* FIX-VISUAL-5: an open spread shows TWO pages side by side, so its
-     width:height ratio is double a single page's (2 x 88 : 125 = 1.408:1),
-     not a single page's 0.704:1. Using the single-page ratio here made
-     the whole spread render too narrow — each half-page then rendered at
-     roughly half a portrait page's width, which is why fields looked
-     cramped/clipped. */
-  width: min(100%, calc((100vh - 200px) * 1.408));
-  max-width: 100%;
+  /* FIX-VISUAL-7: interior pages are landscape now (see .page below), so
+     the book is bounded by a straightforward max-width and each page's
+     height is derived from its own aspect-ratio — no more deriving width
+     from viewport height, which was tuned for the old portrait pages and
+     kept needing re-tuning every time the page shape changed. */
+  width: 100%;
+  max-width: 1000px;
   margin:0 auto;
 }
 /* Cover maintains ICAO 9303 passport ratio: 125mm x 88mm = 1.42:1 */
@@ -183,14 +182,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   width: 50%;
   min-width: 50%;
   box-sizing: border-box;
-  /* FIX-VISUAL-1: was `height: calc(100vw * 0.704)` — 0.704 = 88/125 is the
-     TD3 WIDTH:HEIGHT ratio, so multiplying width by it produced a shorter
-     landscape box instead of a taller portrait one. aspect-ratio:88/125
-     (width/height) gives the correct portrait ICAO TD3 shape, matching
-     .cover below. The outer .pbook now bounds width using viewport height,
-     so no separate max-height clamp is needed here (that clamp was also
-     silently distorting the ratio whenever it kicked in). */
-  aspect-ratio: 88/125;
+  /* FIX-VISUAL-7: explicit user spec — the closed passport (.cover) stays
+     portrait, but every INTERIOR page is landscape (~4:3), like a real
+     open passport data page: photo + fields side by side, MRZ pinned
+     across the full width at the bottom. Previous rounds kept interior
+     pages portrait (technically closer to a single ICAO TD3 leaf), but
+     that's not what reads as "open passport" to the user — this is the
+     final, explicit shape they asked for. */
+  aspect-ratio: 4/3;
   overflow-y: auto;
 }
 .page-l{ border-right:none; flex:0 0 50%; width:50%; min-width:50%; box-sizing:border-box; }
@@ -209,9 +208,9 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
     width: 100% !important;
     min-width: 100% !important;
     flex: 0 0 auto !important;
-    aspect-ratio: 88/125;
+    aspect-ratio: 4/3;
   }
-  .pbook { width: 100% !important; max-width: 420px; }
+  .pbook { width: 100% !important; max-width: 460px; }
 }
 .page::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px),repeating-linear-gradient(90deg,transparent,transparent 23px,rgba(100,120,100,0.05) 23px,rgba(100,120,100,0.05) 24px);pointer-events:none;}
 .page>*{position:relative;z-index:1;}
@@ -417,53 +416,66 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   position: relative;
   z-index: 2;
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 20px;
+  overflow: hidden;
+}
+.pp-left-text-col {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 24px 24px 0;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
 }
 .pp-left-country {
   font-family: var(--doc-ff);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 400;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--doc-gray);
-  text-align: center;
-  margin-bottom: 4px;
+  text-align: left;
+  margin-bottom: 2px;
 }
 .pp-left-doctype {
   font-family: var(--doc-ff);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--doc-black);
-  text-align: center;
-  margin-bottom: 20px;
+  text-align: left;
+  margin-bottom: 8px;
 }
-/* Big central emblem — SVG rosette */
+/* Central emblem — SVG rosette, beside the text now (landscape layout) */
 .pp-left-emblem {
-  width: min(56%, 130px);
+  width: min(30%, 96px);
   height: auto;
+  flex-shrink: 0;
   opacity: 0.5;
   color: var(--doc-accent);
-  margin-bottom: 16px;
 }
 /* Decorative quote text */
 .pp-left-quote {
   font-family: var(--doc-ff);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 400;
   font-style: normal;
   color: var(--doc-gray);
   opacity: 1;
-  text-align: center;
-  line-height: 1.65;
-  padding: 0 16px;
-  max-height: 80px;
+  text-align: left;
+  line-height: 1.5;
+  padding: 0;
+  max-height: none;
   overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 /* Country-code band — de-emphasized, small tag instead of a giant
    watermark, consistent with the bio page's small nationality tag */
@@ -476,12 +488,12 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  min-height: 32px;
-  padding: 8px 0;
+  min-height: 0;
+  padding: 2px 0;
 }
 .pp-left-artband-text {
   font-family: var(--doc-ff-mrz);
-  font-size: 11px;
+  font-size: 9px;
   color: var(--doc-gray);
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -494,22 +506,23 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 .pp-left-sig {
   position: relative;
   z-index: 2;
-  padding: 12px 24px 24px;
+  padding: 8px 20px 12px;
   background: transparent;
   border-top: 1px solid var(--doc-accent);
+  flex-shrink: 0;
 }
 .pp-left-sig-line {
-  min-height: 34px;
+  min-height: 20px;
   border-bottom: 1px solid var(--doc-accent);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   font-family: var(--ff-sig);
-  font-size: 22px;
+  font-size: 16px;
   color: var(--doc-black);
-  padding-bottom: 2px;
+  padding-bottom: 1px;
 }
 .pp-left-sig-label {
   font-family: var(--doc-ff);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0.02em;
@@ -565,7 +578,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 ═══════════════════════════════════════════════════════ */
 
 .td3-hdr {
-  padding: 24px 24px 16px;
+  padding: 12px 20px 8px;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -577,7 +590,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   /* Repurposed as a small nationality tag next to the generic title,
      rather than a "Republic of X" hero heading — see FIX-VISUAL-4. */
   font-family: var(--doc-ff);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 400;
   color: var(--doc-gray);
   letter-spacing: 0.04em;
@@ -585,83 +598,38 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 .td3-hdr-title {
   font-family: var(--doc-ff);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--doc-black);
   letter-spacing: 0.02em;
 }
 
-/* Body: fields grid on top, photo+signature row at bottom */
+/* FIX-VISUAL-7: landscape body — photo fixed on the LEFT, data fields
+   fill the rest on the RIGHT (explicit user spec), MRZ pinned full-width
+   at the very bottom (separate block below, not part of this row). */
 .td3-body {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: stretch;
   flex: 1;
   min-height: 0;
-  /* FIX-VISUAL-5b: this was `overflow: hidden`, which silently clipped
-     fields that didn't fit the page's fixed height — several fields
-     (given names, nationality, sex, dates, passport no., blood group,
-     authority) were rendering but invisible below the fold. auto is a
-     safety net: with the tighter spacing below everything should fit
-     without scrolling in the normal case, but nothing is ever silently
-     lost if it doesn't. */
-  overflow-y: auto;
-  padding: 14px 24px 6px;
-  gap: 10px;
-}
-
-/* ── FIELDS GRID (full width, 8px-grid aligned) ── */
-.td3-fields-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px 24px;
-  min-width: 0;
-  flex-shrink: 0;
-}
-.td3-field { display: flex; flex-direction: column; gap: 2px; grid-column: span 1; }
-.td3-field:nth-child(1), .td3-field:nth-child(2) { grid-column: 1 / -1; } /* surname, given: full width */
-.td3-lbl {
-  font-family: var(--doc-ff);
-  font-size: 9.5px;
-  font-weight: 400;
-  color: var(--doc-gray);
-  letter-spacing: 0.02em;
-  text-transform: none;
-}
-.td3-val {
-  font-family: var(--doc-ff);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--doc-black);
-  letter-spacing: 0;
-  border-bottom: none;
-  padding-bottom: 2px;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-.td3-val-sm { font-size: 13px; }
-.td3-val-mono.td3-val { font-family: var(--doc-ff-mrz); font-size: 13px; font-weight: 600; }
-.td3-val-red { color: var(--doc-black); } /* de-emphasized — no alarm-red in this palette */
-.td3-row2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  padding: 10px 20px 8px;
   gap: 16px;
-  grid-column: 1 / -1;
 }
 
-/* ── BOTTOM ROW: photo (lower-left, ~1/3) + signature (lower-right) ── */
+/* ── PHOTO COLUMN (left) ── */
 .td3-photo-col {
-  width: 34%;
-  max-width: 200px;
+  width: 28%;
+  max-width: 130px;
   flex-shrink: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   border: none;
   background: none;
-  align-items: flex-start;
-  align-self: flex-end;
+  align-items: stretch;
 }
 .td3-doctype-row { display: none; } /* "PASAPORTE/PASSPORT" now lives in the header */
 .td3-field-mini { display: flex; flex-direction: column; align-items: flex-start; }
@@ -675,13 +643,9 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   overflow: hidden;
   cursor: pointer;
   background: var(--doc-bg-2);
-  align-self: stretch;
+  flex-shrink: 0;
 }
-.td3-photo-frame::after {
-  /* Spec calls for clean minimalism — the corner-bracket "authenticity"
-     accent from the realistic-passport iteration doesn't fit here. */
-  content: none;
-}
+.td3-photo-frame::after { content: none; }
 .td3-photo-frame img {
   width: 100%;
   height: 100%;
@@ -695,116 +659,128 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 38px;
+  font-size: 28px;
   color: var(--doc-accent);
 }
 .td3-photo-hint {
   position: absolute;
-  bottom: 6px; right: 6px;
-  font-size: 11px;
+  bottom: 4px; right: 4px;
+  font-size: 9px;
   opacity: 0.55;
 }
-.td3-type-code-row {
-  display: flex;
-  gap: 16px;
-  justify-content: flex-start;
-  width: 100%;
-}
-.td3-mini-field {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.td3-mini-field .td3-lbl { font-size: 9px; }
+.td3-type-code-row { display: flex; gap: 12px; justify-content: flex-start; width: 100%; }
+.td3-mini-field { display: flex; flex-direction: column; gap: 1px; }
+.td3-mini-field .td3-lbl { font-size: 8px; }
 .td3-val-mono {
   font-family: var(--doc-ff-mrz);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--doc-black);
 }
-.td3-passno {
-  font-size: 13px;
-  color: var(--doc-black);
-}
+.td3-passno { font-size: 12px; color: var(--doc-black); }
 
-.td3-bottom-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: auto;
-  padding-top: 8px;
-}
-
-/* Signature — bottom-right, stylized but clean */
+/* Signature — compact, under the photo */
 .td3-sig-row {
-  flex: 1;
-  margin-top: 0;
+  margin-top: auto;
   padding-top: 0;
   border-top: none;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
+  align-items: flex-start;
+  text-align: left;
 }
 .td3-sig-val {
   font-family: var(--ff-sig);
-  font-size: 22px;
+  font-size: 16px;
   color: var(--doc-black);
-  min-height: 30px;
+  min-height: 18px;
   width: 100%;
-  text-align: right;
+  text-align: left;
   border-bottom: 1px solid var(--doc-accent);
-  padding-bottom: 4px;
+  padding-bottom: 2px;
 }
+
+/* ── FIELDS GRID (right, dense 3-column — landscape width gives room to
+   spread fields out horizontally instead of stacking many rows) ── */
+.td3-fields-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px 14px;
+  min-width: 0;
+  flex: 1;
+  align-content: start;
+}
+.td3-field { display: flex; flex-direction: column; gap: 1px; grid-column: span 1; min-width: 0; }
+.td3-field:nth-child(1), .td3-field:nth-child(2) { grid-column: span 1; } /* surname/given: normal width now — landscape has room */
+.td3-lbl {
+  font-family: var(--doc-ff);
+  font-size: 8px;
+  font-weight: 400;
+  color: var(--doc-gray);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.td3-val {
+  font-family: var(--doc-ff);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--doc-black);
+  letter-spacing: 0;
+  border-bottom: none;
+  padding-bottom: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.td3-val-sm { font-size: 11px; }
+.td3-val-mono.td3-val { font-family: var(--doc-ff-mrz); font-size: 11px; font-weight: 600; }
+.td3-val-red { color: var(--doc-black); } /* de-emphasized — no alarm-red in this palette */
 
 /* Security strip — not used in the minimalist redesign (spec explicitly
    avoids imitating real security-document elements) */
 .td3-security { display: none; }
 .td3-sec-item { display: none; }
 
-/* MRZ — deliberately fictional and clearly labeled as such, per spec */
+/* MRZ — pinned full-width at the bottom, deliberately fictional and
+   clearly labeled as such, per spec */
 .td3-mrz {
   background: var(--doc-bg-2);
   border-top: 1px solid var(--doc-accent);
-  padding: 12px 24px 20px;
+  padding: 6px 20px 10px;
   flex-shrink: 0;
 }
 .td3-mrz-disclaimer {
   font-family: var(--doc-ff);
-  font-size: 9px;
+  font-size: 7.5px;
   font-weight: 400;
   color: var(--doc-gray);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 .td3-mrz-line {
   font-family: var(--doc-ff-mrz);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: var(--doc-black);
-  letter-spacing: 0.06em;
-  line-height: 1.7;
+  letter-spacing: 0.05em;
+  line-height: 1.45;
   white-space: nowrap;
   overflow: hidden;
 }
 
-/* FIX-VISUAL-1: same inversion as .page above — replaced the buggy
-   `height: calc(100vw * 0.704)` with the correct portrait aspect-ratio,
-   consistent with .cover's aspect-ratio:88/125. .pbook now bounds width
-   by available viewport height, so max-height is no longer needed. */
+/* FIX-VISUAL-7: interior pages are landscape (~4:3), not portrait — see
+   .page above for the full rationale. */
 .pp-right, .pp-left {
   border-radius: 6px;
   width: 100%;
-  aspect-ratio: 88/125;
+  aspect-ratio: 4/3;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
-/* FIX-VISUAL-4: bio-data page per exact spec — 10px radius, 1px border,
-   very soft shadow, base 1250x880 proportions (already correct at 88/125
-   via the shared rule above). */
+/* FIX-VISUAL-4: bio-data page styling — 10px radius, 1px border, very
+   soft shadow. */
 .pp-right {
   border-radius: 10px;
   border: 1px solid var(--doc-accent);
@@ -922,9 +898,6 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 
         <!-- Illustration area -->
         <div class="pp-left-illustration">
-          <div class="pp-left-country" id="art-country-name">REP&#218;BLICA DEL ECUADOR</div>
-          <div class="pp-left-doctype" id="art-passport-title">PASAPORTE &middot; PASSPORT</div>
-
           <!-- Rosette emblem SVG -->
           <svg class="pp-left-emblem" id="art-emblem" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="1.5"/>
@@ -943,7 +916,11 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
             <line x1="78" y1="100" x2="122" y2="100" stroke="currentColor" stroke-width="0.7"/>
           </svg>
 
-          <div class="pp-left-quote" id="art-quote">La libertad de los pueblos no se mendiga: se conquista con el filo de la espada.</div>
+          <div class="pp-left-text-col">
+            <div class="pp-left-country" id="art-country-name">REP&#218;BLICA DEL ECUADOR</div>
+            <div class="pp-left-doctype" id="art-passport-title">PASAPORTE &middot; PASSPORT</div>
+            <div class="pp-left-quote" id="art-quote">La libertad de los pueblos no se mendiga: se conquista con el filo de la espada.</div>
+          </div>
         </div>
 
         <!-- Colored artistic band (the "illustration" zone) -->
@@ -970,10 +947,27 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
           <span class="td3-hdr-country" id="bio-country-name">República del Ecuador</span>
         </div>
 
-        <!-- Main data zone -->
+        <!-- Main data zone: photo+signature (left) then fields (right) -->
         <div class="td3-body">
 
-          <!-- Fields grid: full width, 2 columns, 8px-grid aligned -->
+          <div class="td3-photo-col">
+            <div class="td3-photo-frame" id="photo-box-click"
+              onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()"
+              title="Click para cambiar foto">
+              <div class="td3-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
+              <img id="photo-preview" alt="Foto titular"/>
+              <div class="td3-photo-hint">&#128247;</div>
+            </div>
+            <input type="file" id="inp-photo" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handlePhoto(this)"/>
+            <div id="photo-status" style="font-size:9px;font-family:var(--doc-ff);color:var(--doc-gray);min-height:11px;"></div>
+
+            <div class="td3-sig-row">
+              <span class="td3-lbl">Firma / Signature</span>
+              <span class="td3-sig-val" id="dv-sig">—</span>
+            </div>
+          </div>
+
+          <!-- Fields grid: dense 3-column, landscape-width aligned -->
           <div class="td3-fields-col">
 
             <div class="td3-field">
@@ -986,84 +980,59 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
               <span class="td3-val" id="dv-given">—</span>
             </div>
 
-            <div class="td3-row2">
-              <div class="td3-field">
-                <span class="td3-lbl">Nacionalidad / Nationality</span>
-                <span class="td3-val td3-val-sm" id="dv-nat">—</span>
-              </div>
-              <div class="td3-field">
-                <span class="td3-lbl">Sexo / Sex</span>
-                <span class="td3-val td3-val-sm" id="dv-sex">—</span>
-              </div>
+            <div class="td3-field">
+              <span class="td3-lbl">Nacionalidad / Nationality</span>
+              <span class="td3-val td3-val-sm" id="dv-nat">—</span>
             </div>
 
-            <div class="td3-row2">
-              <div class="td3-field">
-                <span class="td3-lbl">Fecha de nacimiento / Date of birth</span>
-                <span class="td3-val td3-val-mono" id="dv-dob">—</span>
-              </div>
-              <div class="td3-field">
-                <span class="td3-lbl">Lugar de nacimiento / Place of birth</span>
-                <span class="td3-val td3-val-sm" id="dv-pob">—</span>
-              </div>
+            <div class="td3-field">
+              <span class="td3-lbl">Sexo / Sex</span>
+              <span class="td3-val td3-val-sm" id="dv-sex">—</span>
             </div>
 
-            <div class="td3-row2">
-              <div class="td3-field">
-                <span class="td3-lbl">Fecha de expedición / Date of issue</span>
-                <span class="td3-val td3-val-mono" id="dv-issued">—</span>
-              </div>
-              <div class="td3-field">
-                <span class="td3-lbl">Fecha de caducidad / Date of expiry</span>
-                <span class="td3-val td3-val-mono td3-val-red" id="dv-expiry">—</span>
-              </div>
+            <div class="td3-field">
+              <span class="td3-lbl">Fecha de nacimiento / Date of birth</span>
+              <span class="td3-val td3-val-mono" id="dv-dob">—</span>
             </div>
 
-            <div class="td3-row2">
-              <div class="td3-field">
-                <span class="td3-lbl">No. de pasaporte / Passport no.</span>
-                <span class="td3-val-mono td3-passno" id="dv-passno-hdr">—</span>
-              </div>
-              <div class="td3-field">
-                <span class="td3-lbl">Grupo sanguíneo / Blood group</span>
-                <span class="td3-val td3-val-mono td3-val-red" id="dv-blood">—</span>
-              </div>
+            <div class="td3-field">
+              <span class="td3-lbl">Lugar de nacimiento / Place of birth</span>
+              <span class="td3-val td3-val-sm" id="dv-pob">—</span>
             </div>
 
-            <div class="td3-row2">
-              <div class="td3-field">
-                <span class="td3-lbl">Autoridad / Authority</span>
-                <span class="td3-val td3-val-sm" id="dv-authority">Ministerio de Relaciones Exteriores</span>
-              </div>
-              <div class="td3-field">
-                <span class="td3-lbl">Tipo / Código · Type / Code</span>
-                <span class="td3-val-mono" style="display:inline-flex;gap:10px;">
-                  <span id="bio-doc-type">P</span><span id="bio-nat-code">ECU</span>
-                </span>
-              </div>
+            <div class="td3-field">
+              <span class="td3-lbl">Fecha de expedición / Date of issue</span>
+              <span class="td3-val td3-val-mono" id="dv-issued">—</span>
+            </div>
+
+            <div class="td3-field">
+              <span class="td3-lbl">Fecha de caducidad / Date of expiry</span>
+              <span class="td3-val td3-val-mono td3-val-red" id="dv-expiry">—</span>
+            </div>
+
+            <div class="td3-field">
+              <span class="td3-lbl">No. de pasaporte / Passport no.</span>
+              <span class="td3-val-mono td3-passno" id="dv-passno-hdr">—</span>
+            </div>
+
+            <div class="td3-field">
+              <span class="td3-lbl">Grupo sanguíneo / Blood group</span>
+              <span class="td3-val td3-val-mono td3-val-red" id="dv-blood">—</span>
+            </div>
+
+            <div class="td3-field">
+              <span class="td3-lbl">Autoridad / Authority</span>
+              <span class="td3-val td3-val-sm" id="dv-authority">Ministerio de Relaciones Exteriores</span>
+            </div>
+
+            <div class="td3-field">
+              <span class="td3-lbl">Tipo / Código · Type / Code</span>
+              <span class="td3-val-mono" style="display:inline-flex;gap:10px;">
+                <span id="bio-doc-type">P</span><span id="bio-nat-code">ECU</span>
+              </span>
             </div>
 
           </div><!-- /td3-fields-col -->
-
-          <!-- Bottom row: photo (lower-left, ~1/3 width) + signature (lower-right) -->
-          <div class="td3-bottom-row">
-            <div class="td3-photo-col">
-              <div class="td3-photo-frame" id="photo-box-click"
-                onclick="document.getElementById('inp-photo')&&document.getElementById('inp-photo').click()"
-                title="Click para cambiar foto">
-                <div class="td3-photo-placeholder" id="photo-icon-placeholder">&#128100;</div>
-                <img id="photo-preview" alt="Foto titular"/>
-                <div class="td3-photo-hint">&#128247;</div>
-              </div>
-              <input type="file" id="inp-photo" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handlePhoto(this)"/>
-              <div id="photo-status" style="font-size:10px;font-family:var(--doc-ff);color:var(--doc-gray);min-height:12px;"></div>
-            </div>
-
-            <div class="td3-sig-row">
-              <span class="td3-lbl">Firma del titular / Holder's signature</span>
-              <span class="td3-sig-val" id="dv-sig">—</span>
-            </div>
-          </div>
 
         </div><!-- /td3-body -->
 
