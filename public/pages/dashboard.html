@@ -390,25 +390,27 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 }
 
 /* Country-specific artistic background */
+/* FIX-VISUAL-6: unify the left page with the same minimalist blue/gray
+   language as the redesigned bio-data page (doc-* tokens, Inter) — it had
+   been left on the old gold/serif "vintage passport" theme, so the two
+   facing pages looked like two different documents stitched together. */
+.pp-left {
+  border-radius: 10px;
+  border: 1px solid var(--doc-accent);
+  box-shadow: 0 2px 12px rgba(28,28,28,0.08);
+}
 .pp-left-art {
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.18;
-  background-size: cover;
-  background-position: center;
-  transition: background 0.5s ease, opacity 0.3s ease;
-}
-/* Guilloche overlay */
-.pp-left-art::after {
-  content: '';
-  position: absolute;
-  inset: 0;
+  background-color: var(--doc-bg-1);
   background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 14px, rgba(42,96,68,0.04) 14px, rgba(42,96,68,0.04) 15px),
-    repeating-linear-gradient(90deg, transparent, transparent 14px, rgba(42,96,68,0.04) 14px, rgba(42,96,68,0.04) 15px);
-  z-index: 1;
+    linear-gradient(135deg, var(--doc-bg-2) 0%, var(--doc-bg-1) 55%, var(--doc-bg-1) 100%),
+    radial-gradient(circle, rgba(63,102,138,0.12) 1px, transparent 1.2px);
+  background-size: auto, 24px 24px;
+  transition: opacity 0.3s ease;
 }
+.pp-left-art::after { content: none; }
 
 /* Central illustration area */
 .pp-left-illustration {
@@ -419,106 +421,109 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 16px 14px 0;
+  padding: 24px 24px 0;
 }
 .pp-left-country {
-  font-family: var(--ff);
-  font-size: 8px;
-  letter-spacing: 0.25em;
+  font-family: var(--doc-ff);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--art-dark, #1a3a2a);
+  color: var(--doc-gray);
   text-align: center;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 .pp-left-doctype {
-  font-family: var(--ff);
-  font-size: 16px;
-  font-weight: bold;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--art-dark, #1a3a2a);
+  font-family: var(--doc-ff);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--doc-black);
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 /* Big central emblem — SVG rosette */
 .pp-left-emblem {
-  width: min(70%, 160px);
+  width: min(56%, 130px);
   height: auto;
-  opacity: 0.12;
-  color: var(--art-dark, #1a3a2a);
-  margin-bottom: 10px;
+  opacity: 0.5;
+  color: var(--doc-accent);
+  margin-bottom: 16px;
 }
 /* Decorative quote text */
 .pp-left-quote {
-  font-family: var(--ff);
-  font-size: 9.5px;
-  font-style: italic;
-  color: var(--art-dark, #1a3a2a);
-  opacity: 0.3;
+  font-family: var(--doc-ff);
+  font-size: 10px;
+  font-weight: 400;
+  font-style: normal;
+  color: var(--doc-gray);
+  opacity: 1;
   text-align: center;
   line-height: 1.65;
-  padding: 0 12px;
+  padding: 0 16px;
   max-height: 80px;
   overflow: hidden;
 }
-/* Colored artistic band (like the eagle/flag area in US passport) */
+/* Country-code band — de-emphasized, small tag instead of a giant
+   watermark, consistent with the bio page's small nationality tag */
 .pp-left-artband {
   position: relative;
   z-index: 2;
-  flex: 1;
+  flex: 0 0 auto;
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  min-height: 80px;
+  min-height: 32px;
+  padding: 8px 0;
 }
 .pp-left-artband-text {
-  font-family: var(--ff);
-  font-size: 32px;
-  color: rgba(42,96,68,0.08);
-  font-weight: bold;
-  letter-spacing: 0.05em;
+  font-family: var(--doc-ff-mrz);
+  font-size: 11px;
+  color: var(--doc-gray);
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   text-align: center;
   line-height: 1;
   user-select: none;
-  word-break: break-all;
 }
 /* Signature area at bottom */
 .pp-left-sig {
   position: relative;
   z-index: 2;
-  padding: 8px 16px 12px;
-  background: rgba(42,96,68,0.04);
-  border-top: 1px solid rgba(42,96,68,0.2);
+  padding: 12px 24px 24px;
+  background: transparent;
+  border-top: 1px solid var(--doc-accent);
 }
 .pp-left-sig-line {
   min-height: 34px;
-  border-bottom: 1px solid rgba(var(--art-dark-hex,26,58,42),0.4);
+  border-bottom: 1px solid var(--doc-accent);
   margin-bottom: 4px;
   font-family: var(--ff-sig);
-  font-size: 20px;
-  color: rgba(10,20,60,0.6);
+  font-size: 22px;
+  color: var(--doc-black);
   padding-bottom: 2px;
 }
 .pp-left-sig-label {
-  font-family: var(--ff-mono);
-  font-size: 5.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--art-dark, #1a3a2a);
-  opacity: 0.55;
+  font-family: var(--doc-ff);
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--doc-gray);
   text-align: center;
 }
 .pp-left-pgnum {
   position: absolute;
   bottom: 8px;
   right: 12px;
-  font-family: var(--ff-mono);
-  font-size: 8px;
-  color: var(--art-dark,#1a3a2a);
-  opacity: 0.4;
+  font-family: var(--doc-ff-mrz);
+  font-size: 9px;
+  color: var(--doc-gray);
+  opacity: 0.7;
   letter-spacing: 0.06em;
 }
 
@@ -1550,15 +1555,21 @@ function renderArtPage(code) {
   var acc = COUNTRY_ACCENT[code] || COUNTRY_ACCENT.ECU;
   var rgb = acc.rgb || "42,96,68";
 
+  // FIX-VISUAL-6: this used to set art.bg (a vivid per-country gold/green
+  // gradient) as an inline style, which always wins over the CSS default
+  // and made the left page look like a completely different, more
+  // "vintage" document than the redesigned right page. The CSS default
+  // (soft blue/gray, matching the bio page) is left alone now so both
+  // pages read as one consistent document regardless of country.
   var artBg = document.getElementById("pp-left-art");
   if (artBg) {
-    artBg.style.background = art.bg;
-    artBg.style.backgroundSize = "cover";
+    artBg.style.background = "";
+    artBg.style.backgroundSize = "";
   }
 
   var emblemEl = document.getElementById("art-emblem");
   if (emblemEl) {
-    emblemEl.style.color = art.ec || acc.main;
+    emblemEl.style.color = "";
     var svg = COUNTRY_EMBLEMS[code] || COUNTRY_EMBLEMS.ECU;
     emblemEl.innerHTML = svg;
   }
