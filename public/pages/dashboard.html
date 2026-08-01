@@ -337,6 +337,31 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 .dis{display:flex;gap:7px;align-items:flex-start;padding:7px 9px;background:rgba(122,88,16,0.05);border:1px solid rgba(122,88,16,0.14);border-radius:2px;margin-top:9px;}
 .dis p{font-size:9px;color:#5a4010;font-family:var(--ff);line-height:1.45;font-style:italic;}
 .err-msg{color:var(--danger);font-size:11px;font-family:var(--ff);padding:1rem;}
+
+/* ── Phase 1 additions: packing checklist, expenses, world map ── */
+.pack-item{align-items:center;}
+.pack-check{width:15px;height:15px;flex-shrink:0;accent-color:var(--gold3);cursor:pointer;margin-top:1px;}
+.prog-bar{width:100%;height:6px;background:rgba(100,130,100,0.14);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold));border-radius:3px;transition:width 0.3s;}
+.exp-entry .te-dest{font-family:var(--ff-mono);}
+.exp-total-box{display:flex;gap:18px;padding:8px 0 10px;margin-bottom:6px;border-bottom:1px solid rgba(100,130,100,0.14);}
+.exp-cat-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.exp-cat-label{font-size:8px;font-family:var(--ff-mono);color:#3a5040;white-space:nowrap;width:74px;flex-shrink:0;text-transform:uppercase;letter-spacing:0.03em;}
+.exp-cat-bar{flex:1;height:6px;background:rgba(100,130,100,0.12);border-radius:3px;overflow:hidden;}
+.exp-cat-fill{height:100%;background:linear-gradient(90deg,#6b8a5a,#8ba872);border-radius:3px;}
+.exp-cat-pct{font-size:7.5px;font-family:var(--ff-mono);color:#3a5040;width:28px;text-align:right;flex-shrink:0;}
+.map-stat-row{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid rgba(100,130,100,0.08);}
+.map-stat-row:last-of-type{border-bottom:none;}
+.map-stat-num{font-size:17px;font-weight:bold;font-family:var(--ff);color:#152a1e;min-width:44px;}
+.map-stat-lbl{font-size:8px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.06em;}
+.continent-row{font-size:9.5px;font-family:var(--ff);color:#3a5040;padding:2px 0;}
+.continent-row.visited{color:#152a1e;font-weight:600;}
+.country-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.country-chip{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:2px;font-size:9px;font-family:var(--ff);border:1px solid rgba(100,130,100,0.14);}
+.country-chip.visited{background:rgba(26,58,42,0.08);border-color:rgba(26,58,42,0.3);color:#152a1e;font-weight:600;}
+.country-chip.gray{background:rgba(120,120,120,0.06);color:#8a9a80;filter:grayscale(1);opacity:0.72;}
+.cc-flag{font-size:13px;flex-shrink:0;}
+.cc-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 /* Swipe hint with fade */
 #swipe-hint{
   display:block;
@@ -877,6 +902,9 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
         <div class="tab" onclick="showTab(this,'visas')" data-t="tab_visas">Visados</div>
         <div class="tab" onclick="showTab(this,'trips')" data-t="tab_trips">Viajes</div>
         <div class="tab" onclick="showTab(this,'cl')" data-t="tab_cl">Checklist</div>
+        <div class="tab" onclick="showTab(this,'pack')" data-t="tab_pack">Empaque</div>
+        <div class="tab" onclick="showTab(this,'exp')" data-t="tab_exp">Gastos</div>
+        <div class="tab" onclick="showTab(this,'map')" data-t="tab_map">Mapa</div>
         <div class="tab" onclick="showTab(this,'obs')" data-t="tab_obs">Notas</div>
       </div>
 
@@ -1185,7 +1213,115 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
   </div>
 </div>
 
-      <!-- OBSERVATIONS P9-10 -->
+      <!-- PACKING CHECKLIST P9-10 -->
+      <div class="spread" id="spread-pack" style="display:none">
+  <div class="page-nav page-nav-left" onclick="showPage('pack', 0)">&#8592;</div>
+  <div class="page-viewer" id="viewer-pack">
+
+        <div class="page page-l">
+          <div class="wm">EMPAQUE</div>
+          <div class="ph"><span class="ph-title" data-t="ph_pack">Checklist de empaque</span><span>&#127755;</span></div>
+          <div id="pack-list"><p style="font-size:10px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="pack_loading">Cargando...</p></div>
+          <span class="pg-num">9</span>
+        </div>
+        <div class="page page-r">
+          <div class="wm">EMPAQUE</div>
+          <div class="ph"><span class="ph-title" data-t="ph_pack_add">Agregar elemento</span><span>&#10133;</span></div>
+          <div class="add-form">
+            <div class="af-title" data-t="new_pack_item">&#10133; Nuevo elemento</div>
+            <div class="ff"><label data-t="lbl_item">Elemento</label><input type="text" id="pack-new-text" maxlength="60"/></div>
+            <button class="btn-s" onclick="addPackItem()" data-t="btn_add_item">&#10133; Agregar a la lista</button>
+          </div>
+          <div id="pack-progress" style="margin-top:12px;"></div>
+          <button class="btn-s" style="background:linear-gradient(135deg,#8b3a1a,#6b2a10);margin-top:8px;" onclick="resetPacking()" data-t="btn_reset_pack">&#8635; Reiniciar checklist</button>
+          <span class="pg-num">10</span>
+        </div>
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage('pack', 1)">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-pack-0" onclick="showPage('pack', 0)"></div>
+    <div class="page-dot" id="dot-pack-1" onclick="showPage('pack', 1)"></div>
+  </div>
+</div>
+
+      <!-- EXPENSES P11-12 -->
+      <div class="spread" id="spread-exp" style="display:none">
+  <div class="page-nav page-nav-left" onclick="showPage('exp', 0)">&#8592;</div>
+  <div class="page-viewer" id="viewer-exp">
+
+        <div class="page page-l">
+          <div class="wm">GASTOS</div>
+          <div class="ph"><span class="ph-title" data-t="ph_exp">Registro de gastos</span><span>&#128176;</span></div>
+          <div id="exp-totals"></div>
+          <div id="exp-list"><p style="font-size:10px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="no_exp">Sin gastos registrados.</p></div>
+          <span class="pg-num">11</span>
+        </div>
+        <div class="page page-r">
+          <div class="wm">GASTOS</div>
+          <div class="ph"><span class="ph-title" data-t="ph_new_exp">Registrar gasto</span><span>&#128181;</span></div>
+          <div class="add-form">
+            <div class="af-title" data-t="new_exp">&#128176; Nuevo gasto</div>
+            <div class="ff"><label data-t="lbl_cat">Categoria</label>
+              <select id="e-cat">
+                <option value="food" data-t="cat_food">Comida</option>
+                <option value="hotel" data-t="cat_hotel">Hotel</option>
+                <option value="transport" data-t="cat_transport">Transporte</option>
+                <option value="shopping" data-t="cat_shopping">Compras</option>
+                <option value="activities" data-t="cat_activities">Actividades</option>
+              </select>
+            </div>
+            <div class="fg2">
+              <div class="ff"><label data-t="lbl_amount">Monto</label><input type="number" id="e-amount" min="0" step="0.01" placeholder="0.00"/></div>
+              <div class="ff"><label data-t="lbl_currency">Moneda</label>
+                <select id="e-currency">
+                  <option>USD</option><option>EUR</option><option>GBP</option><option>JPY</option>
+                  <option>MXN</option><option>COP</option><option>PEN</option><option>ARS</option>
+                  <option>BRL</option><option>CLP</option>
+                </select>
+              </div>
+            </div>
+            <div class="ff"><label data-t="lbl_date">Fecha</label><input type="date" id="e-date"/></div>
+            <button class="btn-s" onclick="addExpense()" data-t="btn_add_exp">&#8853; Registrar gasto</button>
+          </div>
+          <span class="pg-num">12</span>
+        </div>
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage('exp', 1)">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-exp-0" onclick="showPage('exp', 0)"></div>
+    <div class="page-dot" id="dot-exp-1" onclick="showPage('exp', 1)"></div>
+  </div>
+</div>
+
+      <!-- WORLD MAP P13-14 -->
+      <div class="spread" id="spread-map" style="display:none">
+  <div class="page-nav page-nav-left" onclick="showPage('map', 0)">&#8592;</div>
+  <div class="page-viewer" id="viewer-map">
+
+        <div class="page page-l">
+          <div class="wm">MUNDO</div>
+          <div class="ph"><span class="ph-title" data-t="ph_map">Mapa mundial</span><span>&#127760;</span></div>
+          <div id="map-stats"></div>
+          <span class="pg-num">13</span>
+        </div>
+        <div class="page page-r">
+          <div class="wm">MUNDO</div>
+          <div class="ph"><span class="ph-title" data-t="ph_map_countries">Paises recorridos</span><span>&#128506;</span></div>
+          <div id="map-countries"></div>
+          <span class="pg-num">14</span>
+        </div>
+      
+  </div>
+  <div class="page-nav page-nav-right" onclick="showPage('map', 1)">&#8594;</div>
+  <div class="page-indicator">
+    <div class="page-dot active" id="dot-map-0" onclick="showPage('map', 0)"></div>
+    <div class="page-dot" id="dot-map-1" onclick="showPage('map', 1)"></div>
+  </div>
+</div>
+
+      <!-- OBSERVATIONS P15-16 -->
       <div class="spread" id="spread-obs" style="display:none">
   <div class="page-nav page-nav-left" onclick="showPage('obs', 0)">&#8592;</div>
   <div class="page-viewer" id="viewer-obs">
@@ -1197,7 +1333,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
           <div class="obs-block"><div class="obs-lbl" data-t="dl_meds">Medicamentos</div><span id="obs-meds-text">Sin medicamentos registrados.</span></div>
           <div class="obs-block"><div class="obs-lbl">Fuentes &#183; Sources</div>IATA Timatic &#183; Sherpa &#183; iVisa &#183; VisaHQ &#183; CDC &#183; INCB &#183; WTO &#183; Embajadas</div>
           <div class="note-line"></div><div class="note-line"></div><div class="note-line"></div>
-          <span class="pg-num">9</span>
+          <span class="pg-num">15</span>
         </div>
         <div class="page page-r">
           <div class="wm">NOTAS</div>
@@ -1209,7 +1345,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
             <div style="font-size:7px;font-family:var(--ff-mono);color:#8a9a80;margin-top:6px;">Powered by Anthropic Claude AI</div>
           </div>
           <div class="note-line"></div><div class="note-line"></div><div class="note-line"></div><div class="note-line"></div>
-          <span class="pg-num">10</span>
+          <span class="pg-num">16</span>
         </div>
       
   </div>
@@ -1316,7 +1452,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:14px;padding-top:0;}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 // FIX-MAJ-4: single source of truth for Firebase config is
 // public/firebase-config.js — no hardcoded fallback here, so the key
@@ -1336,7 +1472,7 @@ const _ng = document.getElementById("net-guard");
 if (_ng) _ng.classList.remove("show");
 
 // FIX 16: expose to window synchronously before any async
-window._fbReady = { auth, db, doc, getDoc, setDoc, collection, addDoc, getDocs, fbSignOut };
+window._fbReady = { auth, db, doc, getDoc, setDoc, collection, addDoc, getDocs, deleteDoc, fbSignOut };
 // FIX-CRIT-3: exposed so client calls to /.netlify/functions/analyze can
 // prove who they are — the endpoint now requires and verifies this token.
 window._getIdToken = () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.reject(new Error("Not signed in"));
@@ -1401,16 +1537,16 @@ setTimeout(function() {
 // TRANSLATIONS — FIX 4: all 10 languages
 // ─────────────────────────────────────────
 const T = {
-  es:{btn_so:"Salir",cover_tagline:"Autoridad Internacional de Viajes",cover_sub:"Cumplimiento Legal de Viaje",cover_hint:"Toca para abrir",lbl_country:"Pais /",close_btn:"Cerrar",tab_bio:"Datos",tab_visas:"Visados",tab_trips:"Viajes",tab_cl:"Checklist",tab_obs:"Notas",ph_bio:"Travel Document",ph_notes:"Anotaciones",ph_visas:"Visados y Sellos",ph_trip_stamps:"Sellos de viajes",ph_trips:"Itinerario",ph_new_trip:"Nuevo viaje",ph_cl:"Checklist legal",ph_cl_result:"Requisitos y alertas",ph_obs:"Notas y observaciones",dl_surname:"Apellidos",dl_given:"Nombres",dl_nat:"Nacionalidad",dl_sex:"Sexo",dl_dob:"Nacimiento",dl_pob:"Lugar de nac.",dl_passno:"N. Pasaporte",dl_issued:"Expedicion",dl_expiry:"Caducidad",dl_sig:"Titular",dl_blood:"Sangre",dl_vax:"Vacunas",dl_meds:"Medicamentos",dl_res:"Residencias/Visas",dl_alert_email:"Email alertas",edit_profile:"Datos del pasaporte",btn_save:"Guardar datos",dec_stamps:"Sellos decorativos",no_trip_stamps:"Agrega viajes para ver tus sellos.",no_trips:"Sin viajes registrados.",new_trip:"Nuevo viaje",lbl_dest:"Destino",lbl_layover:"Escala en",lbl_depart:"Salida",lbl_return:"Regreso",lbl_purpose:"Motivo",opt_tourism:"Turismo",opt_business:"Negocios",opt_study:"Estudio",opt_work:"Trabajo",opt_transit:"Solo transito",btn_stamp_trip:"Estampar viaje",select_trip_cl:"Selecciona un viaje:",cl_empty:"La checklist aparecera aqui.",panel_trips:"Mis viajes",add_trip:"+ Agregar viaje",no_trips_main:"Abre el pasaporte y ve a Viajes.",add_first:"Agregar primer viaje",panel_cl:"Checklist legal",btn_generate:"Generar",no_cl_main:"Selecciona un viaje y pulsa Generar.",select_for_cl:"Seleccionar viaje",loading_cl:"Consultando fuentes oficiales...",risk_ok:"Sin problemas",risk_caution:"Precaucion",risk_danger:"Alto riesgo",disclaimer:"Informacion orientativa. Verifica con la embajada oficial."},
-  en:{btn_so:"Sign out",cover_tagline:"International Travel Authority",cover_sub:"Digital Travel Compliance",cover_hint:"Tap to open",lbl_country:"Country /",close_btn:"Close",tab_bio:"Data",tab_visas:"Visas",tab_trips:"Trips",tab_cl:"Checklist",tab_obs:"Notes",ph_bio:"Travel Document",ph_notes:"Observations",ph_visas:"Visas & Stamps",ph_trip_stamps:"Trip stamps",ph_trips:"Itinerary",ph_new_trip:"New trip",ph_cl:"Legal checklist",ph_cl_result:"Requirements & alerts",ph_obs:"Notes",dl_surname:"Surname",dl_given:"Given names",dl_nat:"Nationality",dl_sex:"Sex",dl_dob:"Date of birth",dl_pob:"Place of birth",dl_passno:"Passport No.",dl_issued:"Issue date",dl_expiry:"Expiry",dl_sig:"Holder",dl_blood:"Blood type",dl_vax:"Vaccines",dl_meds:"Medications",dl_res:"Residences/Visas",dl_alert_email:"Alert email",edit_profile:"Passport data",btn_save:"Save data",dec_stamps:"Decorative stamps",no_trip_stamps:"Add trips to see your stamps.",no_trips:"No trips registered.",new_trip:"New trip",lbl_dest:"Destination",lbl_layover:"Layover in",lbl_depart:"Departure",lbl_return:"Return",lbl_purpose:"Purpose",opt_tourism:"Tourism",opt_business:"Business",opt_study:"Study",opt_work:"Work",opt_transit:"Transit only",btn_stamp_trip:"Stamp trip",select_trip_cl:"Select a trip:",cl_empty:"Checklist will appear here.",panel_trips:"My trips",add_trip:"+ Add trip",no_trips_main:"Open the passport and go to Trips.",add_first:"Add first trip",panel_cl:"Legal checklist",btn_generate:"Generate",no_cl_main:"Select a trip and press Generate.",select_for_cl:"Select trip",loading_cl:"Consulting official sources...",risk_ok:"No issues",risk_caution:"Caution",risk_danger:"High risk",disclaimer:"Guidance only. Always verify with the official embassy."},
-  fr:{btn_so:"Deconnexion",cover_tagline:"Autorite Internationale de Voyage",cover_sub:"Conformite Legale Voyage",cover_hint:"Toucher pour ouvrir",lbl_country:"Pays /",close_btn:"Fermer",tab_bio:"Donnees",tab_visas:"Visas",tab_trips:"Voyages",tab_cl:"Checklist",tab_obs:"Notes",ph_bio:"Document de voyage",ph_notes:"Observations",ph_visas:"Visas et tampons",ph_trip_stamps:"Tampons de voyages",ph_trips:"Itineraire",ph_new_trip:"Nouveau voyage",ph_cl:"Checklist legale",ph_cl_result:"Exigences et alertes",ph_obs:"Notes",dl_surname:"Nom",dl_given:"Prenoms",dl_nat:"Nationalite",dl_sex:"Sexe",dl_dob:"Date de naissance",dl_pob:"Lieu de naissance",dl_passno:"No. Passeport",dl_issued:"Date emission",dl_expiry:"Expiration",dl_sig:"Titulaire",dl_blood:"Groupe sanguin",dl_vax:"Vaccins",dl_meds:"Medicaments",dl_res:"Residences/Visas",dl_alert_email:"Email alertes",edit_profile:"Donnees passeport",btn_save:"Sauvegarder",dec_stamps:"Tampons decoratifs",no_trip_stamps:"Ajoutez des voyages pour voir vos tampons.",no_trips:"Aucun voyage enregistre.",new_trip:"Nouveau voyage",lbl_dest:"Destination",lbl_layover:"Escale",lbl_depart:"Depart",lbl_return:"Retour",lbl_purpose:"Motif",opt_tourism:"Tourisme",opt_business:"Affaires",opt_study:"Etudes",opt_work:"Travail",opt_transit:"Transit uniquement",btn_stamp_trip:"Tamponner voyage",select_trip_cl:"Selectionnez un voyage:",cl_empty:"La checklist apparaitra ici.",panel_trips:"Mes voyages",add_trip:"+ Ajouter voyage",no_trips_main:"Ouvrez le passeport et allez a Voyages.",add_first:"Ajouter premier voyage",panel_cl:"Checklist legale",btn_generate:"Generer",no_cl_main:"Selectionnez un voyage et appuyez sur Generer.",select_for_cl:"Selectionner voyage",loading_cl:"Consultation des sources officielles...",risk_ok:"Aucun probleme",risk_caution:"Prudence",risk_danger:"Risque eleve",disclaimer:"Indicatif seulement. Verifiez avec l ambassade officielle."},
-  de:{btn_so:"Abmelden",cover_tagline:"Internationale Reisebehorde",cover_sub:"Reise-Compliance",cover_hint:"Zum Offnen tippen",lbl_country:"Land /",close_btn:"Schliessen",tab_bio:"Daten",tab_visas:"Visa",tab_trips:"Reisen",tab_cl:"Checkliste",tab_obs:"Notizen",ph_bio:"Reisedokument",ph_notes:"Anmerkungen",ph_visas:"Visa und Stempel",ph_trip_stamps:"Reisestempel",ph_trips:"Reiseplan",ph_new_trip:"Neue Reise",ph_cl:"Rechtliche Checkliste",ph_cl_result:"Anforderungen und Warnungen",ph_obs:"Notizen",dl_surname:"Nachname",dl_given:"Vornamen",dl_nat:"Staatsangehorigkeit",dl_sex:"Geschlecht",dl_dob:"Geburtsdatum",dl_pob:"Geburtsort",dl_passno:"Passnummer",dl_issued:"Ausstellungsdatum",dl_expiry:"Ablaufdatum",dl_sig:"Inhaber",dl_blood:"Blutgruppe",dl_vax:"Impfungen",dl_meds:"Medikamente",dl_res:"Aufenthalt/Visa",dl_alert_email:"Benachrichtigungs-Email",edit_profile:"Passdaten",btn_save:"Speichern",dec_stamps:"Dekorative Stempel",no_trip_stamps:"Reisen hinzufugen um Stempel zu sehen.",no_trips:"Keine Reisen registriert.",new_trip:"Neue Reise",lbl_dest:"Reiseziel",lbl_layover:"Zwischenstopp",lbl_depart:"Abflug",lbl_return:"Ruckkehr",lbl_purpose:"Zweck",opt_tourism:"Tourismus",opt_business:"Geschaft",opt_study:"Studium",opt_work:"Arbeit",opt_transit:"Nur Transit",btn_stamp_trip:"Reise stempeln",select_trip_cl:"Reise auswahlen:",cl_empty:"Die Checkliste erscheint hier.",panel_trips:"Meine Reisen",add_trip:"+ Reise hinzufugen",no_trips_main:"Offnen Sie den Pass und gehen Sie zu Reisen.",add_first:"Erste Reise hinzufugen",panel_cl:"Rechtliche Checkliste",btn_generate:"Erstellen",no_cl_main:"Wahlen Sie eine Reise und klicken Sie auf Erstellen.",select_for_cl:"Reise auswahlen",loading_cl:"Offizielle Quellen werden abgefragt...",risk_ok:"Keine Probleme",risk_caution:"Vorsicht",risk_danger:"Hohes Risiko",disclaimer:"Nur zur Orientierung. Bitte bei der Botschaft prufen."},
-  it:{btn_so:"Esci",cover_tagline:"Autorita Internazionale Viaggi",cover_sub:"Conformita Legale Viaggi",cover_hint:"Tocca per aprire",lbl_country:"Paese /",close_btn:"Chiudi",tab_bio:"Dati",tab_visas:"Visti",tab_trips:"Viaggi",tab_cl:"Checklist",tab_obs:"Note",ph_bio:"Documento di viaggio",ph_notes:"Annotazioni",ph_visas:"Visti e timbri",ph_trip_stamps:"Timbri dei viaggi",ph_trips:"Itinerario",ph_new_trip:"Nuovo viaggio",ph_cl:"Checklist legale",ph_cl_result:"Requisiti e avvisi",ph_obs:"Note",dl_surname:"Cognome",dl_given:"Nomi",dl_nat:"Nazionalita",dl_sex:"Sesso",dl_dob:"Data di nascita",dl_pob:"Luogo di nascita",dl_passno:"N. Passaporto",dl_issued:"Data emissione",dl_expiry:"Scadenza",dl_sig:"Titolare",dl_blood:"Gruppo sanguigno",dl_vax:"Vaccini",dl_meds:"Farmaci",dl_res:"Residenze/Visti",dl_alert_email:"Email avvisi",edit_profile:"Dati passaporto",btn_save:"Salva",dec_stamps:"Timbri decorativi",no_trip_stamps:"Aggiungi viaggi per vedere i tuoi timbri.",no_trips:"Nessun viaggio registrato.",new_trip:"Nuovo viaggio",lbl_dest:"Destinazione",lbl_layover:"Scalo",lbl_depart:"Partenza",lbl_return:"Ritorno",lbl_purpose:"Scopo",opt_tourism:"Turismo",opt_business:"Affari",opt_study:"Studio",opt_work:"Lavoro",opt_transit:"Solo transito",btn_stamp_trip:"Timbra viaggio",select_trip_cl:"Seleziona un viaggio:",cl_empty:"La checklist apparira qui.",panel_trips:"I miei viaggi",add_trip:"+ Aggiungi viaggio",no_trips_main:"Apri il passaporto e vai a Viaggi.",add_first:"Aggiungi primo viaggio",panel_cl:"Checklist legale",btn_generate:"Genera",no_cl_main:"Seleziona un viaggio e premi Genera.",select_for_cl:"Seleziona viaggio",loading_cl:"Consultazione fonti ufficiali...",risk_ok:"Nessun problema",risk_caution:"Attenzione",risk_danger:"Alto rischio",disclaimer:"Solo orientativo. Verifica con l ambasciata ufficiale."},
-  pt:{btn_so:"Sair",cover_tagline:"Autoridade Internacional de Viagens",cover_sub:"Conformidade Legal de Viagem",cover_hint:"Toque para abrir",lbl_country:"Pais /",close_btn:"Fechar",tab_bio:"Dados",tab_visas:"Vistos",tab_trips:"Viagens",tab_cl:"Checklist",tab_obs:"Notas",ph_bio:"Documento de viagem",ph_notes:"Anotacoes",ph_visas:"Vistos e carimbos",ph_trip_stamps:"Carimbos de viagens",ph_trips:"Itinerario",ph_new_trip:"Nova viagem",ph_cl:"Checklist legal",ph_cl_result:"Requisitos e alertas",ph_obs:"Notas",dl_surname:"Sobrenome",dl_given:"Nomes",dl_nat:"Nacionalidade",dl_sex:"Sexo",dl_dob:"Data de nascimento",dl_pob:"Local de nascimento",dl_passno:"N. Passaporte",dl_issued:"Data emissao",dl_expiry:"Validade",dl_sig:"Titular",dl_blood:"Tipo sanguineo",dl_vax:"Vacinas",dl_meds:"Medicamentos",dl_res:"Residencias/Vistos",dl_alert_email:"Email alertas",edit_profile:"Dados do passaporte",btn_save:"Salvar",dec_stamps:"Carimbos decorativos",no_trip_stamps:"Adicione viagens para ver seus carimbos.",no_trips:"Sem viagens registradas.",new_trip:"Nova viagem",lbl_dest:"Destino",lbl_layover:"Escala",lbl_depart:"Saida",lbl_return:"Retorno",lbl_purpose:"Motivo",opt_tourism:"Turismo",opt_business:"Negocios",opt_study:"Estudo",opt_work:"Trabalho",opt_transit:"So transito",btn_stamp_trip:"Carimbar viagem",select_trip_cl:"Selecione uma viagem:",cl_empty:"A checklist aparecera aqui.",panel_trips:"Minhas viagens",add_trip:"+ Adicionar viagem",no_trips_main:"Abra o passaporte e va a Viagens.",add_first:"Adicionar primeira viagem",panel_cl:"Checklist legal",btn_generate:"Gerar",no_cl_main:"Selecione uma viagem e pressione Gerar.",select_for_cl:"Selecionar viagem",loading_cl:"Consultando fontes oficiais...",risk_ok:"Sem problemas",risk_caution:"Cuidado",risk_danger:"Alto risco",disclaimer:"Apenas orientativo. Verifique com a embaixada oficial."},
-  zh:{btn_so:"退出",cover_tagline:"国际旅行管理局",cover_sub:"旅行合规助手",cover_hint:"点击打开",lbl_country:"国家 /",close_btn:"关闭",tab_bio:"信息",tab_visas:"签证",tab_trips:"行程",tab_cl:"清单",tab_obs:"备注",ph_bio:"旅行证件",ph_notes:"备注",ph_visas:"签证和印章",ph_trip_stamps:"行程印章",ph_trips:"行程安排",ph_new_trip:"新行程",ph_cl:"法律清单",ph_cl_result:"要求和提醒",ph_obs:"备注",dl_surname:"姓",dl_given:"名",dl_nat:"国籍",dl_sex:"性别",dl_dob:"出生日期",dl_pob:"出生地",dl_passno:"护照号",dl_issued:"签发日期",dl_expiry:"有效期",dl_sig:"持有人",dl_blood:"血型",dl_vax:"疫苗",dl_meds:"药物",dl_res:"居住/签证",dl_alert_email:"提醒邮箱",edit_profile:"护照信息",btn_save:"保存",dec_stamps:"装饰性印章",no_trip_stamps:"添加行程以查看您的印章。",no_trips:"没有注册的行程。",new_trip:"新行程",lbl_dest:"目的地",lbl_layover:"中转",lbl_depart:"出发",lbl_return:"返回",lbl_purpose:"目的",opt_tourism:"旅游",opt_business:"商务",opt_study:"学习",opt_work:"工作",opt_transit:"仅过境",btn_stamp_trip:"盖章行程",select_trip_cl:"选择行程：",cl_empty:"清单将显示在这里。",panel_trips:"我的行程",add_trip:"+ 添加行程",no_trips_main:"打开护照并转到行程。",add_first:"添加第一个行程",panel_cl:"法律清单",btn_generate:"生成",no_cl_main:"选择行程并点击生成。",select_for_cl:"选择行程",loading_cl:"查询官方资料...",risk_ok:"无重大问题",risk_caution:"注意",risk_danger:"高风险",disclaimer:"仅供参考。请向官方大使馆核实。"},
-  ja:{btn_so:"ログアウト",cover_tagline:"国際旅行当局",cover_sub:"デジタル旅行コンプライアンス",cover_hint:"タップして開く",lbl_country:"国 /",close_btn:"閉じる",tab_bio:"情報",tab_visas:"ビザ",tab_trips:"旅行",tab_cl:"チェックリスト",tab_obs:"メモ",ph_bio:"旅行書類",ph_notes:"注記",ph_visas:"ビザとスタンプ",ph_trip_stamps:"旅行スタンプ",ph_trips:"旅程",ph_new_trip:"新しい旅行",ph_cl:"法的チェックリスト",ph_cl_result:"要件とアラート",ph_obs:"メモ",dl_surname:"姓",dl_given:"名",dl_nat:"国籍",dl_sex:"性別",dl_dob:"生年月日",dl_pob:"出生地",dl_passno:"パスポート番号",dl_issued:"発行日",dl_expiry:"有効期限",dl_sig:"保有者",dl_blood:"血液型",dl_vax:"ワクチン",dl_meds:"薬",dl_res:"在留/ビザ",dl_alert_email:"アラートメール",edit_profile:"パスポート情報",btn_save:"保存",dec_stamps:"装飾スタンプ",no_trip_stamps:"スタンプを見るには旅行を追加してください。",no_trips:"旅行は登録されていません。",new_trip:"新しい旅行",lbl_dest:"目的地",lbl_layover:"乗り継ぎ",lbl_depart:"出発",lbl_return:"帰国",lbl_purpose:"目的",opt_tourism:"観光",opt_business:"ビジネス",opt_study:"留学",opt_work:"就労",opt_transit:"乗り継ぎのみ",btn_stamp_trip:"旅行をスタンプ",select_trip_cl:"旅行を選択：",cl_empty:"チェックリストはここに表示されます。",panel_trips:"旅行一覧",add_trip:"+ 旅行追加",no_trips_main:"パスポートを開いて旅行へ移動してください。",add_first:"最初の旅行を追加",panel_cl:"法的チェックリスト",btn_generate:"生成",no_cl_main:"旅行を選択して生成を押してください。",select_for_cl:"旅行を選択",loading_cl:"公式情報源を確認中...",risk_ok:"問題なし",risk_caution:"注意",risk_danger:"高リスク",disclaimer:"参考のみ。大使館で必ず確認してください。"},
-  ar:{btn_so:"خروج",cover_tagline:"هيئة السفر الدولية",cover_sub:"الامتثال القانوني للسفر",cover_hint:"اضغط للفتح",lbl_country:"البلد /",close_btn:"اغلاق",tab_bio:"بيانات",tab_visas:"تاشيرات",tab_trips:"رحلات",tab_cl:"قائمة",tab_obs:"ملاحظات",ph_bio:"وثيقة سفر",ph_notes:"ملاحظات",ph_visas:"التاشيرات والاختام",ph_trip_stamps:"اختام الرحلات",ph_trips:"جدول الرحلات",ph_new_trip:"رحلة جديدة",ph_cl:"قائمة تحقق قانونية",ph_cl_result:"المتطلبات والتنبيهات",ph_obs:"ملاحظات",dl_surname:"اللقب",dl_given:"الاسم",dl_nat:"الجنسية",dl_sex:"الجنس",dl_dob:"تاريخ الميلاد",dl_pob:"مكان الميلاد",dl_passno:"رقم الجواز",dl_issued:"تاريخ الاصدار",dl_expiry:"تاريخ الانتهاء",dl_sig:"الحامل",dl_blood:"فصيلة الدم",dl_vax:"اللقاحات",dl_meds:"الادوية",dl_res:"الاقامات/التاشيرات",dl_alert_email:"البريد للتنبيهات",edit_profile:"بيانات جواز السفر",btn_save:"حفظ",dec_stamps:"اختام زخرفية",no_trip_stamps:"اضف رحلات لرؤية اختامك.",no_trips:"لا رحلات مسجلة.",new_trip:"رحلة جديدة",lbl_dest:"الوجهة",lbl_layover:"التوقف",lbl_depart:"المغادرة",lbl_return:"العودة",lbl_purpose:"الغرض",opt_tourism:"سياحة",opt_business:"اعمال",opt_study:"دراسة",opt_work:"عمل",opt_transit:"عبور فقط",btn_stamp_trip:"ختم الرحلة",select_trip_cl:"اختر رحلة:",cl_empty:"ستظهر القائمة هنا.",panel_trips:"رحلاتي",add_trip:"+ اضافة رحلة",no_trips_main:"افتح جواز السفر وانتقل الى الرحلات.",add_first:"اضافة اول رحلة",panel_cl:"قائمة تحقق قانونية",btn_generate:"انشاء",no_cl_main:"اختر رحلة واضغط انشاء.",select_for_cl:"اختر رحلة",loading_cl:"استشارة المصادر الرسمية...",risk_ok:"لا مشاكل",risk_caution:"احتياط",risk_danger:"خطر عال",disclaimer:"للارشاد فقط. تحقق دائما مع السفارة الرسمية."},
-  ru:{btn_so:"Выйти",cover_tagline:"Международный орган путешествий",cover_sub:"Правовое соответствие в поездках",cover_hint:"Нажмите чтобы открыть",lbl_country:"Страна /",close_btn:"Закрыть",tab_bio:"Данные",tab_visas:"Визы",tab_trips:"Поездки",tab_cl:"Чек-лист",tab_obs:"Заметки",ph_bio:"Дорожный документ",ph_notes:"Примечания",ph_visas:"Визы и штампы",ph_trip_stamps:"Штампы поездок",ph_trips:"Маршрут",ph_new_trip:"Новая поездка",ph_cl:"Правовой чек-лист",ph_cl_result:"Требования и предупреждения",ph_obs:"Заметки",dl_surname:"Фамилия",dl_given:"Имена",dl_nat:"Гражданство",dl_sex:"Пол",dl_dob:"Дата рождения",dl_pob:"Место рождения",dl_passno:"Номер паспорта",dl_issued:"Дата выдачи",dl_expiry:"Срок действия",dl_sig:"Владелец",dl_blood:"Группа крови",dl_vax:"Прививки",dl_meds:"Лекарства",dl_res:"Проживание/Визы",dl_alert_email:"Email уведомлений",edit_profile:"Данные паспорта",btn_save:"Сохранить",dec_stamps:"Декоративные штампы",no_trip_stamps:"Добавьте поездки чтобы увидеть штампы.",no_trips:"Нет зарегистрированных поездок.",new_trip:"Новая поездка",lbl_dest:"Направление",lbl_layover:"Пересадка",lbl_depart:"Отправление",lbl_return:"Возвращение",lbl_purpose:"Цель",opt_tourism:"Туризм",opt_business:"Бизнес",opt_study:"Учёба",opt_work:"Работа",opt_transit:"Только транзит",btn_stamp_trip:"Штамповать поездку",select_trip_cl:"Выберите поездку:",cl_empty:"Чек-лист появится здесь.",panel_trips:"Мои поездки",add_trip:"+ Добавить поездку",no_trips_main:"Откройте паспорт и перейдите к поездкам.",add_first:"Добавить первую поездку",panel_cl:"Правовой чек-лист",btn_generate:"Создать",no_cl_main:"Выберите поездку и нажмите Создать.",select_for_cl:"Выбрать поездку",loading_cl:"Запрос официальных источников...",risk_ok:"Нет проблем",risk_caution:"Осторожность",risk_danger:"Высокий риск",disclaimer:"Только справочно. Проверяйте в официальном посольстве."}
+  es:{btn_so:"Salir",cover_tagline:"Autoridad Internacional de Viajes",cover_sub:"Cumplimiento Legal de Viaje",cover_hint:"Toca para abrir",lbl_country:"Pais /",close_btn:"Cerrar",tab_bio:"Datos",tab_visas:"Visados",tab_trips:"Viajes",tab_cl:"Checklist",tab_obs:"Notas",ph_bio:"Travel Document",ph_notes:"Anotaciones",ph_visas:"Visados y Sellos",ph_trip_stamps:"Sellos de viajes",ph_trips:"Itinerario",ph_new_trip:"Nuevo viaje",ph_cl:"Checklist legal",ph_cl_result:"Requisitos y alertas",ph_obs:"Notas y observaciones",dl_surname:"Apellidos",dl_given:"Nombres",dl_nat:"Nacionalidad",dl_sex:"Sexo",dl_dob:"Nacimiento",dl_pob:"Lugar de nac.",dl_passno:"N. Pasaporte",dl_issued:"Expedicion",dl_expiry:"Caducidad",dl_sig:"Titular",dl_blood:"Sangre",dl_vax:"Vacunas",dl_meds:"Medicamentos",dl_res:"Residencias/Visas",dl_alert_email:"Email alertas",edit_profile:"Datos del pasaporte",btn_save:"Guardar datos",dec_stamps:"Sellos decorativos",no_trip_stamps:"Agrega viajes para ver tus sellos.",no_trips:"Sin viajes registrados.",new_trip:"Nuevo viaje",lbl_dest:"Destino",lbl_layover:"Escala en",lbl_depart:"Salida",lbl_return:"Regreso",lbl_purpose:"Motivo",opt_tourism:"Turismo",opt_business:"Negocios",opt_study:"Estudio",opt_work:"Trabajo",opt_transit:"Solo transito",btn_stamp_trip:"Estampar viaje",select_trip_cl:"Selecciona un viaje:",cl_empty:"La checklist aparecera aqui.",panel_trips:"Mis viajes",add_trip:"+ Agregar viaje",no_trips_main:"Abre el pasaporte y ve a Viajes.",add_first:"Agregar primer viaje",panel_cl:"Checklist legal",btn_generate:"Generar",no_cl_main:"Selecciona un viaje y pulsa Generar.",select_for_cl:"Seleccionar viaje",loading_cl:"Consultando fuentes oficiales...",risk_ok:"Sin problemas",risk_caution:"Precaucion",risk_danger:"Alto riesgo",disclaimer:"Informacion orientativa. Verifica con la embajada oficial.",tab_pack:"Empaque",tab_exp:"Gastos",tab_map:"Mapa",ph_pack:"Checklist de empaque",ph_pack_add:"Agregar elemento",new_pack_item:"Nuevo elemento",lbl_item:"Elemento",btn_add_item:"Agregar a la lista",btn_reset_pack:"Reiniciar checklist",pack_loading:"Cargando...",pack_empty:"Sin elementos en la lista.",ph_exp:"Registro de gastos",no_exp:"Sin gastos registrados.",ph_new_exp:"Registrar gasto",new_exp:"Nuevo gasto",lbl_cat:"Categoria",cat_food:"Comida",cat_hotel:"Hotel",cat_transport:"Transporte",cat_shopping:"Compras",cat_activities:"Actividades",lbl_amount:"Monto",lbl_currency:"Moneda",lbl_date:"Fecha",btn_add_exp:"Registrar gasto",lbl_total_trip:"Total del viaje",lbl_total_today:"Total de hoy",ph_map:"Mapa mundial",ph_map_countries:"Paises recorridos",lbl_countries_visited:"Paises visitados",lbl_continents:"Continentes",lbl_world_pct:"Mundo recorrido",map_note:"Basado en los paises registrados en Viajes."},
+  en:{btn_so:"Sign out",cover_tagline:"International Travel Authority",cover_sub:"Digital Travel Compliance",cover_hint:"Tap to open",lbl_country:"Country /",close_btn:"Close",tab_bio:"Data",tab_visas:"Visas",tab_trips:"Trips",tab_cl:"Checklist",tab_obs:"Notes",ph_bio:"Travel Document",ph_notes:"Observations",ph_visas:"Visas & Stamps",ph_trip_stamps:"Trip stamps",ph_trips:"Itinerary",ph_new_trip:"New trip",ph_cl:"Legal checklist",ph_cl_result:"Requirements & alerts",ph_obs:"Notes",dl_surname:"Surname",dl_given:"Given names",dl_nat:"Nationality",dl_sex:"Sex",dl_dob:"Date of birth",dl_pob:"Place of birth",dl_passno:"Passport No.",dl_issued:"Issue date",dl_expiry:"Expiry",dl_sig:"Holder",dl_blood:"Blood type",dl_vax:"Vaccines",dl_meds:"Medications",dl_res:"Residences/Visas",dl_alert_email:"Alert email",edit_profile:"Passport data",btn_save:"Save data",dec_stamps:"Decorative stamps",no_trip_stamps:"Add trips to see your stamps.",no_trips:"No trips registered.",new_trip:"New trip",lbl_dest:"Destination",lbl_layover:"Layover in",lbl_depart:"Departure",lbl_return:"Return",lbl_purpose:"Purpose",opt_tourism:"Tourism",opt_business:"Business",opt_study:"Study",opt_work:"Work",opt_transit:"Transit only",btn_stamp_trip:"Stamp trip",select_trip_cl:"Select a trip:",cl_empty:"Checklist will appear here.",panel_trips:"My trips",add_trip:"+ Add trip",no_trips_main:"Open the passport and go to Trips.",add_first:"Add first trip",panel_cl:"Legal checklist",btn_generate:"Generate",no_cl_main:"Select a trip and press Generate.",select_for_cl:"Select trip",loading_cl:"Consulting official sources...",risk_ok:"No issues",risk_caution:"Caution",risk_danger:"High risk",disclaimer:"Guidance only. Always verify with the official embassy.",tab_pack:"Packing",tab_exp:"Expenses",tab_map:"Map",ph_pack:"Packing checklist",ph_pack_add:"Add item",new_pack_item:"New item",lbl_item:"Item",btn_add_item:"Add to list",btn_reset_pack:"Reset checklist",pack_loading:"Loading...",pack_empty:"No items on the list.",ph_exp:"Expense log",no_exp:"No expenses recorded.",ph_new_exp:"Log expense",new_exp:"New expense",lbl_cat:"Category",cat_food:"Food",cat_hotel:"Hotel",cat_transport:"Transport",cat_shopping:"Shopping",cat_activities:"Activities",lbl_amount:"Amount",lbl_currency:"Currency",lbl_date:"Date",btn_add_exp:"Log expense",lbl_total_trip:"Trip total",lbl_total_today:"Today's total",ph_map:"World map",ph_map_countries:"Countries covered",lbl_countries_visited:"Countries visited",lbl_continents:"Continents",lbl_world_pct:"World covered",map_note:"Based on countries logged in Trips."},
+  fr:{btn_so:"Deconnexion",cover_tagline:"Autorite Internationale de Voyage",cover_sub:"Conformite Legale Voyage",cover_hint:"Toucher pour ouvrir",lbl_country:"Pays /",close_btn:"Fermer",tab_bio:"Donnees",tab_visas:"Visas",tab_trips:"Voyages",tab_cl:"Checklist",tab_obs:"Notes",ph_bio:"Document de voyage",ph_notes:"Observations",ph_visas:"Visas et tampons",ph_trip_stamps:"Tampons de voyages",ph_trips:"Itineraire",ph_new_trip:"Nouveau voyage",ph_cl:"Checklist legale",ph_cl_result:"Exigences et alertes",ph_obs:"Notes",dl_surname:"Nom",dl_given:"Prenoms",dl_nat:"Nationalite",dl_sex:"Sexe",dl_dob:"Date de naissance",dl_pob:"Lieu de naissance",dl_passno:"No. Passeport",dl_issued:"Date emission",dl_expiry:"Expiration",dl_sig:"Titulaire",dl_blood:"Groupe sanguin",dl_vax:"Vaccins",dl_meds:"Medicaments",dl_res:"Residences/Visas",dl_alert_email:"Email alertes",edit_profile:"Donnees passeport",btn_save:"Sauvegarder",dec_stamps:"Tampons decoratifs",no_trip_stamps:"Ajoutez des voyages pour voir vos tampons.",no_trips:"Aucun voyage enregistre.",new_trip:"Nouveau voyage",lbl_dest:"Destination",lbl_layover:"Escale",lbl_depart:"Depart",lbl_return:"Retour",lbl_purpose:"Motif",opt_tourism:"Tourisme",opt_business:"Affaires",opt_study:"Etudes",opt_work:"Travail",opt_transit:"Transit uniquement",btn_stamp_trip:"Tamponner voyage",select_trip_cl:"Selectionnez un voyage:",cl_empty:"La checklist apparaitra ici.",panel_trips:"Mes voyages",add_trip:"+ Ajouter voyage",no_trips_main:"Ouvrez le passeport et allez a Voyages.",add_first:"Ajouter premier voyage",panel_cl:"Checklist legale",btn_generate:"Generer",no_cl_main:"Selectionnez un voyage et appuyez sur Generer.",select_for_cl:"Selectionner voyage",loading_cl:"Consultation des sources officielles...",risk_ok:"Aucun probleme",risk_caution:"Prudence",risk_danger:"Risque eleve",disclaimer:"Indicatif seulement. Verifiez avec l ambassade officielle.",tab_pack:"Bagages",tab_exp:"Depenses",tab_map:"Carte",ph_pack:"Liste de bagages",ph_pack_add:"Ajouter un element",new_pack_item:"Nouvel element",lbl_item:"Element",btn_add_item:"Ajouter a la liste",btn_reset_pack:"Reinitialiser la liste",pack_loading:"Chargement...",pack_empty:"Aucun element dans la liste.",ph_exp:"Registre des depenses",no_exp:"Aucune depense enregistree.",ph_new_exp:"Enregistrer une depense",new_exp:"Nouvelle depense",lbl_cat:"Categorie",cat_food:"Nourriture",cat_hotel:"Hotel",cat_transport:"Transport",cat_shopping:"Achats",cat_activities:"Activites",lbl_amount:"Montant",lbl_currency:"Devise",lbl_date:"Date",btn_add_exp:"Enregistrer",lbl_total_trip:"Total du voyage",lbl_total_today:"Total du jour",ph_map:"Carte du monde",ph_map_countries:"Pays parcourus",lbl_countries_visited:"Pays visites",lbl_continents:"Continents",lbl_world_pct:"Monde parcouru",map_note:"Base sur les pays enregistres dans Voyages."},
+  de:{btn_so:"Abmelden",cover_tagline:"Internationale Reisebehorde",cover_sub:"Reise-Compliance",cover_hint:"Zum Offnen tippen",lbl_country:"Land /",close_btn:"Schliessen",tab_bio:"Daten",tab_visas:"Visa",tab_trips:"Reisen",tab_cl:"Checkliste",tab_obs:"Notizen",ph_bio:"Reisedokument",ph_notes:"Anmerkungen",ph_visas:"Visa und Stempel",ph_trip_stamps:"Reisestempel",ph_trips:"Reiseplan",ph_new_trip:"Neue Reise",ph_cl:"Rechtliche Checkliste",ph_cl_result:"Anforderungen und Warnungen",ph_obs:"Notizen",dl_surname:"Nachname",dl_given:"Vornamen",dl_nat:"Staatsangehorigkeit",dl_sex:"Geschlecht",dl_dob:"Geburtsdatum",dl_pob:"Geburtsort",dl_passno:"Passnummer",dl_issued:"Ausstellungsdatum",dl_expiry:"Ablaufdatum",dl_sig:"Inhaber",dl_blood:"Blutgruppe",dl_vax:"Impfungen",dl_meds:"Medikamente",dl_res:"Aufenthalt/Visa",dl_alert_email:"Benachrichtigungs-Email",edit_profile:"Passdaten",btn_save:"Speichern",dec_stamps:"Dekorative Stempel",no_trip_stamps:"Reisen hinzufugen um Stempel zu sehen.",no_trips:"Keine Reisen registriert.",new_trip:"Neue Reise",lbl_dest:"Reiseziel",lbl_layover:"Zwischenstopp",lbl_depart:"Abflug",lbl_return:"Ruckkehr",lbl_purpose:"Zweck",opt_tourism:"Tourismus",opt_business:"Geschaft",opt_study:"Studium",opt_work:"Arbeit",opt_transit:"Nur Transit",btn_stamp_trip:"Reise stempeln",select_trip_cl:"Reise auswahlen:",cl_empty:"Die Checkliste erscheint hier.",panel_trips:"Meine Reisen",add_trip:"+ Reise hinzufugen",no_trips_main:"Offnen Sie den Pass und gehen Sie zu Reisen.",add_first:"Erste Reise hinzufugen",panel_cl:"Rechtliche Checkliste",btn_generate:"Erstellen",no_cl_main:"Wahlen Sie eine Reise und klicken Sie auf Erstellen.",select_for_cl:"Reise auswahlen",loading_cl:"Offizielle Quellen werden abgefragt...",risk_ok:"Keine Probleme",risk_caution:"Vorsicht",risk_danger:"Hohes Risiko",disclaimer:"Nur zur Orientierung. Bitte bei der Botschaft prufen.",tab_pack:"Packliste",tab_exp:"Ausgaben",tab_map:"Karte",ph_pack:"Packliste",ph_pack_add:"Element hinzufuegen",new_pack_item:"Neues Element",lbl_item:"Element",btn_add_item:"Zur Liste hinzufuegen",btn_reset_pack:"Liste zuruecksetzen",pack_loading:"Wird geladen...",pack_empty:"Keine Elemente in der Liste.",ph_exp:"Ausgabenprotokoll",no_exp:"Keine Ausgaben erfasst.",ph_new_exp:"Ausgabe erfassen",new_exp:"Neue Ausgabe",lbl_cat:"Kategorie",cat_food:"Essen",cat_hotel:"Hotel",cat_transport:"Transport",cat_shopping:"Einkaufen",cat_activities:"Aktivitaeten",lbl_amount:"Betrag",lbl_currency:"Waehrung",lbl_date:"Datum",btn_add_exp:"Erfassen",lbl_total_trip:"Gesamt Reise",lbl_total_today:"Gesamt heute",ph_map:"Weltkarte",ph_map_countries:"Bereiste Laender",lbl_countries_visited:"Besuchte Laender",lbl_continents:"Kontinente",lbl_world_pct:"Welt bereist",map_note:"Basierend auf den unter Reisen erfassten Laendern."},
+  it:{btn_so:"Esci",cover_tagline:"Autorita Internazionale Viaggi",cover_sub:"Conformita Legale Viaggi",cover_hint:"Tocca per aprire",lbl_country:"Paese /",close_btn:"Chiudi",tab_bio:"Dati",tab_visas:"Visti",tab_trips:"Viaggi",tab_cl:"Checklist",tab_obs:"Note",ph_bio:"Documento di viaggio",ph_notes:"Annotazioni",ph_visas:"Visti e timbri",ph_trip_stamps:"Timbri dei viaggi",ph_trips:"Itinerario",ph_new_trip:"Nuovo viaggio",ph_cl:"Checklist legale",ph_cl_result:"Requisiti e avvisi",ph_obs:"Note",dl_surname:"Cognome",dl_given:"Nomi",dl_nat:"Nazionalita",dl_sex:"Sesso",dl_dob:"Data di nascita",dl_pob:"Luogo di nascita",dl_passno:"N. Passaporto",dl_issued:"Data emissione",dl_expiry:"Scadenza",dl_sig:"Titolare",dl_blood:"Gruppo sanguigno",dl_vax:"Vaccini",dl_meds:"Farmaci",dl_res:"Residenze/Visti",dl_alert_email:"Email avvisi",edit_profile:"Dati passaporto",btn_save:"Salva",dec_stamps:"Timbri decorativi",no_trip_stamps:"Aggiungi viaggi per vedere i tuoi timbri.",no_trips:"Nessun viaggio registrato.",new_trip:"Nuovo viaggio",lbl_dest:"Destinazione",lbl_layover:"Scalo",lbl_depart:"Partenza",lbl_return:"Ritorno",lbl_purpose:"Scopo",opt_tourism:"Turismo",opt_business:"Affari",opt_study:"Studio",opt_work:"Lavoro",opt_transit:"Solo transito",btn_stamp_trip:"Timbra viaggio",select_trip_cl:"Seleziona un viaggio:",cl_empty:"La checklist apparira qui.",panel_trips:"I miei viaggi",add_trip:"+ Aggiungi viaggio",no_trips_main:"Apri il passaporto e vai a Viaggi.",add_first:"Aggiungi primo viaggio",panel_cl:"Checklist legale",btn_generate:"Genera",no_cl_main:"Seleziona un viaggio e premi Genera.",select_for_cl:"Seleziona viaggio",loading_cl:"Consultazione fonti ufficiali...",risk_ok:"Nessun problema",risk_caution:"Attenzione",risk_danger:"Alto rischio",disclaimer:"Solo orientativo. Verifica con l ambasciata ufficiale.",tab_pack:"Bagagli",tab_exp:"Spese",tab_map:"Mappa",ph_pack:"Lista bagagli",ph_pack_add:"Aggiungi elemento",new_pack_item:"Nuovo elemento",lbl_item:"Elemento",btn_add_item:"Aggiungi alla lista",btn_reset_pack:"Reimposta lista",pack_loading:"Caricamento...",pack_empty:"Nessun elemento nella lista.",ph_exp:"Registro spese",no_exp:"Nessuna spesa registrata.",ph_new_exp:"Registra spesa",new_exp:"Nuova spesa",lbl_cat:"Categoria",cat_food:"Cibo",cat_hotel:"Hotel",cat_transport:"Trasporto",cat_shopping:"Shopping",cat_activities:"Attivita",lbl_amount:"Importo",lbl_currency:"Valuta",lbl_date:"Data",btn_add_exp:"Registra",lbl_total_trip:"Totale viaggio",lbl_total_today:"Totale oggi",ph_map:"Mappa del mondo",ph_map_countries:"Paesi percorsi",lbl_countries_visited:"Paesi visitati",lbl_continents:"Continenti",lbl_world_pct:"Mondo percorso",map_note:"Basato sui paesi registrati in Viaggi."},
+  pt:{btn_so:"Sair",cover_tagline:"Autoridade Internacional de Viagens",cover_sub:"Conformidade Legal de Viagem",cover_hint:"Toque para abrir",lbl_country:"Pais /",close_btn:"Fechar",tab_bio:"Dados",tab_visas:"Vistos",tab_trips:"Viagens",tab_cl:"Checklist",tab_obs:"Notas",ph_bio:"Documento de viagem",ph_notes:"Anotacoes",ph_visas:"Vistos e carimbos",ph_trip_stamps:"Carimbos de viagens",ph_trips:"Itinerario",ph_new_trip:"Nova viagem",ph_cl:"Checklist legal",ph_cl_result:"Requisitos e alertas",ph_obs:"Notas",dl_surname:"Sobrenome",dl_given:"Nomes",dl_nat:"Nacionalidade",dl_sex:"Sexo",dl_dob:"Data de nascimento",dl_pob:"Local de nascimento",dl_passno:"N. Passaporte",dl_issued:"Data emissao",dl_expiry:"Validade",dl_sig:"Titular",dl_blood:"Tipo sanguineo",dl_vax:"Vacinas",dl_meds:"Medicamentos",dl_res:"Residencias/Vistos",dl_alert_email:"Email alertas",edit_profile:"Dados do passaporte",btn_save:"Salvar",dec_stamps:"Carimbos decorativos",no_trip_stamps:"Adicione viagens para ver seus carimbos.",no_trips:"Sem viagens registradas.",new_trip:"Nova viagem",lbl_dest:"Destino",lbl_layover:"Escala",lbl_depart:"Saida",lbl_return:"Retorno",lbl_purpose:"Motivo",opt_tourism:"Turismo",opt_business:"Negocios",opt_study:"Estudo",opt_work:"Trabalho",opt_transit:"So transito",btn_stamp_trip:"Carimbar viagem",select_trip_cl:"Selecione uma viagem:",cl_empty:"A checklist aparecera aqui.",panel_trips:"Minhas viagens",add_trip:"+ Adicionar viagem",no_trips_main:"Abra o passaporte e va a Viagens.",add_first:"Adicionar primeira viagem",panel_cl:"Checklist legal",btn_generate:"Gerar",no_cl_main:"Selecione uma viagem e pressione Gerar.",select_for_cl:"Selecionar viagem",loading_cl:"Consultando fontes oficiais...",risk_ok:"Sem problemas",risk_caution:"Cuidado",risk_danger:"Alto risco",disclaimer:"Apenas orientativo. Verifique com a embaixada oficial.",tab_pack:"Bagagem",tab_exp:"Gastos",tab_map:"Mapa",ph_pack:"Lista de bagagem",ph_pack_add:"Adicionar item",new_pack_item:"Novo item",lbl_item:"Item",btn_add_item:"Adicionar a lista",btn_reset_pack:"Reiniciar lista",pack_loading:"Carregando...",pack_empty:"Sem itens na lista.",ph_exp:"Registro de gastos",no_exp:"Nenhum gasto registrado.",ph_new_exp:"Registrar gasto",new_exp:"Novo gasto",lbl_cat:"Categoria",cat_food:"Comida",cat_hotel:"Hotel",cat_transport:"Transporte",cat_shopping:"Compras",cat_activities:"Atividades",lbl_amount:"Valor",lbl_currency:"Moeda",lbl_date:"Data",btn_add_exp:"Registrar",lbl_total_trip:"Total da viagem",lbl_total_today:"Total de hoje",ph_map:"Mapa mundial",ph_map_countries:"Paises percorridos",lbl_countries_visited:"Paises visitados",lbl_continents:"Continentes",lbl_world_pct:"Mundo percorrido",map_note:"Baseado nos paises registrados em Viagens."},
+  zh:{btn_so:"退出",cover_tagline:"国际旅行管理局",cover_sub:"旅行合规助手",cover_hint:"点击打开",lbl_country:"国家 /",close_btn:"关闭",tab_bio:"信息",tab_visas:"签证",tab_trips:"行程",tab_cl:"清单",tab_obs:"备注",ph_bio:"旅行证件",ph_notes:"备注",ph_visas:"签证和印章",ph_trip_stamps:"行程印章",ph_trips:"行程安排",ph_new_trip:"新行程",ph_cl:"法律清单",ph_cl_result:"要求和提醒",ph_obs:"备注",dl_surname:"姓",dl_given:"名",dl_nat:"国籍",dl_sex:"性别",dl_dob:"出生日期",dl_pob:"出生地",dl_passno:"护照号",dl_issued:"签发日期",dl_expiry:"有效期",dl_sig:"持有人",dl_blood:"血型",dl_vax:"疫苗",dl_meds:"药物",dl_res:"居住/签证",dl_alert_email:"提醒邮箱",edit_profile:"护照信息",btn_save:"保存",dec_stamps:"装饰性印章",no_trip_stamps:"添加行程以查看您的印章。",no_trips:"没有注册的行程。",new_trip:"新行程",lbl_dest:"目的地",lbl_layover:"中转",lbl_depart:"出发",lbl_return:"返回",lbl_purpose:"目的",opt_tourism:"旅游",opt_business:"商务",opt_study:"学习",opt_work:"工作",opt_transit:"仅过境",btn_stamp_trip:"盖章行程",select_trip_cl:"选择行程：",cl_empty:"清单将显示在这里。",panel_trips:"我的行程",add_trip:"+ 添加行程",no_trips_main:"打开护照并转到行程。",add_first:"添加第一个行程",panel_cl:"法律清单",btn_generate:"生成",no_cl_main:"选择行程并点击生成。",select_for_cl:"选择行程",loading_cl:"查询官方资料...",risk_ok:"无重大问题",risk_caution:"注意",risk_danger:"高风险",disclaimer:"仅供参考。请向官方大使馆核实。",tab_pack:"打包",tab_exp:"花费",tab_map:"地图",ph_pack:"打包清单",ph_pack_add:"添加物品",new_pack_item:"新物品",lbl_item:"物品",btn_add_item:"添加到清单",btn_reset_pack:"重置清单",pack_loading:"加载中...",pack_empty:"清单中没有物品。",ph_exp:"花费记录",no_exp:"尚无花费记录。",ph_new_exp:"记录花费",new_exp:"新花费",lbl_cat:"类别",cat_food:"餐饮",cat_hotel:"酒店",cat_transport:"交通",cat_shopping:"购物",cat_activities:"活动",lbl_amount:"金额",lbl_currency:"货币",lbl_date:"日期",btn_add_exp:"记录",lbl_total_trip:"行程总计",lbl_total_today:"今日总计",ph_map:"世界地图",ph_map_countries:"已到国家",lbl_countries_visited:"已访问国家",lbl_continents:"大洲",lbl_world_pct:"世界覆盖率",map_note:"基于\u201c旅行\u201d中记录的国家。"},
+  ja:{btn_so:"ログアウト",cover_tagline:"国際旅行当局",cover_sub:"デジタル旅行コンプライアンス",cover_hint:"タップして開く",lbl_country:"国 /",close_btn:"閉じる",tab_bio:"情報",tab_visas:"ビザ",tab_trips:"旅行",tab_cl:"チェックリスト",tab_obs:"メモ",ph_bio:"旅行書類",ph_notes:"注記",ph_visas:"ビザとスタンプ",ph_trip_stamps:"旅行スタンプ",ph_trips:"旅程",ph_new_trip:"新しい旅行",ph_cl:"法的チェックリスト",ph_cl_result:"要件とアラート",ph_obs:"メモ",dl_surname:"姓",dl_given:"名",dl_nat:"国籍",dl_sex:"性別",dl_dob:"生年月日",dl_pob:"出生地",dl_passno:"パスポート番号",dl_issued:"発行日",dl_expiry:"有効期限",dl_sig:"保有者",dl_blood:"血液型",dl_vax:"ワクチン",dl_meds:"薬",dl_res:"在留/ビザ",dl_alert_email:"アラートメール",edit_profile:"パスポート情報",btn_save:"保存",dec_stamps:"装飾スタンプ",no_trip_stamps:"スタンプを見るには旅行を追加してください。",no_trips:"旅行は登録されていません。",new_trip:"新しい旅行",lbl_dest:"目的地",lbl_layover:"乗り継ぎ",lbl_depart:"出発",lbl_return:"帰国",lbl_purpose:"目的",opt_tourism:"観光",opt_business:"ビジネス",opt_study:"留学",opt_work:"就労",opt_transit:"乗り継ぎのみ",btn_stamp_trip:"旅行をスタンプ",select_trip_cl:"旅行を選択：",cl_empty:"チェックリストはここに表示されます。",panel_trips:"旅行一覧",add_trip:"+ 旅行追加",no_trips_main:"パスポートを開いて旅行へ移動してください。",add_first:"最初の旅行を追加",panel_cl:"法的チェックリスト",btn_generate:"生成",no_cl_main:"旅行を選択して生成を押してください。",select_for_cl:"旅行を選択",loading_cl:"公式情報源を確認中...",risk_ok:"問題なし",risk_caution:"注意",risk_danger:"高リスク",disclaimer:"参考のみ。大使館で必ず確認してください。",tab_pack:"持ち物",tab_exp:"支出",tab_map:"地図",ph_pack:"持ち物チェックリスト",ph_pack_add:"項目を追加",new_pack_item:"新しい項目",lbl_item:"項目",btn_add_item:"リストに追加",btn_reset_pack:"リストをリセット",pack_loading:"読み込み中...",pack_empty:"リストに項目がありません。",ph_exp:"支出記録",no_exp:"支出の記録がありません。",ph_new_exp:"支出を記録",new_exp:"新しい支出",lbl_cat:"カテゴリー",cat_food:"食事",cat_hotel:"ホテル",cat_transport:"交通",cat_shopping:"買い物",cat_activities:"アクティビティ",lbl_amount:"金額",lbl_currency:"通貨",lbl_date:"日付",btn_add_exp:"記録する",lbl_total_trip:"旅行合計",lbl_total_today:"本日合計",ph_map:"世界地図",ph_map_countries:"訪問した国",lbl_countries_visited:"訪問国数",lbl_continents:"大陸",lbl_world_pct:"世界踏破率",map_note:"「旅行」に記録された国に基づきます。"},
+  ar:{btn_so:"خروج",cover_tagline:"هيئة السفر الدولية",cover_sub:"الامتثال القانوني للسفر",cover_hint:"اضغط للفتح",lbl_country:"البلد /",close_btn:"اغلاق",tab_bio:"بيانات",tab_visas:"تاشيرات",tab_trips:"رحلات",tab_cl:"قائمة",tab_obs:"ملاحظات",ph_bio:"وثيقة سفر",ph_notes:"ملاحظات",ph_visas:"التاشيرات والاختام",ph_trip_stamps:"اختام الرحلات",ph_trips:"جدول الرحلات",ph_new_trip:"رحلة جديدة",ph_cl:"قائمة تحقق قانونية",ph_cl_result:"المتطلبات والتنبيهات",ph_obs:"ملاحظات",dl_surname:"اللقب",dl_given:"الاسم",dl_nat:"الجنسية",dl_sex:"الجنس",dl_dob:"تاريخ الميلاد",dl_pob:"مكان الميلاد",dl_passno:"رقم الجواز",dl_issued:"تاريخ الاصدار",dl_expiry:"تاريخ الانتهاء",dl_sig:"الحامل",dl_blood:"فصيلة الدم",dl_vax:"اللقاحات",dl_meds:"الادوية",dl_res:"الاقامات/التاشيرات",dl_alert_email:"البريد للتنبيهات",edit_profile:"بيانات جواز السفر",btn_save:"حفظ",dec_stamps:"اختام زخرفية",no_trip_stamps:"اضف رحلات لرؤية اختامك.",no_trips:"لا رحلات مسجلة.",new_trip:"رحلة جديدة",lbl_dest:"الوجهة",lbl_layover:"التوقف",lbl_depart:"المغادرة",lbl_return:"العودة",lbl_purpose:"الغرض",opt_tourism:"سياحة",opt_business:"اعمال",opt_study:"دراسة",opt_work:"عمل",opt_transit:"عبور فقط",btn_stamp_trip:"ختم الرحلة",select_trip_cl:"اختر رحلة:",cl_empty:"ستظهر القائمة هنا.",panel_trips:"رحلاتي",add_trip:"+ اضافة رحلة",no_trips_main:"افتح جواز السفر وانتقل الى الرحلات.",add_first:"اضافة اول رحلة",panel_cl:"قائمة تحقق قانونية",btn_generate:"انشاء",no_cl_main:"اختر رحلة واضغط انشاء.",select_for_cl:"اختر رحلة",loading_cl:"استشارة المصادر الرسمية...",risk_ok:"لا مشاكل",risk_caution:"احتياط",risk_danger:"خطر عال",disclaimer:"للارشاد فقط. تحقق دائما مع السفارة الرسمية.",tab_pack:"الحقائب",tab_exp:"المصاريف",tab_map:"الخريطة",ph_pack:"قائمة التعبئة",ph_pack_add:"إضافة عنصر",new_pack_item:"عنصر جديد",lbl_item:"العنصر",btn_add_item:"إضافة إلى القائمة",btn_reset_pack:"إعادة تعيين القائمة",pack_loading:"جارٍ التحميل...",pack_empty:"لا توجد عناصر في القائمة.",ph_exp:"سجل المصاريف",no_exp:"لا توجد مصاريف مسجلة.",ph_new_exp:"تسجيل مصروف",new_exp:"مصروف جديد",lbl_cat:"الفئة",cat_food:"طعام",cat_hotel:"فندق",cat_transport:"مواصلات",cat_shopping:"تسوق",cat_activities:"أنشطة",lbl_amount:"المبلغ",lbl_currency:"العملة",lbl_date:"التاريخ",btn_add_exp:"تسجيل",lbl_total_trip:"إجمالي الرحلة",lbl_total_today:"إجمالي اليوم",ph_map:"خريطة العالم",ph_map_countries:"الدول المزارة",lbl_countries_visited:"الدول التي تمت زيارتها",lbl_continents:"القارات",lbl_world_pct:"نسبة العالم المكتشفة",map_note:"استنادا إلى الدول المسجلة في الرحلات."},
+  ru:{btn_so:"Выйти",cover_tagline:"Международный орган путешествий",cover_sub:"Правовое соответствие в поездках",cover_hint:"Нажмите чтобы открыть",lbl_country:"Страна /",close_btn:"Закрыть",tab_bio:"Данные",tab_visas:"Визы",tab_trips:"Поездки",tab_cl:"Чек-лист",tab_obs:"Заметки",ph_bio:"Дорожный документ",ph_notes:"Примечания",ph_visas:"Визы и штампы",ph_trip_stamps:"Штампы поездок",ph_trips:"Маршрут",ph_new_trip:"Новая поездка",ph_cl:"Правовой чек-лист",ph_cl_result:"Требования и предупреждения",ph_obs:"Заметки",dl_surname:"Фамилия",dl_given:"Имена",dl_nat:"Гражданство",dl_sex:"Пол",dl_dob:"Дата рождения",dl_pob:"Место рождения",dl_passno:"Номер паспорта",dl_issued:"Дата выдачи",dl_expiry:"Срок действия",dl_sig:"Владелец",dl_blood:"Группа крови",dl_vax:"Прививки",dl_meds:"Лекарства",dl_res:"Проживание/Визы",dl_alert_email:"Email уведомлений",edit_profile:"Данные паспорта",btn_save:"Сохранить",dec_stamps:"Декоративные штампы",no_trip_stamps:"Добавьте поездки чтобы увидеть штампы.",no_trips:"Нет зарегистрированных поездок.",new_trip:"Новая поездка",lbl_dest:"Направление",lbl_layover:"Пересадка",lbl_depart:"Отправление",lbl_return:"Возвращение",lbl_purpose:"Цель",opt_tourism:"Туризм",opt_business:"Бизнес",opt_study:"Учёба",opt_work:"Работа",opt_transit:"Только транзит",btn_stamp_trip:"Штамповать поездку",select_trip_cl:"Выберите поездку:",cl_empty:"Чек-лист появится здесь.",panel_trips:"Мои поездки",add_trip:"+ Добавить поездку",no_trips_main:"Откройте паспорт и перейдите к поездкам.",add_first:"Добавить первую поездку",panel_cl:"Правовой чек-лист",btn_generate:"Создать",no_cl_main:"Выберите поездку и нажмите Создать.",select_for_cl:"Выбрать поездку",loading_cl:"Запрос официальных источников...",risk_ok:"Нет проблем",risk_caution:"Осторожность",risk_danger:"Высокий риск",disclaimer:"Только справочно. Проверяйте в официальном посольстве.",tab_pack:"Вещи",tab_exp:"Расходы",tab_map:"Карта",ph_pack:"Список вещей",ph_pack_add:"Добавить пункт",new_pack_item:"Новый пункт",lbl_item:"Пункт",btn_add_item:"Добавить в список",btn_reset_pack:"Сбросить список",pack_loading:"Загрузка...",pack_empty:"В списке нет пунктов.",ph_exp:"Учет расходов",no_exp:"Расходы не зарегистрированы.",ph_new_exp:"Добавить расход",new_exp:"Новый расход",lbl_cat:"Категория",cat_food:"Еда",cat_hotel:"Отель",cat_transport:"Транспорт",cat_shopping:"Покупки",cat_activities:"Активности",lbl_amount:"Сумма",lbl_currency:"Валюта",lbl_date:"Дата",btn_add_exp:"Записать",lbl_total_trip:"Итого за поездку",lbl_total_today:"Итого за сегодня",ph_map:"Карта мира",ph_map_countries:"Посещенные страны",lbl_countries_visited:"Посещено стран",lbl_continents:"Континенты",lbl_world_pct:"Мир пройден",map_note:"На основе стран, добавленных в разделе Поездки."}
 };
 
 
@@ -1745,7 +1881,7 @@ window.openBook = function() {
     document.getElementById("pages").classList.add("open");
     // Always start on left page (artística)
     if (typeof showPage === 'function') {
-      ['bio','visas','trips','cl','obs'].forEach(function(s){ showPage(s, 0); });
+      ['bio','visas','trips','cl','pack','exp','map','obs'].forEach(function(s){ showPage(s, 0); });
     }
   }, 200);
 };
@@ -1760,7 +1896,7 @@ window.closeBook = function() {
 
 // FIX 3: showTab receives element reference, no global event needed
 window.showTab = function(el, tab) {
-  ["bio","visas","trips","cl","obs"].forEach(t => {
+  ["bio","visas","trips","cl","pack","exp","map","obs"].forEach(t => {
     const s = document.getElementById("spread-"+t);
     if (s) s.style.display = (t===tab) ? "grid" : "none";
   });
@@ -1775,7 +1911,7 @@ window.showTab = function(el, tab) {
   if (!document.getElementById("pages").classList.contains("open")) openBook();
   // Reset all viewers to left page when switching tabs
   if (typeof showPage === 'function') {
-    ['bio','visas','trips','cl','obs'].forEach(function(s){ showPage(s, 0); });
+    ['bio','visas','trips','cl','pack','exp','map','obs'].forEach(function(s){ showPage(s, 0); });
   }
 };
 
@@ -2042,7 +2178,7 @@ async function loadTrips() {
   renderAll();
 }
 
-function renderAll() { renderPassportTrips(); renderTripStamps(); renderMainTrips(); }
+function renderAll() { renderPassportTrips(); renderTripStamps(); renderMainTrips(); renderMap(); }
 
 const FLAGS={Japan:"&#127471;&#127477;",Singapore:"&#127480;&#127468;","United States":"&#127482;&#127480;","United Kingdom":"&#127468;&#127463;","Schengen Zone":"&#127466;&#127482;",Canada:"&#127464;&#127462;",Australia:"&#127462;&#127482;",UAE:"&#127462;&#127466;",Turkey:"&#127481;&#127479;",China:"&#127464;&#127475;",India:"&#127470;&#127475;",Thailand:"&#127481;&#127469;",Mexico:"&#127474;&#127485;",Brazil:"&#127463;&#127479;","South Africa":"&#127484;&#127462;","South Korea":"&#127472;&#127479;",Vietnam:"&#127483;&#127475;",Indonesia:"&#127470;&#127465;",Morocco:"&#127474;&#127462;",Egypt:"&#127466;&#127468;"};
 function getFlag(dest){ return FLAGS[dest]||"&#9992;&#65039;"; }
@@ -2199,6 +2335,221 @@ window.generateChecklist = async function() {
 
 
 
+// ── PACKING CHECKLIST ──
+const DEFAULT_PACK_ITEMS = [
+  {id:"p1",text:"Pasaporte",done:false,custom:false},
+  {id:"p2",text:"Visa",done:false,custom:false},
+  {id:"p3",text:"Seguro de viaje",done:false,custom:false},
+  {id:"p4",text:"Tarjetas / efectivo",done:false,custom:false},
+  {id:"p5",text:"Adaptador de corriente",done:false,custom:false},
+  {id:"p6",text:"Medicinas",done:false,custom:false},
+  {id:"p7",text:"Equipaje",done:false,custom:false},
+  {id:"p8",text:"Boletos",done:false,custom:false},
+  {id:"p9",text:"Reserva de hotel",done:false,custom:false}
+];
+let packing = [];
+
+async function loadPacking() {
+  const fb = window._fbReady;
+  if (window._uid && fb) {
+    try {
+      const snap = await fb.getDoc(fb.doc(fb.db,"users",window._uid,"packing","data"));
+      packing = (snap.exists() && Array.isArray(snap.data().items)) ? snap.data().items : DEFAULT_PACK_ITEMS.slice();
+    } catch(e) { console.warn("Firestore packing error:", e); packing = DEFAULT_PACK_ITEMS.slice(); }
+  } else {
+    try { packing = JSON.parse(localStorage.getItem("mp_packing")||"null") || DEFAULT_PACK_ITEMS.slice(); } catch(e) { packing = DEFAULT_PACK_ITEMS.slice(); }
+  }
+  renderPacking();
+}
+
+async function savePacking() {
+  const fb = window._fbReady;
+  if (window._uid && fb) {
+    try { await fb.setDoc(fb.doc(fb.db,"users",window._uid,"packing","data"), {items: packing}); }
+    catch(e) { console.warn("Firestore packing save error:", e); }
+  }
+  localStorage.setItem("mp_packing", JSON.stringify(packing));
+}
+
+function renderPacking() {
+  const list = document.getElementById("pack-list");
+  const prog = document.getElementById("pack-progress");
+  if (!list) return;
+  if (!packing.length) {
+    list.innerHTML = "<p style='font-size:10px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("pack_empty")+"</p>";
+  } else {
+    list.innerHTML = packing.map(it =>
+      "<div class='check-item pack-item'>" +
+      "<input type='checkbox' class='pack-check' "+(it.done?"checked":"")+" onchange='togglePackItem(&quot;"+it.id+"&quot;)'/>" +
+      "<div style='flex:1'><div class='ci-title' style='"+(it.done?"text-decoration:line-through;opacity:0.55;":"")+"'>"+sanitize(it.text)+"</div></div>" +
+      (it.custom ? "<button class='te-btn' onclick='removePackItem(&quot;"+it.id+"&quot;)'>&#10005;</button>" : "") +
+      "</div>"
+    ).join("");
+  }
+  if (prog) {
+    const done = packing.filter(i=>i.done).length;
+    const pct = packing.length ? Math.round(done/packing.length*100) : 0;
+    prog.innerHTML =
+      "<div style='font-size:8px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;'>"+
+      done+" / "+packing.length+" &middot; "+pct+"%</div>"+
+      "<div class='prog-bar'><div class='prog-fill' style='width:"+pct+"%'></div></div>";
+  }
+}
+
+window.togglePackItem = function(id) {
+  const it = packing.find(i=>i.id===id);
+  if (it) { it.done = !it.done; savePacking(); renderPacking(); }
+};
+window.addPackItem = function() {
+  const input = document.getElementById("pack-new-text");
+  const text = (input.value||"").trim();
+  if (!text) return;
+  packing.push({id:"c"+Date.now(), text, done:false, custom:true});
+  input.value = "";
+  savePacking(); renderPacking();
+};
+window.removePackItem = function(id) {
+  packing = packing.filter(i=>i.id!==id);
+  savePacking(); renderPacking();
+};
+window.resetPacking = function() {
+  packing.forEach(i=>i.done=false);
+  savePacking(); renderPacking();
+};
+
+// ── EXPENSES ──
+let expenses = [];
+const CATS = {food:"cat_food",hotel:"cat_hotel",transport:"cat_transport",shopping:"cat_shopping",activities:"cat_activities"};
+const CAT_ICON = {food:"&#127869;",hotel:"&#127976;",transport:"&#128652;",shopping:"&#128722;",activities:"&#127917;"};
+
+async function loadExpenses() {
+  const fb = window._fbReady;
+  if (window._uid && fb) {
+    try {
+      const s = await fb.getDocs(fb.collection(fb.db,"users",window._uid,"expenses"));
+      expenses = [];
+      s.forEach(d => expenses.push({...d.data(), id:d.id}));
+    } catch(e) { console.warn("Firestore expenses error:", e); }
+  } else {
+    try { expenses = JSON.parse(localStorage.getItem("mp_expenses")||"[]"); } catch(e) { expenses=[]; }
+  }
+  expenses.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  renderExpenses();
+}
+
+window.addExpense = async function() {
+  const cat = document.getElementById("e-cat").value;
+  const amount = parseFloat(document.getElementById("e-amount").value);
+  const currency = document.getElementById("e-currency").value;
+  const date = document.getElementById("e-date").value;
+  if (!amount || amount <= 0) return;
+  const exp = {cat, amount, currency, date, createdAt: Date.now()};
+  const fb = window._fbReady;
+  if (window._uid && fb) {
+    try {
+      const ref = await fb.addDoc(fb.collection(fb.db,"users",window._uid,"expenses"), exp);
+      exp.id = ref.id;
+    } catch(e) { console.warn("Firestore expense save error:", e); exp.id = "local-"+Date.now(); }
+  } else {
+    exp.id = "local-"+Date.now();
+  }
+  expenses.unshift(exp);
+  localStorage.setItem("mp_expenses", JSON.stringify(expenses));
+  document.getElementById("e-amount").value = "";
+  renderExpenses();
+};
+
+window.removeExpense = async function(id) {
+  const fb = window._fbReady;
+  if (window._uid && fb && !String(id).startsWith("local-")) {
+    try { await fb.deleteDoc(fb.doc(fb.db,"users",window._uid,"expenses",id)); }
+    catch(e) { console.warn("Firestore expense delete error:", e); }
+  }
+  expenses = expenses.filter(e => e.id !== id);
+  localStorage.setItem("mp_expenses", JSON.stringify(expenses));
+  renderExpenses();
+};
+
+function renderExpenses() {
+  const list = document.getElementById("exp-list");
+  const totalsEl = document.getElementById("exp-totals");
+  if (!list) return;
+  if (!expenses.length) {
+    list.innerHTML = "<p style='font-size:10px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("no_exp")+"</p>";
+    if (totalsEl) totalsEl.innerHTML = "";
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  let totalAll = 0, totalToday = 0;
+  const byCat = {};
+  expenses.forEach(e => {
+    const amt = Number(e.amount)||0;
+    totalAll += amt;
+    if (e.date === today) totalToday += amt;
+    byCat[e.cat] = (byCat[e.cat]||0) + amt;
+  });
+  const mainCurrency = expenses[0].currency || "USD";
+  if (totalsEl) {
+    const bars = Object.keys(byCat).map(c => {
+      const pct = totalAll ? Math.round(byCat[c]/totalAll*100) : 0;
+      return "<div class='exp-cat-row'><span class='exp-cat-label'>"+(CAT_ICON[c]||"")+" "+sanitize(tr(CATS[c]||c))+"</span>" +
+        "<div class='exp-cat-bar'><div class='exp-cat-fill' style='width:"+pct+"%'></div></div>" +
+        "<span class='exp-cat-pct'>"+pct+"%</span></div>";
+    }).join("");
+    totalsEl.innerHTML =
+      "<div class='exp-total-box'><div><div style='font-size:7px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;'>"+tr("lbl_total_trip")+"</div><div style='font-size:15px;font-weight:bold;font-family:var(--ff);color:#152a1e;'>"+totalAll.toFixed(2)+" "+sanitize(mainCurrency)+"</div></div>" +
+      "<div><div style='font-size:7px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;'>"+tr("lbl_total_today")+"</div><div style='font-size:15px;font-weight:bold;font-family:var(--ff);color:#152a1e;'>"+totalToday.toFixed(2)+" "+sanitize(mainCurrency)+"</div></div></div>" +
+      bars;
+  }
+  list.innerHTML = expenses.slice(0,10).map(e =>
+    "<div class='trip-entry exp-entry'>" +
+    "<div class='te-flag'>"+(CAT_ICON[e.cat]||"&#128176;")+"</div>" +
+    "<div style='flex:1'>" +
+      "<div class='te-dest'>"+Number(e.amount).toFixed(2)+" "+sanitize(e.currency)+"</div>" +
+      "<div class='te-dates'>"+(e.date||"&#8212;")+"</div>" +
+      "<div class='te-purp'>"+sanitize(tr(CATS[e.cat]||e.cat))+"</div>" +
+    "</div>" +
+    "<button class='te-btn' onclick='removeExpense(&quot;"+e.id+"&quot;)'>&#10005;</button>" +
+    "</div>"
+  ).join("");
+}
+
+// ── WORLD MAP (derived from trips[], no extra Firestore reads needed) ──
+const CONTINENTS = {
+  Japan:"Asia", Singapore:"Asia", "United States":"América", "United Kingdom":"Europa",
+  "Schengen Zone":"Europa", Canada:"América", Australia:"Oceanía", UAE:"Asia",
+  Turkey:"Asia", China:"Asia", India:"Asia", Thailand:"Asia", Mexico:"América",
+  Brazil:"América", "South Africa":"África", "South Korea":"Asia", Vietnam:"Asia",
+  Indonesia:"Asia", Morocco:"África", Egypt:"África"
+};
+const WORLD_TOTAL = 195;
+
+function renderMap() {
+  const statsEl = document.getElementById("map-stats");
+  const countriesEl = document.getElementById("map-countries");
+  if (!statsEl || !countriesEl) return;
+  const visitedSet = new Set(trips.map(t => t.dest).filter(Boolean));
+  const visitedCount = visitedSet.size;
+  const continentsVisited = new Set([...visitedSet].map(d => CONTINENTS[d]).filter(Boolean));
+  const pct = Math.min(100, Math.round(visitedCount / WORLD_TOTAL * 100));
+  const allContinents = ["América","Europa","Asia","África","Oceanía"];
+
+  statsEl.innerHTML =
+    "<div class='map-stat-row'><div class='map-stat-num'>"+visitedCount+"</div><div class='map-stat-lbl'>"+tr("lbl_countries_visited")+"</div></div>" +
+    "<div class='map-stat-row'><div class='map-stat-num'>"+continentsVisited.size+" / 5</div><div class='map-stat-lbl'>"+tr("lbl_continents")+"</div></div>" +
+    "<div class='map-stat-row'><div class='map-stat-num'>"+pct+"%</div><div class='map-stat-lbl'>"+tr("lbl_world_pct")+"</div></div>" +
+    "<div class='prog-bar' style='margin:8px 0 12px'><div class='prog-fill' style='width:"+pct+"%'></div></div>" +
+    allContinents.map(c => "<div class='continent-row "+(continentsVisited.has(c)?"visited":"")+"'>"+
+      (continentsVisited.has(c)?"&#9679;":"&#9675;")+" "+c+"</div>").join("") +
+    "<p style='font-size:7px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;'>"+tr("map_note")+"</p>";
+
+  countriesEl.innerHTML = "<div class='country-grid'>" + Object.keys(FLAGS).map(dest => {
+    const visited = visitedSet.has(dest);
+    return "<div class='country-chip "+(visited?"visited":"gray")+"'>" +
+      "<span class='cc-flag'>"+FLAGS[dest]+"</span><span class='cc-name'>"+sanitize(dest)+"</span></div>";
+  }).join("") + "</div>";
+}
+
 // ── Single-page navigator ──
 function showPage(spreadId, pageIndex) {
   var viewer = document.getElementById('viewer-' + spreadId);
@@ -2263,6 +2614,8 @@ window._appInit_full = function() {
   if (natSel && srcSel && srcSel.innerHTML) natSel.innerHTML = srcSel.innerHTML;
   loadProfile();
   loadTrips();
+  loadPacking();
+  loadExpenses();
   // Update art page on init
   const initCountry = localStorage.getItem("mp_country") || "ECU";
   updateArtPage(initCountry);
