@@ -45,7 +45,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
   background:none;
   border:2px solid rgba(201,168,76,0.55);
   color:rgba(201,168,76,0.7);
-  font-size:9px;padding:4px 10px;
+  font-size:14px;padding:4px 10px;
   border-radius:50px;
   cursor:pointer;
   font-family:var(--ff-mono);
@@ -104,18 +104,18 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .cover-frame-inner{position:absolute;inset:16px 16px 16px 22px;border:1px solid rgba(201,168,76,0.14);z-index:2;pointer-events:none;}
 .spine{position:absolute;left:0;top:0;bottom:0;width:12px;background:linear-gradient(90deg,#040e08,#0f2318);border-right:1px solid rgba(201,168,76,0.18);z-index:3;}
 .cover-inner{padding:1.8rem 1.8rem 0.8rem 2rem;position:relative;z-index:4;display:flex;flex-direction:column;align-items:center;}
-.cover-tagline{font-size:9.5px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.65);font-family:var(--ff);margin-bottom:0.5rem;font-style:italic;text-align:center;}
+.cover-tagline{font-size:14px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(201,168,76,0.65);font-family:var(--ff);margin-bottom:0.5rem;font-style:italic;text-align:center;}
 .cover-logo{width:min(65%,220px);height:auto;object-fit:contain;margin:0.5rem 0 0.7rem;filter:drop-shadow(0 4px 14px rgba(0,0,0,0.6));display:block;}
 .cover-title{font-family:var(--ff);font-size:38px;color:var(--gold);text-align:center;letter-spacing:0.05em;text-shadow:0 2px 10px rgba(0,0,0,0.6),0 0 30px rgba(201,168,76,0.2);margin-bottom:0.2rem;line-height:1;}
-.cover-sub{font-family:var(--ff);font-size:11px;letter-spacing:0.2em;color:var(--gold2);text-align:center;font-style:italic;opacity:0.75;margin-bottom:0.9rem;}
+.cover-sub{font-family:var(--ff);font-size:14px;letter-spacing:0.2em;color:var(--gold2);text-align:center;font-style:italic;opacity:0.75;margin-bottom:0.9rem;}
 .cover-bio{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(201,168,76,0.28);border-radius:2px;padding:3px 10px;margin-bottom:0.6rem;}
 .cover-bio-dot{width:10px;height:10px;border:1px solid rgba(201,168,76,0.45);border-radius:50%;position:relative;}
 .cover-bio-dot::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:4px;height:4px;border-radius:50%;background:rgba(201,168,76,0.55);}
-.cover-bio-lbl{font-size:8.5px;color:rgba(201,168,76,0.5);font-family:var(--ff-mono);letter-spacing:0.07em;}
-.cover-hint{font-size:10px;color:rgba(201,168,76,0.3);font-family:var(--ffs);letter-spacing:0.05em;text-align:center;padding-bottom:0.6rem;}
+.cover-bio-lbl{font-size:14px;color:rgba(201,168,76,0.5);font-family:var(--ff-mono);letter-spacing:0.07em;}
+.cover-hint{font-size:14px;color:rgba(201,168,76,0.3);font-family:var(--ffs);letter-spacing:0.05em;text-align:center;padding-bottom:0.6rem;}
 
 .country-bar{background:rgba(0,0,0,0.4);border-top:1px solid rgba(201,168,76,0.12);padding:8px 12px 8px 18px;display:flex;align-items:center;gap:8px;position:relative;z-index:4;}
-.cb-label{font-size:10px;color:rgba(201,168,76,0.45);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;font-family:var(--ffs);}
+.cb-label{font-size:14px;color:rgba(201,168,76,0.45);text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap;font-family:var(--ffs);}
 .country-sel{background:transparent;border:none;color:var(--gold);font-size:15px;cursor:pointer;outline:none;flex:1;font-family:var(--ff);}
 .country-sel option{background:#0f2318;color:var(--cream);}
 
@@ -131,7 +131,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
   to{opacity:0;}
 }
 .page-topbar{background:rgba(0,0,0,0.3);padding:6px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.1);}
-.passport-label{font-size:10px;color:rgba(201,168,76,0.45);font-family:var(--ff-mono);letter-spacing:0.07em;}
+.passport-label{font-size:14px;color:rgba(201,168,76,0.45);font-family:var(--ff-mono);letter-spacing:0.07em;}
 .close-btn{background:none;border:none;color:rgba(201,168,76,0.35);font-size:14px;cursor:pointer;font-family:var(--ff-mono);letter-spacing:0.05em;transition:color 0.15s;}
 .close-btn:hover{color:var(--gold);}
 
@@ -243,7 +243,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 
 /* removed - replaced by bio-* styles */
 /* removed - replaced by bio-* styles */
-.poly::after{content:attr(data-country);position:absolute;bottom:4px;left:0;right:0;font-size:7px;font-family:var(--ff-mono);color:rgba(40,70,55,0.18);letter-spacing:0.06em;text-align:center;white-space:nowrap;overflow:hidden;}
+.poly::after{content:attr(data-country);position:absolute;bottom:4px;left:0;right:0;font-size:14px;font-family:var(--ff-mono);color:rgba(40,70,55,0.18);letter-spacing:0.06em;text-align:center;white-space:nowrap;overflow:hidden;}
 /* removed - replaced by bio-* styles */
 /* removed - replaced by bio-* styles */
 /* removed - replaced by bio-* styles */
@@ -281,12 +281,12 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .stamp.visa{background:rgba(26,58,42,0.08);color:#1a3a2a;border:1.5px solid rgba(26,58,42,0.42);transform:rotate(-1deg);}
 .stamp.oval{border-radius:40%;}
 .stamp.round{border-radius:50%;width:64px;height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto;padding:4px;}
-.stamp-type{font-size:8px;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--ff-mono);margin-bottom:1px;}
-.stamp-country{font-size:12px;font-weight:bold;font-family:var(--ff);margin-bottom:1px;}
-.stamp-date{font-size:8px;font-family:var(--ff-mono);letter-spacing:0.06em;}
-.stamp-port{font-size:7px;font-family:var(--ff-mono);opacity:0.62;margin-top:1px;}
+.stamp-type{font-size:14px;text-transform:uppercase;letter-spacing:0.1em;font-family:var(--ff-mono);margin-bottom:1px;}
+.stamp-country{font-size:14px;font-weight:bold;font-family:var(--ff);margin-bottom:1px;}
+.stamp-date{font-size:14px;font-family:var(--ff-mono);letter-spacing:0.06em;}
+.stamp-port{font-size:14px;font-family:var(--ff-mono);opacity:0.62;margin-top:1px;}
 .trip-stamp{background:rgba(201,168,76,0.07);border:1.5px solid rgba(201,168,76,0.35);color:#6b4a10;border-radius:2px;padding:5px 6px;text-align:center;}
-.motif{border:1px solid rgba(100,140,110,0.18);border-radius:2px;padding:8px;margin-bottom:9px;position:relative;}
+.motif{border:1px solid rgba(100,140,110,0.18);border-radius:2px;padding:14px;margin-bottom:14px;position:relative;}
 .motif::before{content:"";position:absolute;inset:3px;border:1px solid rgba(100,140,110,0.08);border-radius:2px;pointer-events:none;}
 
 .trip-entry{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(100,130,100,0.1);}
@@ -298,7 +298,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .te-btn{margin-left:auto;padding:3px 8px;background:rgba(201,168,76,0.09);border:1px solid rgba(201,168,76,0.28);border-radius:2px;color:#6b4a10;font-size:14px;font-family:var(--ff-mono);text-transform:uppercase;letter-spacing:0.06em;cursor:pointer;white-space:nowrap;}
 .te-btn:hover{background:rgba(201,168,76,0.18);}
 
-.add-form{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.16);border-radius:2px;padding:9px;}
+.add-form{background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.16);border-radius:2px;padding:16px;}
 .af-title{font-size:14px;text-transform:uppercase;letter-spacing:0.1em;color:var(--gold3);font-family:var(--ff-mono);margin-bottom:8px;}
 .ff{display:flex;flex-direction:column;gap:2px;margin-bottom:6px;}
 .ff label{font-size:14px;text-transform:uppercase;letter-spacing:0.08em;color:#3a5040;font-family:var(--ff-mono);}
@@ -324,13 +324,13 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .risk-badge.ok{background:rgba(26,58,42,0.09);color:var(--ok);border:1px solid rgba(26,58,42,0.28);}
 .risk-badge.caution{background:rgba(122,88,16,0.09);color:var(--warn);border:1px solid rgba(122,88,16,0.28);}
 .risk-badge.danger{background:rgba(139,26,26,0.09);color:var(--danger);border:1px solid rgba(139,26,26,0.28);}
-.obs-block{padding:7px 9px;background:rgba(201,168,76,0.04);border-left:2px solid rgba(201,168,76,0.22);margin-bottom:7px;font-size:14px;font-family:var(--ff);color:#3a5040;line-height:1.5;font-style:italic;}
+.obs-block{padding:12px 14px;background:rgba(201,168,76,0.04);border-left:2px solid rgba(201,168,76,0.22);margin-bottom:12px;font-size:14px;font-family:var(--ff);color:#3a5040;line-height:1.5;font-style:italic;}
 .obs-lbl{font-size:14px;text-transform:uppercase;letter-spacing:0.09em;color:var(--gold3);font-family:var(--ff-mono);margin-bottom:2px;font-style:normal;}
 .note-line{border-bottom:1px solid rgba(100,130,100,0.16);height:19px;}
 .loading-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;padding:1.5rem;}
 .spinner{width:22px;height:22px;border:2px solid rgba(100,130,100,0.16);border-top-color:var(--gold3);border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.loading-wrap p{font-size:11px;font-family:var(--ff-mono);color:#3a5040;letter-spacing:0.06em;}
+.loading-wrap p{font-size:14px;font-family:var(--ff-mono);color:#3a5040;letter-spacing:0.06em;}
 
 .main-panel{display:flex;flex-direction:column;gap:1.25rem;}
 .panel{background:linear-gradient(160deg,rgba(240,235,220,0.96),rgba(232,226,208,0.99));border:1px solid rgba(100,130,100,0.2);border-radius:4px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.14);}
@@ -341,13 +341,13 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 /* Phase 6 font-size bump above intentionally EXCLUDES the closed cover and
    the passport-data edit panel, per the "never touch the first two pages"
    rule -- restore their exact original sizes here. */
-#cover .pp-avatar{font-size:11px;}
-#cover .pp-email{font-size:11px;}
-#cover .pp-lang{font-size:12px;}
-#edit-profile-panel .ff label{font-size:8.5px;}
-#edit-profile-panel .ff select,#edit-profile-panel .ff input,#edit-profile-panel .ff textarea{font-size:12px;}
-#edit-profile-panel .btn-s{font-size:10.5px;}
-#edit-profile-panel .panel-action{font-size:13px;}
+#cover .pp-avatar{font-size:14px;}
+#cover .pp-email{font-size:14px;}
+#cover .pp-lang{font-size:14px;}
+#edit-profile-panel .ff label{font-size:14px;}
+#edit-profile-panel .ff select,#edit-profile-panel .ff input,#edit-profile-panel .ff textarea{font-size:14px;}
+#edit-profile-panel .btn-s{font-size:14px;}
+#edit-profile-panel .panel-action{font-size:14px;}
 .panel-action:hover{opacity:0.7;}
 .empty-state{text-align:center;padding:1.5rem 1rem;}
 .empty-icon{font-size:28px;margin-bottom:0.5rem;opacity:0.4;}
@@ -362,10 +362,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .tc-purp{font-size:14px;color:var(--gold3);font-family:var(--ff-mono);text-transform:uppercase;margin-top:1px;}
 .tc-btn{margin-left:auto;padding:5px 11px;background:rgba(26,58,42,0.08);border:1px solid rgba(26,58,42,0.22);border-radius:3px;color:#152a1e;font-size:14px;cursor:pointer;transition:all 0.15s;font-family:var(--ffs);}
 .tc-btn:hover{background:rgba(26,58,42,0.15);}
-.cl-sel-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 9px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.22);border-radius:2px;cursor:pointer;font-family:var(--ff);font-size:14px;color:#152a1e;text-align:left;transition:all 0.15s;margin-bottom:5px;}
+.cl-sel-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.22);border-radius:2px;cursor:pointer;font-family:var(--ff);font-size:14px;color:#152a1e;text-align:left;transition:all 0.15s;margin-bottom:10px;}
 .cl-sel-btn:hover{background:rgba(201,168,76,0.13);}
-.dis{display:flex;gap:7px;align-items:flex-start;padding:7px 9px;background:rgba(122,88,16,0.05);border:1px solid rgba(122,88,16,0.14);border-radius:2px;margin-top:9px;}
-.dis p{font-size:11px;color:#5a4010;font-family:var(--ff);line-height:1.45;font-style:italic;}
+.dis{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:rgba(122,88,16,0.05);border:1px solid rgba(122,88,16,0.14);border-radius:2px;margin-top:14px;}
+.dis p{font-size:14px;color:#5a4010;font-family:var(--ff);line-height:1.45;font-style:italic;}
 .err-msg{color:var(--danger);font-size:14px;font-family:var(--ff);padding:1rem;}
 
 /* ── Phase 1 additions: packing checklist, expenses, world map ── */
@@ -387,7 +387,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .continent-row{font-size:14px;font-family:var(--ff);color:#3a5040;padding:2px 0;}
 .continent-row.visited{color:#152a1e;font-weight:600;}
 .country-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.country-chip{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:2px;font-size:14px;font-family:var(--ff);border:1px solid rgba(100,130,100,0.14);}
+.country-chip{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:2px;font-size:14px;font-family:var(--ff);border:1px solid rgba(100,130,100,0.14);}
 .country-chip.visited{background:rgba(26,58,42,0.08);border-color:rgba(26,58,42,0.3);color:#152a1e;font-weight:600;}
 .country-chip.gray{background:rgba(120,120,120,0.06);color:#8a9a80;filter:grayscale(1);opacity:0.72;}
 .cc-flag{font-size:15px;flex-shrink:0;}
@@ -417,7 +417,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .de-actions{margin-top:6px;}
 
 /* ── Phase 3 additions: encrypted document vault + emergency contacts ── */
-.vault-doc{display:flex;align-items:center;gap:9px;padding:7px 9px;margin-bottom:7px;border:1px solid rgba(100,130,100,0.2);border-radius:3px;background:rgba(200,180,120,0.06);}
+.vault-doc{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:12px;border:1px solid rgba(100,130,100,0.2);border-radius:3px;background:rgba(200,180,120,0.06);}
 .vd-icon{font-size:17px;flex-shrink:0;}
 .vd-body{flex:1;min-width:0;}
 .vd-type{font-family:var(--ff);font-size:14px;font-weight:700;color:#152a1e;}
@@ -428,14 +428,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .emg-label{font-family:var(--ff-mono);font-size:14px;color:#3a5040;text-transform:uppercase;letter-spacing:0.05em;}
 .emg-value{font-family:var(--ff);font-size:14px;font-weight:600;color:#152a1e;}
 .emg-empty-value{font-family:var(--ff);font-size:14px;color:#8a9a80;font-style:italic;}
-.family-chip{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;margin-bottom:5px;background:rgba(100,130,100,0.08);border-radius:2px;font-size:14px;font-family:var(--ff);}
+.family-chip{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;margin-bottom:10px;background:rgba(100,130,100,0.08);border-radius:2px;font-size:14px;font-family:var(--ff);}
 
 /* ── Phase 4 additions: statistics, achievements, country info ── */
 .stat-tile{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid rgba(100,130,100,0.1);}
 .stat-tile:last-child{border-bottom:none;}
 .stat-num{font-size:19px;font-weight:bold;font-family:var(--ff);color:#152a1e;min-width:48px;}
 .stat-lbl{font-size:14px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.05em;}
-.ach-badge{display:flex;align-items:center;gap:10px;padding:8px 9px;margin-bottom:7px;border-radius:3px;}
+.ach-badge{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:12px;border-radius:3px;}
 .ach-badge.unlocked{background:rgba(200,160,60,0.1);border:1px solid rgba(200,160,60,0.4);}
 .ach-badge.locked{background:rgba(120,120,120,0.06);opacity:0.6;}
 .ach-emoji{font-size:22px;flex-shrink:0;}
@@ -472,7 +472,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
   text-align:center;
   padding:4px 8px;
   background:rgba(0,0,0,0.25);
-  font-size:10px;
+  font-size:14px;
   font-family:var(--ff-mono);
   color:rgba(201,168,76,0.5);
   letter-spacing:0.08em;
@@ -483,7 +483,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 
 .net-guard{display:none;position:fixed;inset:0;background:rgba(10,15,10,0.9);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:1rem;color:var(--gold);font-family:var(--ff);font-size:16px;text-align:center;}
 .net-guard.show{display:flex;}
-.net-guard small{font-size:13px;color:var(--gold3);font-family:var(--ff-mono);}
+.net-guard small{font-size:14px;color:var(--gold3);font-family:var(--ff-mono);}
 
 /* ══════════════════════════════════════
    REAL PASSPORT INTERIOR — complete rewrite
@@ -562,7 +562,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 }
 .pp-left-country {
   font-family: var(--doc-ff);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -591,7 +591,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 /* Decorative quote text */
 .pp-left-quote {
   font-family: var(--doc-ff);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 400;
   font-style: normal;
   color: var(--doc-gray);
@@ -621,7 +621,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 }
 .pp-left-artband-text {
   font-family: var(--doc-ff-mrz);
-  font-size: 11px;
+  font-size: 14px;
   color: var(--doc-gray);
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -650,7 +650,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 }
 .pp-left-sig-label {
   font-family: var(--doc-ff);
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0.02em;
@@ -662,7 +662,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
   bottom: 8px;
   right: 12px;
   font-family: var(--doc-ff-mrz);
-  font-size: 11px;
+  font-size: 14px;
   color: var(--doc-gray);
   opacity: 0.7;
   letter-spacing: 0.06em;
@@ -718,7 +718,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
   /* Repurposed as a small nationality tag next to the generic title,
      rather than a "Republic of X" hero heading — see FIX-VISUAL-4. */
   font-family: var(--doc-ff);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--doc-gray);
   letter-spacing: 0.04em;
@@ -792,15 +792,15 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .td3-photo-hint {
   position: absolute;
   bottom: 4px; right: 4px;
-  font-size: 11px;
+  font-size: 14px;
   opacity: 0.55;
 }
 .td3-type-code-row { display: flex; gap: 12px; justify-content: flex-start; width: 100%; }
 .td3-mini-field { display: flex; flex-direction: column; gap: 1px; }
-.td3-mini-field .td3-lbl { font-size: 10px; }
+.td3-mini-field .td3-lbl { font-size: 14px; }
 .td3-val-mono {
   font-family: var(--doc-ff-mrz);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--doc-black);
 }
@@ -841,7 +841,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .td3-field:nth-child(1), .td3-field:nth-child(2) { grid-column: span 1; } /* surname/given: normal width now — landscape has room */
 .td3-lbl {
   font-family: var(--doc-ff);
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--doc-gray);
   letter-spacing: 0.01em;
@@ -859,8 +859,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.td3-val-sm { font-size: 13px; }
-.td3-val-mono.td3-val { font-family: var(--doc-ff-mrz); font-size: 13px; font-weight: 600; }
+.td3-val-sm { font-size: 14px; }
+.td3-val-mono.td3-val { font-family: var(--doc-ff-mrz); font-size: 14px; font-weight: 600; }
 .td3-val-red { color: var(--doc-black); } /* de-emphasized — no alarm-red in this palette */
 
 /* Security strip — not used in the minimalist redesign (spec explicitly
@@ -878,7 +878,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 }
 .td3-mrz-disclaimer {
   font-family: var(--doc-ff);
-  font-size: 9.5px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--doc-gray);
   letter-spacing: 0.04em;
@@ -887,7 +887,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 }
 .td3-mrz-line {
   font-family: var(--doc-ff-mrz);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--doc-black);
   letter-spacing: 0.05em;
@@ -921,7 +921,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
   <div>&#127758; My Passport</div>
   <div>Conectando con Firebase...</div>
   <small>Si esto tarda, verifica tu conexi&#243;n.</small>
-  <button onclick="window.location.href='/index.html'" style="margin-top:1rem;padding:8px 20px;background:var(--gold);border:none;border-radius:4px;color:var(--ink);cursor:pointer;font-family:var(--ff-mono);font-size:13px;">Volver al inicio</button>
+  <button onclick="window.location.href='/index.html'" style="margin-top:1rem;padding:8px 20px;background:var(--gold);border:none;border-radius:4px;color:var(--ink);cursor:pointer;font-family:var(--ff-mono);font-size:14px;">Volver al inicio</button>
 </div>
 
 
@@ -1027,7 +1027,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
         <!-- Ghosted duplicate photo watermark (real-passport security feature) -->
         <img id="photo-ghost-img" alt="" style="display:none;position:absolute;top:6%;right:5%;width:26%;opacity:0.16;filter:grayscale(1) contrast(1.1);pointer-events:none;z-index:1;mix-blend-mode:multiply;"/>
         <!-- Country watermark text -->
-        <div id="wm-country" style="position:absolute;bottom:6%;left:0;right:0;text-align:center;font-family:var(--ff);font-size:13px;letter-spacing:0.5em;color:rgba(201,168,76,0.18);pointer-events:none;z-index:1;"></div>
+        <div id="wm-country" style="position:absolute;bottom:6%;left:0;right:0;text-align:center;font-family:var(--ff);font-size:14px;letter-spacing:0.5em;color:rgba(201,168,76,0.18);pointer-events:none;z-index:1;"></div>
 
         <!-- Illustration area -->
         <div class="pp-left-illustration">
@@ -1092,7 +1092,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
               <div class="td3-photo-hint">&#128247;</div>
             </div>
             <input type="file" id="inp-photo" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handlePhoto(this)"/>
-            <div id="photo-status" style="font-size:11px;font-family:var(--doc-ff);color:var(--doc-gray);min-height:11px;"></div>
+            <div id="photo-status" style="font-size:14px;font-family:var(--doc-ff);color:var(--doc-gray);min-height:11px;"></div>
 
             <div class="td3-sig-row">
               <span class="td3-lbl">Firma / Signature</span>
@@ -1202,12 +1202,12 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
             <button class="equip-toggle-btn active" onclick="switchStampsSub(&#39;visas&#39;)" data-t="st_tab_examples">Ejemplos</button>
           </div>
           <div class="motif">
-            <div style="font-size:8.5px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;" data-t="dec_stamps">Sellos decorativos de ejemplo</div>
+            <div style="font-size:14px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;" data-t="dec_stamps">Sellos decorativos de ejemplo</div>
             <div class="stamps-grid">
               <div class="stamp entry oval"><div class="stamp-type">ENTRADA</div><div class="stamp-country">JAP&#211;N</div><div class="stamp-date">15 MAR 2024</div><div class="stamp-port">NARITA INT&#39;L</div></div>
               <div class="stamp exit oval"><div class="stamp-type">SALIDA</div><div class="stamp-country">JAP&#211;N</div><div class="stamp-date">28 MAR 2024</div><div class="stamp-port">KANSAI AIRPORT</div></div>
               <div class="stamp visa" style="transform:rotate(1deg)"><div class="stamp-type">VISA TURISMO</div><div class="stamp-country">SCHENGEN</div><div class="stamp-date">01&#8211;30 JUN 2024</div><div class="stamp-port">90 D&#205;AS &#183; MULTIPLE</div></div>
-              <div class="stamp round entry"><div class="stamp-type" style="font-size:7.5px">ENTRADA</div><div class="stamp-country" style="font-size:11px">UAE</div><div class="stamp-date" style="font-size:7.5px">12 NOV 2024</div></div>
+              <div class="stamp round entry"><div class="stamp-type" style="font-size:14px">ENTRADA</div><div class="stamp-country" style="font-size:14px">UAE</div><div class="stamp-date" style="font-size:14px">12 NOV 2024</div></div>
             </div>
           </div>
           <span class="pg-num">3</span>
@@ -1216,7 +1216,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="wm">VISADOS</div>
           <div class="ph"><span class="ph-title" data-t="ph_trip_stamps">Sellos de viajes</span><span>&#128506;</span></div>
           <div class="motif" id="trip-stamps-area">
-            <p style="font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:0.75rem;" data-t="no_trip_stamps">Agrega viajes para ver tus sellos.</p>
+            <p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:0.75rem;" data-t="no_trip_stamps">Agrega viajes para ver tus sellos.</p>
           </div>
           <span class="pg-num">4</span>
         </div>
@@ -1237,7 +1237,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
         <div class="page page-l">
           <div class="wm">VIAJES</div>
           <div class="ph"><span class="ph-title" data-t="ph_trips">Itinerario de viajes</span><span>&#9992;&#65039;</span></div>
-          <div id="passport-trips-list"><p style="font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="no_trips">Sin viajes registrados.</p></div>
+          <div id="passport-trips-list"><p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="no_trips">Sin viajes registrados.</p></div>
           <span class="pg-num">5</span>
         </div>
         <div class="page page-r">
@@ -1307,14 +1307,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
             <button class="equip-toggle-btn" onclick="switchEquipSub(&#39;pack&#39;)" data-t="eq_tab_pack">Empaque</button>
             <button class="equip-toggle-btn active" onclick="switchEquipSub(&#39;cl&#39;)" data-t="eq_tab_cl">Legal</button>
           </div>
-          <p style="font-size:11.5px;font-family:var(--ff);color:#3a5040;font-style:italic;margin-bottom:8px;" data-t="select_trip_cl">Selecciona un viaje:</p>
+          <p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;margin-bottom:8px;" data-t="select_trip_cl">Selecciona un viaje:</p>
           <div id="cl-trip-btns"></div>
           <span class="pg-num">7</span>
         </div>
         <div class="page page-r">
           <div class="wm">CHECKLIST</div>
           <div class="ph"><span class="ph-title" data-t="ph_cl_result">Requisitos y alertas</span><span>&#128269;</span></div>
-          <div id="cl-result"><p style="font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="cl_empty">La checklist aparecer&#225; aqu&#237;.</p></div>
+          <div id="cl-result"><p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="cl_empty">La checklist aparecer&#225; aqu&#237;.</p></div>
           <span class="pg-num">8</span>
         </div>
       
@@ -1338,7 +1338,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
             <button class="equip-toggle-btn active" onclick="switchEquipSub(&#39;pack&#39;)" data-t="eq_tab_pack">Empaque</button>
             <button class="equip-toggle-btn" onclick="switchEquipSub(&#39;cl&#39;)" data-t="eq_tab_cl">Legal</button>
           </div>
-          <div id="pack-list"><p style="font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="pack_loading">Cargando...</p></div>
+          <div id="pack-list"><p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="pack_loading">Cargando...</p></div>
           <span class="pg-num">9</span>
         </div>
         <div class="page page-r">
@@ -1371,7 +1371,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="wm">GASTOS</div>
           <div class="ph"><span class="ph-title" data-t="ph_exp">Registro de gastos</span><span>&#128176;</span></div>
           <div id="exp-totals"></div>
-          <div id="exp-list"><p style="font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="no_exp">Sin gastos registrados.</p></div>
+          <div id="exp-list"><p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="no_exp">Sin gastos registrados.</p></div>
           <span class="pg-num">11</span>
         </div>
         <div class="page page-r">
@@ -1451,7 +1451,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
             <button class="equip-toggle-btn active" onclick="switchStampsSub(&#39;stamps&#39;)" data-t="st_tab_real">Sellos</button>
             <button class="equip-toggle-btn" onclick="switchStampsSub(&#39;visas&#39;)" data-t="st_tab_examples">Ejemplos</button>
           </div>
-          <div id="stamps-list"><p style="font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="stamps_empty">Aun no hay sellos registrados.</p></div>
+          <div id="stamps-list"><p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="stamps_empty">Aun no hay sellos registrados.</p></div>
           <span class="pg-num">15</span>
         </div>
         <div class="page page-r">
@@ -1460,7 +1460,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="add-form">
             <div class="af-title" data-t="new_stamp">&#128204; Nuevo sello</div>
             <button class="btn-s" style="background:linear-gradient(135deg,#1a5c8b,#123f60);margin-bottom:8px;" onclick="useGpsForStamp()" id="gps-btn" data-t="btn_use_gps">&#128205; Usar mi ubicacion</button>
-            <div id="gps-status" style="font-size:10px;font-family:var(--ff-mono);color:#3a5040;min-height:11px;margin-bottom:6px;"></div>
+            <div id="gps-status" style="font-size:14px;font-family:var(--ff-mono);color:#3a5040;min-height:11px;margin-bottom:6px;"></div>
             <div class="fg2">
               <div class="ff"><label data-t="lbl_country">Pais</label><input type="text" id="st-country" maxlength="60" list="st-country-list"/>
                 <datalist id="st-country-list"></datalist>
@@ -1497,7 +1497,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
             <button class="equip-toggle-btn active" onclick="switchDiarySub(&#39;diary&#39;)" data-t="dy_tab_diary">Diario</button>
             <button class="equip-toggle-btn" onclick="switchDiarySub(&#39;album&#39;)" data-t="dy_tab_album">Album</button>
           </div>
-          <div id="diary-list"><p style="font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="diary_empty">Aun no hay entradas en el diario.</p></div>
+          <div id="diary-list"><p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;" data-t="diary_empty">Aun no hay entradas en el diario.</p></div>
           <span class="pg-num">17</span>
         </div>
         <div class="page page-r">
@@ -1534,7 +1534,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="wm">DOCS</div>
           <div class="ph"><span class="ph-title" data-t="ph_docs">Documentos importantes</span><span>&#128274;</span></div>
           <div id="docs-locked-view">
-            <p style="font-size:11px;font-family:var(--ff);color:#3a5040;font-style:italic;padding:0.5rem 0 1rem;" data-t="docs_locked_note">Protegidos con una clave que solo tu conoces. Esta clave no se guarda en ningun lado: si la olvidas, no hay forma de recuperar el contenido.</p>
+            <p style="font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;padding:0.5rem 0 1rem;" data-t="docs_locked_note">Protegidos con una clave que solo tu conoces. Esta clave no se guarda en ningun lado: si la olvidas, no hay forma de recuperar el contenido.</p>
           </div>
           <div id="docs-list" style="display:none;"></div>
           <span class="pg-num">19</span>
@@ -1547,7 +1547,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
             <div class="ff"><label id="docs-pass-label" data-t="lbl_passphrase">Clave</label><input type="password" id="docs-pass"/></div>
             <div class="ff" id="docs-pass-confirm-wrap" style="display:none;"><label data-t="lbl_passphrase_confirm">Confirmar clave</label><input type="password" id="docs-pass-confirm"/></div>
             <button class="btn-s" onclick="unlockVault()" id="docs-unlock-btn" data-t="btn_unlock">&#128274; Desbloquear</button>
-            <div id="docs-status" style="font-size:10px;font-family:var(--ff-mono);color:#8b3a1a;min-height:11px;margin-top:6px;"></div>
+            <div id="docs-status" style="font-size:14px;font-family:var(--ff-mono);color:#8b3a1a;min-height:11px;margin-top:6px;"></div>
           </div>
           <div id="docs-add-form" class="add-form" style="display:none;margin-top:10px;">
             <div class="af-title" data-t="new_doc">&#128196; Nuevo documento</div>
@@ -1636,7 +1636,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="wm">STATS</div>
           <div class="ph"><span class="ph-title" data-t="ph_stats2">En numeros</span><span>&#128200;</span></div>
           <div id="stats-body2"></div>
-          <p style="font-size:9px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;" data-t="stats_note">Calculado a partir de tus Viajes, Sellos, Diario y Gastos registrados.</p>
+          <p style="font-size:14px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;" data-t="stats_note">Calculado a partir de tus Viajes, Sellos, Diario y Gastos registrados.</p>
           <span class="pg-num">24</span>
         </div>
       
@@ -1658,7 +1658,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="ph"><span class="ph-title" data-t="ph_ach">Logros desbloqueados</span><span>&#127942;</span></div>
           <div class="equip-toggle"><button class="equip-toggle-btn" onclick="switchPerfilSub(&#39;map&#39;)" data-t="pf_tab_map">Mapa</button><button class="equip-toggle-btn" onclick="switchPerfilSub(&#39;stats&#39;)" data-t="pf_tab_stats">Stats</button><button class="equip-toggle-btn active" onclick="switchPerfilSub(&#39;ach&#39;)" data-t="pf_tab_ach">Coleccion</button><button class="equip-toggle-btn" onclick="switchPerfilSub(&#39;info&#39;)" data-t="pf_tab_info">Pais</button></div>
           <div id="ach-list-unlocked"></div>
-          <p style="font-size:10px;font-family:var(--ff-mono);color:#8a9a80;font-style:italic;margin-top:8px;" data-t="ach_auto_note">Estos se desbloquean solos a medida que usas la app — no hay nada que agregar aqui.</p>
+          <p style="font-size:14px;font-family:var(--ff-mono);color:#8a9a80;font-style:italic;margin-top:8px;" data-t="ach_auto_note">Estos se desbloquean solos a medida que usas la app — no hay nada que agregar aqui.</p>
           <span class="pg-num">25</span>
         </div>
         <div class="page page-r">
@@ -1695,7 +1695,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="wm">INFO</div>
           <div class="ph"><span class="ph-title" data-t="ph_info2">Datos practicos</span><span>&#128203;</span></div>
           <div id="info-body2"></div>
-          <p style="font-size:9px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;" data-t="info_note">Datos de referencia general; verifica siempre con fuentes oficiales antes de viajar.</p>
+          <p style="font-size:14px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;" data-t="info_note">Datos de referencia general; verifica siempre con fuentes oficiales antes de viajar.</p>
           <span class="pg-num">28</span>
         </div>
       
@@ -1726,7 +1726,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="wm">ALBUM</div>
           <div class="ph"><span class="ph-title" data-t="ph_album2">Mas fotos</span><span>&#128247;</span></div>
           <div id="album-body2"></div>
-          <p style="font-size:9px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;" data-t="album_note">Las fotos se agregan desde el Diario de viaje.</p>
+          <p style="font-size:14px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;" data-t="album_note">Las fotos se agregan desde el Diario de viaje.</p>
           <span class="pg-num">30</span>
         </div>
       
@@ -1768,7 +1768,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
             </div>
             <button class="btn-s" onclick="convertCurrency()" data-t="btn_convert">&#8644; Convertir</button>
             <div id="cv-result" style="font-size:15px;font-weight:bold;font-family:var(--ff);color:#152a1e;margin-top:8px;text-align:center;"></div>
-            <div id="cv-status" style="font-size:9.5px;font-family:var(--ff-mono);color:#8a9a80;text-align:center;margin-top:4px;"></div>
+            <div id="cv-status" style="font-size:14px;font-family:var(--ff-mono);color:#8a9a80;text-align:center;margin-top:4px;"></div>
           </div>
           <div class="ph" style="margin-top:14px;"><span class="ph-title" data-t="ph_conv_time">Hora local</span><span>&#128336;</span></div>
           <div class="ff"><select id="cv-tz-country" onchange="renderLocalTime()"></select></div>
@@ -1863,7 +1863,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
           <div class="add-form">
             <div class="ff"><textarea id="personal-notes-text" rows="11" maxlength="4000"></textarea></div>
             <button class="btn-s" onclick="savePersonalNotes()" data-t="btn_save_notes">&#8853; Guardar notas</button>
-            <div id="personal-notes-status" style="font-size:9.5px;font-family:var(--ff-mono);color:#2a6b3a;margin-top:6px;min-height:11px;"></div>
+            <div id="personal-notes-status" style="font-size:14px;font-family:var(--ff-mono);color:#2a6b3a;margin-top:6px;min-height:11px;"></div>
           </div>
           <span class="pg-num">36</span>
         </div>
@@ -1931,8 +1931,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
         </div>
         <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
           <button class="btn-s" onclick="saveProfile()" data-t="btn_save">Guardar datos</button>
-          <span id="profile-save-status" style="font-size:13px;color:#2a6044;"></span>
-          <span id="profile-save-error" style="font-size:13px;color:#8b2020;"></span>
+          <span id="profile-save-status" style="font-size:14px;color:#2a6044;"></span>
+          <span id="profile-save-error" style="font-size:14px;color:#8b2020;"></span>
         </div>
       </div>
     </div>
@@ -2803,7 +2803,7 @@ function getFlag(dest){ return FLAGS[dest]||"&#9992;&#65039;"; }
 
 function renderPassportTrips() {
   const el = document.getElementById("passport-trips-list");
-  if (!trips.length) { el.innerHTML="<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("no_trips")+"</p>"; return; }
+  if (!trips.length) { el.innerHTML="<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("no_trips")+"</p>"; return; }
   el.innerHTML = trips.map((t,i) =>
     "<div class='trip-entry'>" +
     "<div class='te-flag'>"+getFlag(t.dest)+"</div>" +
@@ -2819,7 +2819,7 @@ function renderPassportTrips() {
 
 function renderTripStamps() {
   const el = document.getElementById("trip-stamps-area");
-  if (!trips.length) { el.innerHTML="<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:0.75rem;'>"+tr("no_trip_stamps")+"</p>"; return; }
+  if (!trips.length) { el.innerHTML="<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:0.75rem;'>"+tr("no_trip_stamps")+"</p>"; return; }
   el.innerHTML = "<div class='stamps-grid'>" + trips.map((t,i) =>
     "<div class='stamp trip-stamp' style='transform:rotate("+(((Math.random()*14)-7).toFixed(1))+"deg)'>" +
     "<div class='stamp-type'>ENTRADA · "+sanitize((t.purp||"").toUpperCase())+"</div>" +
@@ -2853,8 +2853,8 @@ function renderMainTrips() {
   if (selBody) selBody.innerHTML = trips.map((t,i) =>
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
-    "<span><div style='font-weight:bold;font-size:13px'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
-    "<div style='font-size:11px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
+    "<span><div style='font-weight:bold;font-size:14px'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
+    "<div style='font-size:14px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
     "</button>"
   ).join("");
   if (sel) sel.style.display = "block";
@@ -2862,12 +2862,12 @@ function renderMainTrips() {
 
 function renderCLBtns() {
   const el = document.getElementById("cl-trip-btns");
-  if (!trips.length) { el.innerHTML="<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;'>"+tr("select_trip_cl")+"</p>"; return; }
+  if (!trips.length) { el.innerHTML="<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;'>"+tr("select_trip_cl")+"</p>"; return; }
   el.innerHTML = trips.map((t,i) =>
     "<button class='cl-sel-btn' onclick='selectAndGenerate("+i+")'>" +
     "<span style='font-size:18px'>"+getFlag(t.dest)+"</span>" +
-    "<span><div style='font-weight:bold;font-size:13px'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
-    "<div style='font-size:11px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
+    "<span><div style='font-weight:bold;font-size:14px'>"+sanitize(t.destDisplay||t.dest)+"</div>" +
+    "<div style='font-size:14px;font-family:var(--ff-mono);color:#3a5040'>"+(t.dep||"—")+" · "+((t.purpKey?tr("opt_"+t.purpKey):(t.purp||"")))+"</div></span>" +
     "</button>"
   ).join("");
 }
@@ -2951,9 +2951,9 @@ window.generateChecklist = async function() {
     const html =
       "<div style='margin-bottom:8px'>" +
       "<div style='font-family:var(--ff);font-size:14px;font-weight:bold;color:#152a1e;margin-bottom:1px'>"+sanitize(data.route||selectedTrip.dest)+"</div>" +
-      "<div style='font-size:9.5px;font-family:var(--ff-mono);color:#3a5040;margin-bottom:6px'>"+((selectedTrip.purpKey?tr("opt_"+selectedTrip.purpKey):selectedTrip.purp||selectedTrip.purpKey)).toUpperCase()+" &middot; "+(selectedTrip.dep||"&#8212;")+" &#8594; "+(selectedTrip.ret||"&#8212;")+"</div>" +
+      "<div style='font-size:14px;font-family:var(--ff-mono);color:#3a5040;margin-bottom:6px'>"+((selectedTrip.purpKey?tr("opt_"+selectedTrip.purpKey):selectedTrip.purp||selectedTrip.purpKey)).toUpperCase()+" &middot; "+(selectedTrip.dep||"&#8212;")+" &#8594; "+(selectedTrip.ret||"&#8212;")+"</div>" +
       "<span class='risk-badge "+rc+"'>&#9679; "+(RL[data.risk_level]||"")+"</span>" +
-      "<div class='obs-block' style='font-size:11.5px;margin-bottom:8px'>"+sanitize(data.summary)+"</div></div>" +
+      "<div class='obs-block' style='font-size:14px;margin-bottom:8px'>"+sanitize(data.summary)+"</div></div>" +
       items +
       "<div class='dis'><p>&#9888; "+tr("disclaimer")+"</p></div>";
     // Both containers are intentional: cl-main-body = right panel, cl-result = passport page 8
@@ -3009,7 +3009,7 @@ function renderPacking() {
   const prog = document.getElementById("pack-progress");
   if (!list) return;
   if (!packing.length) {
-    list.innerHTML = "<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("pack_empty")+"</p>";
+    list.innerHTML = "<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("pack_empty")+"</p>";
   } else {
     list.innerHTML = packing.map(it =>
       "<div class='check-item pack-item'>" +
@@ -3023,7 +3023,7 @@ function renderPacking() {
     const done = packing.filter(i=>i.done).length;
     const pct = packing.length ? Math.round(done/packing.length*100) : 0;
     prog.innerHTML =
-      "<div style='font-size:10px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;'>"+
+      "<div style='font-size:14px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;'>"+
       done+" / "+packing.length+" &middot; "+pct+"%</div>"+
       "<div class='prog-bar'><div class='prog-fill' style='width:"+pct+"%'></div></div>";
   }
@@ -3109,7 +3109,7 @@ function renderExpenses() {
   const totalsEl = document.getElementById("exp-totals");
   if (!list) return;
   if (!expenses.length) {
-    list.innerHTML = "<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("no_exp")+"</p>";
+    list.innerHTML = "<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("no_exp")+"</p>";
     if (totalsEl) totalsEl.innerHTML = "";
     renderStats(); renderAchievements();
     return;
@@ -3132,8 +3132,8 @@ function renderExpenses() {
         "<span class='exp-cat-pct'>"+pct+"%</span></div>";
     }).join("");
     totalsEl.innerHTML =
-      "<div class='exp-total-box'><div><div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;'>"+tr("lbl_total_trip")+"</div><div style='font-size:15px;font-weight:bold;font-family:var(--ff);color:#152a1e;'>"+totalAll.toFixed(2)+" "+sanitize(mainCurrency)+"</div></div>" +
-      "<div><div style='font-size:9px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;'>"+tr("lbl_total_today")+"</div><div style='font-size:15px;font-weight:bold;font-family:var(--ff);color:#152a1e;'>"+totalToday.toFixed(2)+" "+sanitize(mainCurrency)+"</div></div></div>" +
+      "<div class='exp-total-box'><div><div style='font-size:14px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;'>"+tr("lbl_total_trip")+"</div><div style='font-size:15px;font-weight:bold;font-family:var(--ff);color:#152a1e;'>"+totalAll.toFixed(2)+" "+sanitize(mainCurrency)+"</div></div>" +
+      "<div><div style='font-size:14px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;'>"+tr("lbl_total_today")+"</div><div style='font-size:15px;font-weight:bold;font-family:var(--ff);color:#152a1e;'>"+totalToday.toFixed(2)+" "+sanitize(mainCurrency)+"</div></div></div>" +
       bars;
   }
   list.innerHTML = expenses.slice(0,10).map(e =>
@@ -3177,7 +3177,7 @@ function renderMap() {
     "<div class='prog-bar' style='margin:8px 0 12px'><div class='prog-fill' style='width:"+pct+"%'></div></div>" +
     allContinents.map(c => "<div class='continent-row "+(continentsVisited.has(c)?"visited":"")+"'>"+
       (continentsVisited.has(c)?"&#9679;":"&#9675;")+" "+c+"</div>").join("") +
-    "<p style='font-size:9px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;'>"+tr("map_note")+"</p>";
+    "<p style='font-size:14px;font-family:var(--ff-mono);color:#8a9a80;margin-top:10px;font-style:italic;'>"+tr("map_note")+"</p>";
 
   countriesEl.innerHTML = "<div class='country-grid'>" + Object.keys(FLAGS).map(dest => {
     const visited = visitedSet.has(dest);
@@ -3307,7 +3307,7 @@ function renderStamps() {
   if (!list) return;
   populateStampCountryList();
   if (!stamps.length) {
-    list.innerHTML = "<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("stamps_empty")+"</p>";
+    list.innerHTML = "<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("stamps_empty")+"</p>";
     renderStats(); renderAchievements();
     return;
   }
@@ -3415,7 +3415,7 @@ function renderDiary() {
   const list = document.getElementById("diary-list");
   if (!list) return;
   if (!diaryEntries.length) {
-    list.innerHTML = "<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("diary_empty")+"</p>";
+    list.innerHTML = "<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("diary_empty")+"</p>";
     renderStats(); renderAchievements(); renderAlbum();
     return;
   }
@@ -3588,7 +3588,7 @@ function renderVaultDocs() {
   const list = document.getElementById("docs-list");
   if (!list) return;
   if (!vaultDocs.length) {
-    list.innerHTML = "<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1rem;'>"+tr("docs_empty")+"</p>";
+    list.innerHTML = "<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1rem;'>"+tr("docs_empty")+"</p>";
     return;
   }
   list.innerHTML = vaultDocs.map(d =>
@@ -3668,7 +3668,7 @@ function renderEmergencyInfo() {
              row("&#128737;&#65039;","lbl_insurance_phone", emergencyInfo.insurancePhone + (emergencyInfo.insurancePolicy ? " &middot; "+emergencyInfo.insurancePolicy : ""));
   const fam = emergencyInfo.family||[];
   if (fam.length) {
-    html += "<div style='font-size:9.5px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;margin:8px 0 4px;'>"+tr("lbl_family_name")+"</div>";
+    html += "<div style='font-size:14px;font-family:var(--ff-mono);color:#3a5040;text-transform:uppercase;margin:8px 0 4px;'>"+tr("lbl_family_name")+"</div>";
     html += fam.map((f,i) => "<div class='family-chip'><span>"+sanitize(f.name)+(f.phone?" &middot; "+sanitize(f.phone):"")+"</span><button class='te-btn' onclick='removeFamilyContact("+i+")'>&#10005;</button></div>").join("");
   }
   list.innerHTML = html;
@@ -3744,7 +3744,7 @@ function renderAchievements() {
 
   unlockedEl.innerHTML = unlocked.length
     ? unlocked.map(a => badge(a, true)).join("")
-    : "<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1rem;'>"+tr("ach_none_yet")+"</p>";
+    : "<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1rem;'>"+tr("ach_none_yet")+"</p>";
   lockedEl.innerHTML = locked.map(a => badge(a, false)).join("");
 }
 
@@ -3824,7 +3824,7 @@ function renderAlbum() {
   if (!body || !body2) return;
   const withPhotos = diaryEntries.filter(e => e.photo);
   if (!withPhotos.length) {
-    body.innerHTML = "<p style='font-size:12px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("album_empty")+"</p>";
+    body.innerHTML = "<p style='font-size:14px;font-family:var(--ff);color:#3a5040;font-style:italic;text-align:center;padding:1.5rem;'>"+tr("album_empty")+"</p>";
     body2.innerHTML = "";
     return;
   }
