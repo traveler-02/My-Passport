@@ -601,13 +601,14 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 .pp-left-emblem {
   width: min(30%, 96px);
   flex-shrink: 0;
-  opacity: 0.55;
-  font-size: min(13vw, 52px);
+  opacity: 0.85;
+  font-size: min(15vw, 58px);
   line-height: 1;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
 }
 /* Decorative quote text */
 .pp-left-quote {
@@ -1054,7 +1055,7 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
         <!-- Illustration area -->
         <div class="pp-left-illustration">
           <!-- Rosette emblem SVG -->
-          <div class="pp-left-emblem" id="art-emblem">&#127890;</div>
+          <div class="pp-left-emblem" id="art-emblem">&#127466;&#127464;</div>
 
           <div class="pp-left-text-col">
             <div class="pp-left-country" id="art-country-name">REP&#218;BLICA DEL ECUADOR</div>
@@ -2267,8 +2268,9 @@ function renderArtPage(code) {
 
   var emblemEl = document.getElementById("art-emblem");
   if (emblemEl) {
-    // Emblem is now a single static emoji (see .pp-left-emblem) — no more
-    // per-country SVG injection, kept for consistent emoji-only iconography.
+    // Per-country flag emoji instead of a generic icon or the old SVG
+    // rosette — matches the "emoji + regional flags only" iconography rule.
+    emblemEl.innerHTML = flagFromCode(code);
     emblemEl.style.color = "";
   }
 
