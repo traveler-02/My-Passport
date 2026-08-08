@@ -566,6 +566,20 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 }
 .pp-left-art::after { content: none; }
 
+/* Full-page flag watermark — same per-country SVG as the small emblem
+   badge, but huge and very faint, centered behind all page-1 content. */
+.pp-left-flag-wm {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+.pp-left-flag-wm svg { width: 78%; height: 78%; opacity: 0.07; filter: grayscale(0.2); }
+
 /* Central illustration area */
 .pp-left-illustration {
   position: relative;
@@ -1052,8 +1066,8 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
       <div class="pp-left" id="pp-left">
         <!-- Art background fills whole page -->
         <div class="pp-left-art" id="pp-left-art"></div>
-        <!-- Ghosted duplicate photo watermark (real-passport security feature) -->
-        <img id="photo-ghost-img" alt="" style="display:none;position:absolute;top:6%;right:5%;width:26%;opacity:0.16;filter:grayscale(1) contrast(1.1);pointer-events:none;z-index:1;mix-blend-mode:multiply;"/>
+        <!-- Full-page flag watermark, behind the illustration content -->
+        <div class="pp-left-flag-wm" id="pp-left-flag-wm"></div>
         <!-- Country watermark text -->
         <div id="wm-country" style="position:absolute;bottom:6%;left:0;right:0;text-align:center;font-family:var(--ff);font-size:14px;letter-spacing:0.5em;color:rgba(201,168,76,0.18);pointer-events:none;z-index:1;"></div>
 
@@ -1095,6 +1109,10 @@ body{background:#1a1a18;font-family:var(--ffs);font-size:16px;padding-top:0;}
 
         <!-- Main data zone: photo+signature (left) then fields (right) -->
         <div class="td3-body">
+          <!-- Ghosted duplicate photo watermark (real-passport security
+               feature) — sits behind the fields, bottom-right, roughly
+               under Tipo/Código which is the last field in the grid. -->
+          <img id="photo-ghost-img" alt="" style="display:none;position:absolute;bottom:2%;right:2%;width:34%;opacity:0.14;filter:grayscale(1) contrast(1.1);pointer-events:none;z-index:0;mix-blend-mode:multiply;"/>
 
           <div class="td3-photo-col">
             <div class="td3-photo-frame" id="photo-box-click"
@@ -2311,6 +2329,11 @@ function renderArtPage(code) {
     // to SVG despite the rest of the app's icons staying emoji-only.
     emblemEl.innerHTML = COUNTRY_FLAG_SVG[code] || COUNTRY_FLAG_SVG.ECU;
     emblemEl.style.color = "";
+  }
+  var flagWmEl = document.getElementById("pp-left-flag-wm");
+  if (flagWmEl) {
+    // Same flag, huge and faint, as a full-page background watermark.
+    flagWmEl.innerHTML = COUNTRY_FLAG_SVG[code] || COUNTRY_FLAG_SVG.ECU;
   }
 
   // artband is transparent - the flag background (pp-left-art) shows through
